@@ -1,0 +1,16 @@
+html, body {
+  margin: 10;
+  padding: 10;
+  background-color: #66aa66;
+  font-family: 'Andale Mono';
+  font-size: 20pt;
+  color: black;
+}
+
+table,td,th {
+    line-height: 10pt;
+}
+
+canvas {
+  display: block;
+}
