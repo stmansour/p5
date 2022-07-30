@@ -5,7 +5,7 @@ let mappedImageName="dog100x100.jpg";
 
 //               0         1         2
 //               01234567890123456789012345678
-const density = '@#W&8953752?1!=+-;:,.  ';
+const density = '#@W&8953752?1!=+-;:,.  ';
 // const density = `$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^\.    `;
 
 function setInnerHTML(id,s) {
@@ -28,6 +28,7 @@ function setup() {
   dog.loadPixels();
   setInnerHTML("mappedImageName",mappedImageName);
   setInnerHTML("mappedImageSize"," " + dog.width + " x " + dog.height);
+  setInnerHTML("densityChars",density);
 
   var canvas = createCanvas(displayedImage.width, displayedImage.height);
   canvas.parent("dogCanvas");

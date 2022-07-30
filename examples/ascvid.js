@@ -6,6 +6,7 @@ function setup() {
   noCanvas();
   video = createCapture(VIDEO);
   video.size(140,140);
+  video.parent("systemVideo");
 }
 
 function smBrightness(r,g,b) {
