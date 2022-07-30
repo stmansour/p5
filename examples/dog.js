@@ -1,17 +1,37 @@
 let dog;
-// let dogview;
+let displayedImage;
+let displayedImageName="dog.png"
+let mappedImageName="dog100x100.jpg";
+
 //               0         1         2
 //               01234567890123456789012345678
 const density = '@#W&8953752?1!=+-;:,.  ';
 // const density = `$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^\.    `;
 
+function setInnerHTML(id,s) {
+    let el = document.getElementById(id);
+    if (el != null) {
+        el.innerHTML = s;
+    }
+}
+
 function preload() {
-    dog = loadImage("dog100x100.jpg");
-    dogview = loadImage("dog.png");
+    displayedImage = loadImage(displayedImageName);
+
+    dog = loadImage(mappedImageName);
 }
 
 function setup() {
-  createCanvas(300, 300);
+  displayedImage.loadPixels();
+  setInnerHTML("displayedImageName",displayedImageName);
+  setInnerHTML("displayedImageSize"," " + displayedImage.width + " x " + displayedImage.height);
+  dog.loadPixels();
+  setInnerHTML("mappedImageName",mappedImageName);
+  setInnerHTML("mappedImageSize"," " + dog.width + " x " + dog.height);
+
+  var canvas = createCanvas(displayedImage.width, displayedImage.height);
+  canvas.parent("dogCanvas");
+
 }
 
 function smBrightness(r,g,b) {
@@ -20,10 +40,10 @@ function smBrightness(r,g,b) {
 
 function draw() {
     background(127);
-    image(dogview,0,0,dogview.width,dogview.height);
+    image(displayedImage,0,0,displayedImage.width,displayedImage.height);
     dog.loadPixels();
     noLoop();
-    // image(dogview,0,0,dogview.width,dogview.height);
+    // image(displayedImage,0,0,displayedImage.width,displayedImage.height);
 
     let w = width / dog.width;
     let h = height / dog.height;

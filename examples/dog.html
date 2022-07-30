@@ -1,18 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <script src="../p5.js"></script>
     <!-- <script src="../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
 
-  </head>
-  <body>
+</head>
+
+<body>
     <main>
     </main>
     <script src="dog.js"></script>
-    <div id="asciiart" style="font-family:'Courier New';font-size:12pt;line-height:7pt;">
-        ASCII art goes here
-    </div>
-  </body>
+    <table align="center">
+        <tr>
+            <td align="center">
+                <h2>Image To ASCII</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <td>
+                        <div id="dogCanvas"></div>
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td align="right">Displayed Image:</td>
+                                <td><span id="displayedImageName"></span></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Dimensions:</td>
+                                <td><span id="displayedImageSize"></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" height="10"></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Mapped Image:</td>
+                                <td><span id="mappedImageName"></span></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Dimensions:</td>
+                                <td><span id="mappedImageSize"></span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="asciiart" style="font-family:'Courier New';font-size:12pt;line-height:7pt;">
+                    ASCII art goes here
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
 </html>
