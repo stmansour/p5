@@ -38,7 +38,9 @@ function initGrid(ar) {
 }
 
 function setup() {
-    createCanvas(1000,650);
+    var canvas = createCanvas(1000,650);
+    canvas.parent('lifeCanvas');
+
     app.grid = make2DArray(app.vertCells,app.horzCells);
     initGrid(app.grid);
     const d = new Date();
