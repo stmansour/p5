@@ -17,7 +17,6 @@ function setInnerHTML(id,s) {
 
 function preload() {
     displayedImage = loadImage(displayedImageName);
-
     dog = loadImage(mappedImageName);
 }
 
