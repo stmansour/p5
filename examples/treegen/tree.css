@@ -2,13 +2,9 @@ html, body {
   margin: 10;
   padding: 10;
   background-color: #66aa66;
-  font-family: 'Andale Mono';
-  font-size: 14pg;
+  font-family: 'Didot', serif;
+  font-size: 14pt;
   color: black;
-}
-
-table,td,th {
-    line-height: 10pt;
 }
 
 canvas {

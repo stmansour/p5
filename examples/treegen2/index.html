@@ -9,7 +9,7 @@
     <!-- <script src="../../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="tree.css">
     <meta charset="utf-8" />
-    <title>Simple Tree Generator</title>
+    <title>Simple Tree Generator 2</title>
 </head>
 
 <body>
@@ -18,7 +18,7 @@
     <table align="center">
         <tr>
             <td colspan="3" align="center">
-                <h2>Simple Tree Generator</h2>
+                <h2>Simple Tree Generator 2</h2>
             </td>
         </tr>
         <tr>
@@ -54,7 +54,23 @@
             <td><span id="jitter">0</span></td>
             <td><span id="jitterBtn"></span></td>
         </tr>
+        <tr>
+            <td colspan="3" height="20"></td>
+        </tr>
+        <tr>
+            <td colspan="3" width="800">
+                This tree is drawn with a recursive algorithm. The process of building it up
+                uses the same recursive algorithm as the previous tree. In the
+                previous example, the tree is calculated and drawn from scratch
+                every animation frame. However,
+                this tree's structure is built up once, as an array of Branch objects
+                managed by a Tree object. While this can result in a very large
+                array of objects, its advantages are that branches or points on the tree
+                can be easily animated. Try the Wobble and Jitter effects.
+            </td>
+        </tr>
     </table>
+
 </body>
 
 </html>
