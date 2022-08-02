@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="../p5.js"></script>
+    <script src="../../p5.js"></script>
     <!-- <script src="../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="life.css">
     <meta charset="utf-8" />
@@ -40,7 +40,9 @@
             </tr>
             <tr>
                 <td align="right" width="50%">Stable Generation:</td>
-                <td><span id="stable">0</span></td>
+                <td><span id="stableLabel">0</span>&nbsp;&nbsp
+                    <button type="button" id="stepGen" disabled onclick="generationStep()">Show Next Generation</button>
+                </td>
             </tr>
         </table>
     </div>
