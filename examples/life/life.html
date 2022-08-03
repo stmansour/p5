@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <script src="../../p5.js"></script>
     <!-- <script src="../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="life.css">
     <meta charset="utf-8" />
 
-  </head>
-  <body>
+</head>
+
+<body>
     <main>
     </main>
     <script src="life.js"></script>
-    <div id="asciiart"
-        style="font-family:'Monaco';font-size:12pt;line-height:6pt;">
-        <br/>
+    <div id="asciiart" style="font-family:'Monaco';font-size:12pt;line-height:6pt;">
+        <br />
         <table align="center">
             <tr>
-                <td colspan="2" align="center"><h2>Horton Conway's Life Simulator</h2></td>
+                <td colspan="2" align="center">
+                    <h2>Horton Conway's Life Simulator</h2>
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -27,8 +30,22 @@
                 <td colspan="2" height="10"></td>
             </tr>
             <tr>
+                <td colspan="2" align="center">
+                    <button id="stopSim" onclick="stopSim()">Pause</button>
+                    &nbsp;&nbsp;
+                    <button id="contSim" onclick="contSim()">Continue</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" height="10"></td>
+            </tr>
+            <tr>
                 <td align="right" width="50%">Random Seed:</td>
-                <td><span id="seed">0</span></td>
+                <td><span id="seed">0</span>
+                    &nbsp;&nbsp
+                    <input type="number" id="randomSeed" value="" size="13">&nbsp;
+                    <button type="button" id="newGame" disabled onclick="newGame()">Run It Again!</button></td>
+                </td>
             </tr>
             <tr>
                 <td align="right" width="50%">Grid Size:</td>
@@ -36,15 +53,48 @@
             </tr>
             <tr>
                 <td align="right" width="50%">Generations:</td>
-                <td><span id="generations">0</span></td>
+                <td><span id="generations">0</span>
+                    &nbsp;&nbsp
+                    <button type="button" id="stepGen" disabled onclick="generationStep()">Show Next Generation</button></td>
             </tr>
             <tr>
                 <td align="right" width="50%">Stable Generation:</td>
-                <td><span id="stableLabel">0</span>&nbsp;&nbsp
-                    <button type="button" id="stepGen" disabled onclick="generationStep()">Show Next Generation</button>
+                <td><span id="stableLabel">0</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" height="10"></td>
+            </tr>
+            <tr>
+                <td colspan="2" width="800">
+                    <div class="writeup">
+                        <p>
+                        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">The Game of Life</a>
+                        is a simulation of the life of a cell in a grid of cells.
+                        Each cell can be in one of two possible states, live or dead (think:
+                        populated and unpopulated). Live cells are shown in blue, dead cells are white.
+                        The grid is initialize randomly, the random seed is shown and can be used
+                        to regenerate the simluation.
+                        Whether a cell survives to the next generation depends on its neigbors:
+                        <ol>
+                            <li> Any live cell with two or three live neighbors survives. </li>
+                            <li> Any dead cell with three live neighbors becomes a live cell. </li>
+                            <li> All other live cells die in the next generation. Similarly, all other dead cells stay dead. </li>
+                        </ol>
+                    </p>
+                    <p>
+                        This code continuously calculates next generations. Each animation frame
+                        shows a new generation. Over time the generations tend to stabilize, meaning
+                        that generations begin to repeat over some number of generations.  This code
+                        currently checks for stable generations over a 15 generation period.  If the
+                        repeat cyle occurs over more than 15 generations it will not be detected. Currently,
+                        I have not seen anything stabilize over more than 6 generations. But it could happen.
+                    </p>
+                    </div>
                 </td>
             </tr>
         </table>
     </div>
-  </body>
+</body>
+
 </html>

@@ -8,19 +8,12 @@ let app = {
     ancestorDepth: 15,  // how many previdous generations to store
     generations: 0,
     seed: 0,
-    stable: false,
+    stable: 0,
 };
 function setup() {
     var canvas = createCanvas(1000,650);
     canvas.parent('lifeCanvas');
-    for (var i = 0; i < app.ancestorDepth; i++) {
-        app.ancestors.push(null);
-    }
-    const d = new Date();
-    app.seed = d.getTime();
-    randomSeed(app.seed);
-    setInnerHTML("seed",'' + app.seed);
-    setInnerHTML("gridsize", "" + app.horzCells + " x " + app.vertCells);
+    initLife();
 }
 
 function draw() {
@@ -29,13 +22,54 @@ function draw() {
     setInnerHTML("generations",'' + app.generations);
     if (app.stable > 0) {
         noLoop();
-        enableSpecialFunction();
+        turnOffSpecialFunctions(false);
+        disableStopContinue(true);
         return;
     }
     shiftGenerations();
     app.grid = nextGen();
     drawGeneration();
     app.generations += 1;
+}
+
+function newGame() {
+    initLife();
+    turnOffSpecialFunctions(true);
+    disableStopContinue(false);
+    loop();
+}
+
+function initLife() {
+    app.ancestors = [];
+    for (var i = 0; i < app.ancestorDepth; i++) {
+        app.ancestors.push(null);
+    }
+    app.grid = null,
+    app.generations = 0
+
+    // check for seed...
+    app.seed = getSeed();
+    if (app.seed == 0) {
+        const d = new Date();
+        app.seed = d.getTime();
+    }
+    randomSeed(app.seed);
+    setInnerHTML("seed",'' + app.seed);
+    setInnerHTML("gridsize", "" + app.horzCells + " x " + app.vertCells);
+
+}
+
+function getSeed() {
+    var el = document.getElementById('randomSeed');
+    if (el == null) {
+        return 0;
+    }
+    if (el.value == "") {
+        return 0;
+    }
+
+    var x = parseInt(el.value, 10);
+    return x;
 }
 
 function drawGeneration() {
@@ -80,12 +114,34 @@ function newCell() {
     return cell;
 }
 
-function enableSpecialFunction() {
-    var el = document.getElementById("stepGen");
+function disableElement(id,x) {
+    var el = document.getElementById(id);
     if (el != null) {
-        el.disabled = false;
+        el.disabled = x;
     }
 }
+
+function disableElements(buttons,x) {
+    for (var i = 0; i < buttons.length; i++) {
+        disableElement(buttons[i],x);
+    }
+}
+function turnOffSpecialFunctions(x) {
+    disableElements(["stepGen", "newGame"], x);
+}
+
+function disableStopContinue(x) {
+    disableElements(["stopSim", "contSim"], x);
+}
+
+function stopSim() {
+    noLoop();
+}
+
+function contSim() {
+    loop();
+}
+
 
 function initGrid(ar) {
     for (var i = 0; i < ar.length; i++) {
@@ -183,17 +239,8 @@ function make2DArray(rows,cols) {
 }
 
 function getStableGenString(n) {
-    let genstable = [
-        "evolving",             // 0
-        "parent",               // 1
-        "grandparent",          // 2
-        "greatgrandparent",     // 3
-        "gr-gr-gandparent",     // 4
-        "gr-gr-gr-gandparent",  // 5
-        "gr-gr-gr-gr-grandparent",  // 6
-    ];
-    if (n < app.ancestorDepth) {
-        return genstable[n];
+    if (n == 0) {
+        return "evolving";
     }
     return "stabilizes over " + n + " generations starting with gen " + (app.generations-n);
 

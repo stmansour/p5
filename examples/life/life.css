@@ -7,6 +7,12 @@ html, body {
   color: black;
 }
 
+.writeup {
+    font-family: Optima,sans-serif;
+    font-size: 12pt;
+    line-height: 115%;
+}
+
 table,td,th {
     line-height: 10pt;
 }
