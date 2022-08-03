@@ -4,19 +4,18 @@ let app = {
     cellw: 0,
     cellh: 0,
     grid: null,
-    parent: null,
-    greatgrandparent: null,
-    grandparent: null,
+    ancestors: [],     // previous generations
+    ancestorDepth: 15,  // how many previdous generations to store
     generations: 0,
     seed: 0,
     stable: false,
 };
-
-let genstable = ["evolving", "parent", "grandparent", "greatgrandparent"];
-
 function setup() {
     var canvas = createCanvas(1000,650);
     canvas.parent('lifeCanvas');
+    for (var i = 0; i < app.ancestorDepth; i++) {
+        app.ancestors.push(null);
+    }
     const d = new Date();
     app.seed = d.getTime();
     randomSeed(app.seed);
@@ -26,16 +25,14 @@ function setup() {
 
 function draw() {
     app.stable = checkStable();
-    setInnerHTML("stableLabel", genstable[app.stable]);
+    setInnerHTML("stableLabel", getStableGenString(app.stable));
     setInnerHTML("generations",'' + app.generations);
     if (app.stable > 0) {
         noLoop();
         enableSpecialFunction();
         return;
     }
-    app.greatgrandparent = app.grandparent
-    app.grandparent = app.parent;
-    app.parent = app.grid;
+    shiftGenerations();
     app.grid = nextGen();
     drawGeneration();
     app.generations += 1;
@@ -59,6 +56,13 @@ function drawGeneration() {
           rect(j*app.cellw+1, i*app.cellh+1, app.cellw-2, app.cellh-2);
       }
     }
+}
+
+function shiftGenerations() {
+    for (var i = app.ancestorDepth - 2; i >= 0; i--) {
+        app.ancestors[i+1] = app.ancestors[i];
+    }
+    app.ancestors[0] = app.grid;
 }
 
 function generationStep() {
@@ -155,14 +159,10 @@ function gridsMatch(g1,g2) {
 // 0 = no stability
 //------------------------------------------------------
 function checkStable() {
-    if (gridsMatch(app.grid,app.parent)) {
-        return 1;
-    }
-    if (gridsMatch(app.grid,app.grandparent)) {
-        return 2;
-    }
-    if (gridsMatch(app.grid,app.greatgrandparent)) {
-        return 3;
+    for (var i = 0; i < app.ancestors.length; i++) {
+        if (gridsMatch(app.grid,app.ancestors[i])) {
+            return i+1;
+        }
     }
     return 0;
 }
@@ -180,4 +180,21 @@ function make2DArray(rows,cols) {
         ar[i] = new Array(cols);
     }
     return ar;
+}
+
+function getStableGenString(n) {
+    let genstable = [
+        "evolving",             // 0
+        "parent",               // 1
+        "grandparent",          // 2
+        "greatgrandparent",     // 3
+        "gr-gr-gandparent",     // 4
+        "gr-gr-gr-gandparent",  // 5
+        "gr-gr-gr-gr-grandparent",  // 6
+    ];
+    if (n < app.ancestorDepth) {
+        return genstable[n];
+    }
+    return "stabilizes over " + n + " generations starting with gen " + (app.generations-n);
+
 }

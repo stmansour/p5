@@ -1,6 +1,7 @@
 function Tree() {
     this.a = [];
     this.growCompleted = false;
+    this.branchThicknessSet = 0;
 
     this.show = function() {
         for (var i = 0; i < this.a.length; i++) {
@@ -10,6 +11,12 @@ function Tree() {
 
     this.grow = function() {
         if (this.growCompleted) {
+            if (this.branchThicknessSet == 0) {
+                for (let i = 0; i < this.a.length; i++) {
+                    let t = map(i, 0, this.a.length-1, 10,1)
+                    this.a[i].thickness(floor(t));
+                }
+            }
             return;
         }
         if (this.a.length == 0) {

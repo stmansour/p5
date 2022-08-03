@@ -4,6 +4,7 @@ function Branch(vec1,vec2) {
     this.branched = false;  // has this branch been branched out at its endpoint
     this.jitter = 1;
     this.wobble = 1;
+    this.strokeWeight = 1;
 
     this.show = function() {
         stroke(255);
@@ -23,6 +24,7 @@ function Branch(vec1,vec2) {
             this.end.x += random(-this.jitter,this.jitter);
             this.end.y += random(-this.jitter,this.jitter);
         }
+        strokeWeight(this.strokeWeight);
         line(this.begin.x + j1x, this.begin.y + j1y, this.end.x + j2x, this.end.y + j2y);
     };
 
@@ -34,15 +36,19 @@ function Branch(vec1,vec2) {
             let b = p5.Vector.sub(this.end, this.begin);
             b.rotate(i * app.branchRotation);
             b.mult(app.branchDecay);
-             let newEnd = p5.Vector.add(this.end,b);
+            let newEnd = p5.Vector.add(this.end,b);
             let newBranch = new Branch(this.end,newEnd);
             a.push(newBranch);
         }
         this.branched = true;  // ensure that we don't branch it again
-    }
+    };
 
     this.mag = function() {
         let x = p5.Vector.sub(this.end,this.begin);
         return x.mag();
+    };
+
+    this.thickness = function(t) {
+        this.strokeWeight = t;
     }
 }
