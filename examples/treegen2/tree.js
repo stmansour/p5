@@ -5,6 +5,8 @@ function Tree() {
 
     this.show = function() {
         for (var i = 0; i < this.a.length; i++) {
+            this.a[i].strokeWeight = floor(map(i,0,this.a.length,3,1));
+            //console.log('stroke = ' + this.a[i].strokeWeight);
             this.a[i].show();
         }
     };
