@@ -1,0 +1,17 @@
+html, body {
+  margin: 10;
+  padding: 10;
+  background-color: white;
+  font-family: 'Helvetica';
+  font-size: 10;
+  color: black;
+}
+
+.configValue {
+    font-family: 'Courier New';
+    font-size: 12pt;
+}
+
+canvas {
+  display: block;
+}
