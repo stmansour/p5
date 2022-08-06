@@ -11,5 +11,27 @@ function setup() {
 
 function draw() {
     background(0);
+    app.ship.go();  // move before show
     app.ship.show();
+}
+
+function keyPressed() {
+    switch( keyCode) {
+        case RIGHT_ARROW:
+            app.ship.goRight(true);
+            break;
+        case LEFT_ARROW:
+            app.ship.goLeft(true);
+            break;
+    }
+}
+function keyReleased() {
+    switch( keyCode) {
+        case RIGHT_ARROW:
+            app.ship.goRight(false);
+            break;
+        case LEFT_ARROW:
+            app.ship.goLeft(false);
+            break;
+    }
 }
