@@ -7,7 +7,7 @@ function Ship() {
     this.y = height - this.height;
     this.movingLeft = false;
     this.movingRight = false;
-    this.moveAmt = 5;
+    this.moveAmt = 8;
 
     this.show = function() {
         fill('#00ff00');

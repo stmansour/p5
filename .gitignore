@@ -1,0 +1,8 @@
+.DS_Store
+README.txt
+addons/
+empty-example/
+examples/spaceinvaders/shapes.png
+examples/yt/
+p5.js
+p5.min.js
