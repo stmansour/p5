@@ -1,19 +1,25 @@
 function Ship() {
-    this.width = 40;
-    this.height = 15;
-    this.gunwidth = 4;
-    this.gunheight = 10;
-    this.x = width/2;
-    this.y = height - this.height;
+    this.width = 0;
+    this.height = 0;
+    this.width2 = 0;    // half width
+    // this.gunwidth = 4;
+    // this.gunheight = 10;
+    this.x = 0;
+    this.y = 0;
     this.movingLeft = false;
     this.movingRight = false;
     this.moveAmt = 8;
 
+    this.init = function() {
+        app.cannon.loadPixels()
+        this.width = app.cannon.width;
+        this.height = app.cannon.height;
+        this.y = height - this.height;
+        this.x = (width - this.width)/2;
+    }
+
     this.show = function() {
-        fill('#00ff00');
-        noStroke();
-        rect(this.x - this.width/2,this.y, this.width, this.height);
-        rect(this.x - this.gunwidth/2, this.y - this.gunheight, this.gunwidth,this.gunheight);
+        image(app.cannon, this.x - this.width2, this.y);
     }
 
     this.go = function() {

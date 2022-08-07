@@ -1,6 +1,8 @@
-function Invader(x,y) {
+function Invader(x,y,img1,img2) {
     this.x = x;
     this.y = y;
+    this.img1 = img1;
+    this.img2 = img2;
     this.armsUp = false;    // start by drawing arms down
 
     this.relativeMove = function (dx,dy) {
@@ -10,9 +12,9 @@ function Invader(x,y) {
 
     this.show = function() {
         if (this.armsUp) {
-            image(app.a2, this.x, this.y);
+            image(this.img2, this.x, this.y);
         } else {
-            image(app.a1, this.x, this.y);
+            image(this.img1, this.x, this.y);
         }
     }
 }
