@@ -20,7 +20,7 @@ function loadImages() {
     app.b2 = loadImage('assets/b2.png');
     app.c1 = loadImage('assets/c1.png');
     app.c2 = loadImage('assets/c2.png');
-    app.cannon = loadImage('assets/cannon.png');
+    app.cannon = loadImage('assets/lasercannon.png');
 }
 
 function loadAllPixels() {
