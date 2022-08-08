@@ -4,10 +4,13 @@ function Squadron(img1,img2,y,count) {
     this.baseY = y;
     this.ships = [];
     this.numShips = count;  // number of ships in this squadron
-    this.leftmost = null;
-    this.rightmost = null;
-    this.direction = 1; // multiplier, can be 1 or -1
-    this.speed = 1;  // number of pixels in the x direction to move each frame
+    this.leftmost = null;   // leftmost invader that is not killed
+    this.rightmost = null;  // rightmost invader that is not killed
+    this.direction = 1;     // multiplier, can be 1 or -1
+    this.speed = 1;         // number of pixels in the x direction to move each frame
+    this.savedRightX = 0;    // when switching directions from the left to right, wait until rightmost x changes.
+    this.goRightTriggered = false;   // set true when leftmost inv hits left edge, direction won't change until rightmost x has changed.
+    this.border = 15;       // switch directions when we get this close to an edge
 
     this.init = function() {
         let shipsTotalWidth = this.numShips * app.maxShipWidth;
@@ -31,21 +34,26 @@ function Squadron(img1,img2,y,count) {
 
     this.show = function() {
         this.setDeltas();  // sets this.direction to 1 or -1 as needed
-        this.chgImage += 1;
-
         for (var i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
         }
     }
 
     this.setDeltas = function() {
+        if (this.goRightTriggered && this.rightmost.x != this.savedRightX) {
+            this.direction = 1;
+            this.goRightTriggered = false;
+            this.savedRightX = 0;
+            return;
+        }
         if (this.direction > 0) {
             if (this.rightmost.x + this.speed + app.maxShipWidth + 15 > width) {
                 this.direction = -1;
             }
         } else {
             if (this.leftmost.x - this.speed - 15 < 0) {
-                this.direction = 1;
+                this.goRightTriggered = true;
+                this.savedRightX = this.rightmost.x; // we'll be waiting for this to change
             }
         }
     }
