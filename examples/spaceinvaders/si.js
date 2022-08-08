@@ -18,7 +18,7 @@ function draw() {
     background(0);
     app.ship.go();  // move before show
     app.ship.show();
-    app.invaders.setSpeed(10);
+    app.invaders.setSpeed(5);
     app.invaders.show();
 }
 

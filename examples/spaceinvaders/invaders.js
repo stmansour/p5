@@ -22,7 +22,7 @@ function Invaders() {
 
     this.init = function() {
         let y = 100;
-        let y1 = 50;
+        let y1 = 40;
         this.squadbuilder(app.b1,app.b2,y+4*y1);
         this.squadbuilder(app.b1,app.b2,y+3*y1);
         this.squadbuilder(app.a1,app.a2,y+2*y1);

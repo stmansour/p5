@@ -33,13 +33,13 @@ function Squadron(img1,img2,y,count) {
     }
 
     this.show = function() {
-        this.setDeltas();  // sets this.direction to 1 or -1 as needed
+        this.setDirection();  // sets this.direction to 1 or -1 as needed
         for (var i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
         }
     }
 
-    this.setDeltas = function() {
+    this.setDirection = function() {
         if (this.goRightTriggered && this.rightmost.x != this.savedRightX) {
             this.direction = 1;
             this.goRightTriggered = false;
