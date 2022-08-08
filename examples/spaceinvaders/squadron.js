@@ -1,11 +1,9 @@
-function Squadron(img1,img2,y) {
+function Squadron(img1,img2,y,count) {
     this.img1 = img1;
     this.img2 = img2;
     this.baseY = y;
     this.ships = [];
-    this.numShips = 9;
-    this.chgImageCount = 8; // change images every this many frames
-    this.chgImage = 0;      // switch every chgImageCount frames
+    this.numShips = count;  // number of ships in this squadron
     this.leftmost = null;
     this.rightmost = null;
     this.direction = 1; // multiplier, can be 1 or -1
@@ -33,18 +31,10 @@ function Squadron(img1,img2,y) {
 
     this.show = function() {
         this.setDeltas();  // sets this.direction to 1 or -1 as needed
-        let dx = this.direction * this.speed;
         this.chgImage += 1;
 
         for (var i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
-            this.ships[i].relativeMove(dx,0);
-            if (this.chgImage >= this.chgImageCount) {
-                this.ships[i].armsUp = !this.ships[i].armsUp;
-            }
-        }
-        if (this.chgImage >= this.chgImageCount) {
-            this.chgImage = 0;
         }
     }
 

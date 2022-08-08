@@ -14,7 +14,7 @@ function Ship() {
         app.cannon.loadPixels()
         this.width = app.cannon.width;
         this.height = app.cannon.height;
-        this.y = height - this.height;
+        this.y = height - this.height - 100;
         this.x = (width - this.width)/2;
     }
 

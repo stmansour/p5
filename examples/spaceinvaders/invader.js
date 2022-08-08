@@ -4,6 +4,7 @@ function Invader(x,y,img1,img2) {
     this.img1 = img1;
     this.img2 = img2;
     this.armsUp = false;    // start by drawing arms down
+    this.killed = false;    // this invader has not yet been killed
 
     this.relativeMove = function (dx,dy) {
         this.x += dx;
@@ -11,6 +12,9 @@ function Invader(x,y,img1,img2) {
     }
 
     this.show = function() {
+        if (this.killed) {
+            return;
+        }
         if (this.armsUp) {
             image(this.img2, this.x, this.y);
         } else {

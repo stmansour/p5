@@ -4,7 +4,7 @@ function preload() {
 
 function setup() {
     scale(0.5);
-    var canvas = createCanvas(1200, 800);
+    var canvas = createCanvas(800, 800);
     canvas.parent("theCanvas");
     loadAllPixels();
     setMaxShipWidth();
@@ -18,7 +18,7 @@ function draw() {
     background(0);
     app.ship.go();  // move before show
     app.ship.show();
-    app.invaders.setSpeed(1);
+    app.invaders.setSpeed(3);
     app.invaders.show();
 }
 
