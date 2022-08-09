@@ -11,7 +11,7 @@ let app = {
     stable: 0,
 };
 function setup() {
-    var canvas = createCanvas(1000,650);
+    var canvas = createCanvas(700,500);
     canvas.parent('lifeCanvas');
     initLife();
 }
