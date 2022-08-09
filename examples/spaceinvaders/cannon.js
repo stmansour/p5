@@ -14,7 +14,7 @@ function LaserCannon() {
         app.cannon.loadPixels()
         this.width = app.cannon.width;
         this.height = app.cannon.height;
-        this.y = height - this.height - 75;
+        this.y = height - this.height - 60;
         this.x = (width - this.width)/2;
     }
 
