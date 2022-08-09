@@ -12,6 +12,7 @@ app = {
     border: 30,
     score: 0,
     lives: 3,
+    gameOver: false,
 };
 
 function loadImages() {
@@ -67,4 +68,10 @@ function drawScreen() {
         image(app.cannon,x,y);
         x += app.cannon.width + 5;
     }
+}
+
+function showGameOver() {
+    textSize(24);
+    fill(255,80,80);
+    text("GAME OVER", width/2,200);
 }

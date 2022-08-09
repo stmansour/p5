@@ -4,7 +4,7 @@ function preload() {
 
 function setup() {
     scale(0.5);
-    var canvas = createCanvas(700, 600);
+    var canvas = createCanvas(700, 500);
     canvas.parent("theCanvas");
     loadAllPixels();
     setMaxShipWidth();
@@ -17,9 +17,18 @@ function setup() {
 
 function draw() {
     drawScreen();
-    app.laserCannon.go();  // move before show
+    if (!app.gameOver) {
+        app.laserCannon.go();  // move before show
+    }
     app.laserCannon.show();
     app.invaders.show();
+
+    //-------------------------------------------------------------------
+    // handle collisions / game over
+    //-------------------------------------------------------------------
+    if (app.gameOver) {
+        showGameOver();
+    }
 }
 
 function keyPressed() {
