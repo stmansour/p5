@@ -9,6 +9,7 @@ app = {
     c2: null,   // invader a image arms up
     cannon: null,  // the laser cannon
     maxShipWidth: 0,
+    border: 30,
     score: 0,
     lives: 3,
 };
@@ -39,5 +40,31 @@ function setMaxShipWidth() {
     }
     if (app.c1.width > app.maxShipWidth) {
         app.maxShipWidth = app.c1.width
+    }
+}
+
+function drawScreen() {
+    background(0);
+
+    //------------------------------
+    //  bottom status area...
+    //------------------------------
+    stroke(97, 201, 59);
+    strokeWeight(2);
+    let y = height - app.cannon.height - 20;
+    line(0,y,width,y);
+
+    //-----------------------------------------
+    // lives & remaining laser cannons...
+    //-----------------------------------------
+    y = height - 5;
+    textSize(24);
+    fill(97,201,59);
+    text(''+app.lives, 20, y);
+    let x = 50;
+    y = height - app.cannon.height - 5;
+    for (let i = 0; i < app.lives-1; i++) {
+        image(app.cannon,x,y);
+        x += app.cannon.width + 5;
     }
 }

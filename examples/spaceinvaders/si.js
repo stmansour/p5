@@ -4,41 +4,47 @@ function preload() {
 
 function setup() {
     scale(0.5);
-    var canvas = createCanvas(700, 800);
+    var canvas = createCanvas(700, 600);
     canvas.parent("theCanvas");
     loadAllPixels();
     setMaxShipWidth();
     app.invaders = new Invaders();
     app.invaders.init();
-    app.ship = new Ship();
-    app.ship.init();
+    app.invaders.speed = 5; // each horizontal move is this many pixels
+    app.laserCannon = new LaserCannon();
+    app.laserCannon.init();
 }
 
 function draw() {
-    background(0);
-    app.ship.go();  // move before show
-    app.ship.show();
-    app.invaders.setSpeed(5);
+    drawScreen();
+    app.laserCannon.go();  // move before show
+    app.laserCannon.show();
     app.invaders.show();
 }
 
 function keyPressed() {
     switch( keyCode) {
         case RIGHT_ARROW:
-            app.ship.goRight(true);
+            app.laserCannon.goRight(true);
             break;
         case LEFT_ARROW:
-            app.ship.goLeft(true);
+            app.laserCannon.goLeft(true);
             break;
     }
 }
 function keyReleased() {
     switch( keyCode) {
         case RIGHT_ARROW:
-            app.ship.goRight(false);
+            app.laserCannon.goRight(false);
             break;
         case LEFT_ARROW:
-            app.ship.goLeft(false);
+            app.laserCannon.goLeft(false);
+            break;
+        case 32: /* SPACE */
+            console.log("*** FIRE! ***");
+            break;
+        default:
+            console.log('keyCode = ' + keyCode);
             break;
     }
 }

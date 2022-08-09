@@ -1,77 +1,95 @@
 function Invaders() {
-    this.wing = [];     // in the airforce, a "wing" is a group of squadrons
-    this.speed = 0;     // number of pixels to move left or right. Increases as number of players decreases
-    this.idx = 0;       // index of the invader to move next
+    this.squadrons = []; // in the airforce, a "squadrons" is a group of squadrons
     this.shipsPerSquadron = 11; // the number of ships for each squadron
-    this.totalShips = 0;
-    this.shipMovesPerFrame = 1;
-    this.shipsRemaining
+    this.speed = 1; // number of pixels to move left or right.
+    this.sqIdx = 0; // index squadron being shown
+    this.invIdx = 0; // index of invader within the squadron being shown
+    this.dy = 20; // how much we move down each drop
+    this.moveVertical = false; // set to true at the edges when we need to lower the squadrons and change direction
 
-    this.squadbuilder = function(i1,i2,y) {
-        let squadron = new Squadron(i1,i2,y, this.shipsPerSquadron);
+    this.squadbuilder = function(i1, i2, y) {
+        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron);
         squadron.init();
-        this.wing.push(squadron);
-    }
-
-    this.setSpeed = function(x) {
-        for (var i = 0; i < this.wing.length; i++) {
-            this.wing[i].speed = x;
-        }
-        this.speed = x;
-    }
+        this.squadrons.push(squadron);
+    };
 
     this.init = function() {
         let y = 100;
         let y1 = 40;
-        this.squadbuilder(app.b1,app.b2,y+4*y1);
-        this.squadbuilder(app.b1,app.b2,y+3*y1);
-        this.squadbuilder(app.a1,app.a2,y+2*y1);
-        this.squadbuilder(app.a1,app.a2,y+y1);
-        this.squadbuilder(app.c1,app.c2,y);
-        this.totalShips = this.shipsPerSquadron * this.wing.length;
-        this.shipsRemaining = this.totalShips;
-    }
-    this.bumpIdx = function(){
-        this.idx += 1;
-        if (this.idx >= this.totalShips) {
-            this.idx = 0;
+        this.squadbuilder(app.b1, app.b2, y + 4 * y1);
+        this.squadbuilder(app.b1, app.b2, y + 3 * y1);
+        this.squadbuilder(app.a1, app.a2, y + 2 * y1);
+        this.squadbuilder(app.a1, app.a2, y + y1);
+        this.squadbuilder(app.c1, app.c2, y);
+    };
+
+    this.nextInvader = function() {
+        this.invIdx += 1;
+        if (this.invIdx >= this.shipsPerSquadron) {
+            this.invIdx = 0
+            this.sqIdx += 1;
+            if (this.sqIdx >= this.squadrons.length) {
+                this.sqIdx = 0;
+            }
         }
-    }
+    };
 
     this.show = function() {
         //---------------------------------------------------------------------
-        // to simulate the movement in the original game, we move one invader
-        // at a time, then wait a certain number of frames before we move the
-        // next one. This will speed things up over time too.
-        // Plus, we'll start by doing this movement once every framemod frames
+        // to simulate the movement in the original game:
+        //      * move one squadron at a time, and one invader at a time
+        //        within the squadron
+        //      * after moving all invaders have squadrons adjust their guidance
+        //      * check to see if a drop is needed, and if so do the drop
+        //      * repeat
         //---------------------------------------------------------------------
-        let idx = 0;    // search to find the invader we want to move (this.idx)
-        let found = 0;  // we'll stop once we've moved shipMovesPerFrame
-        for (var i = 0; i < this.wing.length && found < this.shipMovesPerFrame; i++) {
-            let squadron = this.wing[i];
-            for (var j = 0; j < squadron.ships.length && found < this.shipMovesPerFrame; j++) {
-                let ship = squadron.ships[j]
-                if (ship.killed) {
-                    this.bumpIdx();  // we skip killed ships
+        let invaderMoved = false;
+        let passComplete = false; // will be true if nextInvader points back to the first squadron, first invader
+        do {
+            let squadron = this.squadrons[this.sqIdx]
+            let ship = squadron.ships[this.invIdx];
+            if (!ship.killed) {
+                if (this.moveVertical) {
+                    ship.relativeMove(0, this.dy);
+                } else {
+                    ship.relativeMove(squadron.direction * this.speed, 0);
                 }
-                if (idx == this.idx) {
-                    // this is the guy we want to move
-                    let dx = squadron.direction * squadron.speed;
-                    ship.armsUp = !ship.armsUp; // we switch images when we move
-                    ship.relativeMove(dx,0);
-                    found += 1;
-                    this.bumpIdx();  // we skip killed ships
-                 }
-                idx += 1; // keep looking
+                invaderMoved = true;
+            }
+            this.nextInvader();
+            passComplete = (this.sqIdx == 0 && this.invIdx == 0);
+        } while (!invaderMoved && !passComplete);
+
+        if (invaderMoved) {
+            for (var i = 0; i < this.squadrons.length; i++) {
+                let squadron = this.squadrons[i];
+                squadron.show();
+            }
+
+            //-------------------------------------------------------------------
+            // Check special conditions
+            //-------------------------------------------------------------------
+            if (passComplete) {
+                for (let i = 0; i < this.squadrons.length; i++) {
+                    this.squadrons[i].adjustGuidance();
+                }
+
+                if (this.moveVertical) {
+                    this.moveVertical = false;
+                    for (var i = 0; i < this.squadrons.length; i++) {
+                        this.squadrons[i].direction = -this.squadrons[i].direction;
+                        this.squadrons[i].directionChangeNeeded = false;
+                    }
+                } else {
+                    for (let i = this.squadrons.length - 1; i >= 0; i--) {
+                        if (this.squadrons[i].destroyed) {
+                            continue;
+                        }
+                        this.moveVertical = this.squadrons[i].directionChangeNeeded;
+                        break; // no need to look further
+                    }
+                }
             }
         }
-
-        //---------------------------------------------------------------
-        // OK, all ships are in the correct position, render them...
-        //---------------------------------------------------------------
-        for (var i = 0; i < this.wing.length; i++) {
-            let squadron = this.wing[i];
-            squadron.show();
-        }
-    }
+    };
 }

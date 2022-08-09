@@ -1,4 +1,4 @@
-function Ship() {
+function LaserCannon() {
     this.width = 0;
     this.height = 0;
     this.width2 = 0;    // half width
@@ -14,7 +14,7 @@ function Ship() {
         app.cannon.loadPixels()
         this.width = app.cannon.width;
         this.height = app.cannon.height;
-        this.y = height - this.height - 100;
+        this.y = height - this.height - 75;
         this.x = (width - this.width)/2;
     }
 

@@ -9,7 +9,8 @@ function Invader(x,y,img1,img2) {
     this.relativeMove = function (dx,dy) {
         this.x += dx;
         this.y += dy;
-    }
+        this.armsUp = !this.armsUp;  // switch images when we move
+    };
 
     this.show = function() {
         if (this.killed) {
@@ -20,5 +21,5 @@ function Invader(x,y,img1,img2) {
         } else {
             image(this.img1, this.x, this.y);
         }
-    }
+    };
 }
