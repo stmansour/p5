@@ -9,6 +9,7 @@ function newGame() {
     app.invaders.speed = 5; // each horizontal move is this many pixels
     app.laserCannon = new LaserCannon();
     app.laserCannon.init();
+    app.shots = new Shots();
 }
 
 function setup() {
@@ -18,15 +19,16 @@ function setup() {
     loadAllPixels();
     setMaxShipWidth();
     textFont(app.font);
-    app.mode = 0;   // being very explicit
+    app.mode = 0; // being very explicit
 }
 
 function draw() {
     drawScreen();
 
     if (app.mode > 0) {
-        app.laserCannon.go();  // move before show
+        app.laserCannon.go(); // move before show
         app.laserCannon.show();
+        app.shots.show();
         app.invaders.show();
     } else {
         showSelectPlayers();
@@ -39,25 +41,27 @@ function draw() {
 }
 
 function keyPressed() {
-    switch( keyCode) {
+    switch (keyCode) {
         case RIGHT_ARROW:
             app.laserCannon.goRight(true);
             break;
         case LEFT_ARROW:
             app.laserCannon.goLeft(true);
             break;
+        case 32:
+            /* SPACE */
+            app.shots.fire();
+            break;
     }
 }
+
 function keyReleased() {
-    switch( keyCode) {
+    switch (keyCode) {
         case RIGHT_ARROW:
             app.laserCannon.goRight(false);
             break;
         case LEFT_ARROW:
             app.laserCannon.goLeft(false);
-            break;
-        case 32: /* SPACE */
-            console.log("*** FIRE! ***");
             break;
         default:
             console.log('keyCode = ' + keyCode);

@@ -1,15 +1,17 @@
 app = {
-    ship: null,
-    invaders: null,
     a1: null,   // invader a image arms down
     a2: null,   // invader a image arms up
     b1: null,   // invader a image arms down
     b2: null,   // invader a image arms up
     c1: null,   // invader a image arms down
     c2: null,   // invader a image arms up
-    cannon: null,  // the laser cannon
+    cannon: null,  // the laser cannon image
+    invaders: null,
+    laserCannon: null,
+    shots: null,
     maxShipWidth: 0,
     border: 30,
+    topBar: 50, // y limit of top area for messages/scores, etc.
     gameOver: false,
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
@@ -108,7 +110,7 @@ function score1() {
     fill(255);
     text(name, 145,25);
     s = zeroFillNumber(score,4);
-    text(s, 145,50);
+    text(s, 145,app.topBar);
 }
 
 function score2() {
@@ -127,7 +129,7 @@ function score2() {
     fill(255);
     text(name, width - textWidth(name) - 145,25);
     s = zeroFillNumber(score,4);
-    text(s, width - textWidth(s) - 145,50);
+    text(s, width - textWidth(s) - 145,app.topBar);
 }
 
 function hiScore() {
@@ -137,7 +139,7 @@ function hiScore() {
     fill(255);
     text(s, (width - textWidth(s))/2,25);
     s = zeroFillNumber(app.hiScore,4);
-    text(s, (width - textWidth(s))/2,50);
+    text(s, (width - textWidth(s))/2,app.topBar);
 }
 
 function lives() {
@@ -146,7 +148,7 @@ function lives() {
     fill(97,201,59);
 
     if (app.mode == 0) {
-        let s = "INSERT COIN TO PLAY";
+        let s = "CREDITS 00";
         text(s, (width - textWidth(s))/2,height - 15);
         return;
     }

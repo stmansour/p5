@@ -1,9 +1,6 @@
 function LaserCannon() {
     this.width = 0;
     this.height = 0;
-    this.width2 = 0;    // half width
-    // this.gunwidth = 4;
-    // this.gunheight = 10;
     this.x = 0;
     this.y = 0;
     this.movingLeft = false;
@@ -19,7 +16,7 @@ function LaserCannon() {
     }
 
     this.show = function() {
-        image(app.cannon, this.x - this.width2, this.y);
+        image(app.cannon, this.x - this.width/2, this.y);
     }
 
     this.go = function() {
