@@ -11,7 +11,7 @@ function Shot(x,y) {
     }
 
     this.move = function() {
-        this.y -= 1;
+        this.y -= 4;
         this.expired = this.y <= app.topBar;
     }
 }
