@@ -1,13 +1,9 @@
 function preload() {
     loadImages();
+    app.font = loadFont('assets/PixelSplitter-Bold.ttf');
 }
 
-function setup() {
-    scale(0.5);
-    var canvas = createCanvas(700, 500);
-    canvas.parent("theCanvas");
-    loadAllPixels();
-    setMaxShipWidth();
+function newGame() {
     app.invaders = new Invaders();
     app.invaders.init();
     app.invaders.speed = 5; // each horizontal move is this many pixels
@@ -15,19 +11,30 @@ function setup() {
     app.laserCannon.init();
 }
 
+function setup() {
+    scale(0.5);
+    var canvas = createCanvas(640, 480);
+    canvas.parent("theCanvas");
+    loadAllPixels();
+    setMaxShipWidth();
+    textFont(app.font);
+    app.mode = 0;   // being very explicit
+}
+
 function draw() {
     drawScreen();
-    if (!app.gameOver) {
-        app.laserCannon.go();  // move before show
-    }
-    app.laserCannon.show();
-    app.invaders.show();
 
-    //-------------------------------------------------------------------
-    // handle collisions / game over
-    //-------------------------------------------------------------------
+    if (app.mode > 0) {
+        app.laserCannon.go();  // move before show
+        app.laserCannon.show();
+        app.invaders.show();
+    } else {
+        showSelectPlayers();
+    }
+
     if (app.gameOver) {
         showGameOver();
+        app.mode = 0;
     }
 }
 

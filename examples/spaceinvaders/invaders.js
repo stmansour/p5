@@ -2,13 +2,13 @@
 /* esversion: 6 */
 
 function Invaders() {
-    this.squadrons = []; // in the airforce, a "squadrons" is a group of squadrons
+    this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
     this.shipsPerSquadron = 11; // the number of ships for each squadrons
-    this.speed = 1; // number of pixels to move left or right.
-    this.sqIdx = 0; // index squadrons being shown
-    this.invIdx = 0; // index of invader within the squadrons being shown
-    this.dy = 20; // how much we move down each drop
-    this.moveVertical = false; // set to true at the edges when we need to lower the squadrons and change direction
+    this.speed = 1;             // number of pixels to move left or right.
+    this.sqIdx = 0;             // index squadrons being shown
+    this.invIdx = 0;            // index of invader within the squadrons being shown
+    this.dy = 20;               // how much we move down each drop
+    this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
 
     this.squadbuilder = function(i1, i2, y) {
         let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron);
@@ -17,7 +17,7 @@ function Invaders() {
     };
 
     this.init = function() {
-        let y = 200;
+        let y = 100;
         let y1 = 40;
         this.squadbuilder(app.b1, app.b2, y + 4 * y1);
         this.squadbuilder(app.b1, app.b2, y + 3 * y1);
@@ -109,15 +109,20 @@ function Invaders() {
         //-----------------------------------------------
         // did any invader hit the laserCannon?
         //-----------------------------------------------
-        for (var i = 0; i < this.squadrons.length; i++) {
-            if (this.squadrons[i].destroyed) {
+        let x1 = app.laserCannon.x;
+        let x2 = app.laserCannon.x + app.cannon.width;
+        let y1 = app.laserCannon.y;
+        let y2 = app.laserCannon.y + app.cannon.height;
+        for (let i = 0; i < this.squadrons.length && !app.gameOver; i++) {
+            let squadron = this.squadrons[i];
+            if (squadron.destroyed) {
                 continue;
             }
-            let ship = this.squadrons[i].leftmost;
-            if (ship.y + ship.img1.height >= app.laserCannon.y &&
-                ship.x <= app.laserCannon.x &&
-                this.squadrons[i].rightmost.x + this.squadrons[i].rightmost.img1.width >= app.laserCannon.x) {
-                app.gameOver = true;
+            for (var j = 0; j < squadron.ships.length && !app.gameOver; j++) {
+                ship = squadron.ships[j];
+                let xcheck = ship.x + ship.img1.width >= x1 && ship.x < x2;
+                let ycheck = ship.y + ship.img1.height > y1;
+                app.gameOver = xcheck && ycheck;
             }
         }
     };

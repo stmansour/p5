@@ -10,9 +10,13 @@ app = {
     cannon: null,  // the laser cannon
     maxShipWidth: 0,
     border: 30,
-    score: 0,
-    lives: 3,
     gameOver: false,
+    players: [],        // array of player objects.
+    currentPlayer: 0,   // during play, this can be 0 or 1
+    hiScore: 0,
+    cSize:  18,  // size of large characters
+    font: null,
+    mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players
 };
 
 function loadImages() {
@@ -46,32 +50,122 @@ function setMaxShipWidth() {
 
 function drawScreen() {
     background(0);
+    scores();
+    bottomLine();
+    lives();
+}
 
-    //------------------------------
-    //  bottom status area...
-    //------------------------------
-    stroke(97, 201, 59);
-    strokeWeight(2);
-    let y = height - app.cannon.height - 20;
-    line(0,y,width,y);
+function onePlayer() {
+    app.mode = 1;
+    app.players = [];
+    let p = new Player(1);
+    p.newGame();
+    app.players.push(p);
+    newGame();
+}
 
-    //-----------------------------------------
-    // lives & remaining laser cannons...
-    //-----------------------------------------
-    y = height - 5;
-    textSize(24);
+function twoPlayers() {
+    app.mode = 2;
+    app.players = [];
+    app.players.push(new Player(1));  // give him 1 credit
+    app.players.push(new Player(1));
+    newGame();
+}
+
+function showSelectPlayers() {
+    noStroke();
+    let s = "SELECT 1 OR 2 PLAYERS";
+    textSize(app.cSize);
+    fill(255,80,80);
+    text(s, (width - textWidth(s))/2,100);
+}
+
+function showGameOver() {
+    noStroke();
+    let s = "GAME OVER";
+    textSize(app.cSize);
+    fill(255,80,80);
+    text(s, (width - textWidth(s))/2,150);
+}
+
+function scores() {
+    score1();
+    score2();
+    hiScore();
+}
+
+function score1() {
+    let player = null;
+    let name = "SCORE<1>";
+    let score = 0;
+    if (app.mode != 0) {
+        player = app.players[0];
+        name = "SCORE"+player.name;
+        score = player.score;
+    }
+    noStroke();
+    textSize(app.cSize);
+    fill(255);
+    text(name, 145,25);
+    s = zeroFillNumber(score,4);
+    text(s, 145,50);
+}
+
+function score2() {
+    if (app.mode == 1) {
+        return;
+    }
+    let name = "SCORE<2>";
+    let score = 0;
+    if (app.mode == 2) {
+        let player = app.players[1];
+        name = "SCORE"+player.name;
+        score = player.score;
+    }
+    noStroke();
+    textSize(app.cSize);
+    fill(255);
+    text(name, width - textWidth(name) - 145,25);
+    s = zeroFillNumber(score,4);
+    text(s, width - textWidth(s) - 145,50);
+}
+
+function hiScore() {
+    var s = "HI-SCORE"
+    noStroke();
+    textSize(app.cSize);
+    fill(255);
+    text(s, (width - textWidth(s))/2,25);
+    s = zeroFillNumber(app.hiScore,4);
+    text(s, (width - textWidth(s))/2,50);
+}
+
+function lives() {
+    noStroke();
+    textSize(app.cSize);
     fill(97,201,59);
-    text(''+app.lives, 20, y);
+
+    if (app.mode == 0) {
+        let s = "INSERT COIN TO PLAY";
+        text(s, (width - textWidth(s))/2,height - 15);
+        return;
+    }
+
+    let player = app.players[app.currentPlayer];
+    let y = height - 5;
+    let livesRemaining = '' + player.lives;
+    text('' + livesRemaining, 20, y);
     let x = 50;
     y = height - app.cannon.height - 5;
-    for (let i = 0; i < app.lives-1; i++) {
+    for (let i = 0; i < livesRemaining-1; i++) {
         image(app.cannon,x,y);
         x += app.cannon.width + 5;
     }
 }
 
-function showGameOver() {
-    textSize(24);
-    fill(255,80,80);
-    text("GAME OVER", width/2,200);
+function bottomLine() {
+    stroke(97, 201, 59);
+    strokeWeight(2);
+    let y = height - app.cannon.height - 20;
+    line(0,y,width,y);
 }
