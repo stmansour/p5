@@ -13,12 +13,13 @@ app = {
     border: 30,
     topBar: 50, // y limit of top area for messages/scores, etc.
     gameOver: false,
+    gameOverTimer: null,
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
     hiScore: 0,
     cSize:  18,  // size of large characters
     font: null,
-    mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen
+    mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
 };
 
 function loadImages() {
@@ -58,6 +59,9 @@ function drawScreen() {
 }
 
 function onePlayer() {
+    if (app.gameOverTimer != null) {
+        return; // don't do anything to change the final screen until the timer completes
+    }
     app.mode = 1;
     app.players = [];
     let p = new Player(1);
@@ -68,6 +72,9 @@ function onePlayer() {
 }
 
 function twoPlayers() {
+    if (app.gameOverTimer != null) {
+        return; // don't do anything to change the final screen until the timer completes
+    }
     app.mode = 2;
     app.players = [];
     app.players.push(new Player(1));  // give him 1 credit

@@ -10,7 +10,6 @@ function newGame() {
     app.laserCannon = new LaserCannon();
     app.laserCannon.init();
     app.shots = new Shots();
-    app.gameOver = false;
 }
 
 function setup() {
@@ -41,7 +40,8 @@ function draw() {
             return
         }
         app.mode = 3;
-        // user should see the screen for 5 secs before we move on
+
+        // user should see the screen for 5 secs before we move on.
         app.gameOverTimer = setTimeout( () => {
             app.mode = 0;
             app.gameOverTimer = null;
