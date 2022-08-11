@@ -18,8 +18,8 @@ function Invaders() {
     };
 
     this.init = function() {
-        let y = 200;    // game over fast
-        // let y = 100;  // normal play
+        // let y = 200;    // game over fast
+        let y = 100;  // normal play
         let y1 = 40;
         this.squadbuilder(app.b1, app.b2, y + 4 * y1);
         this.squadbuilder(app.b1, app.b2, y + 3 * y1);
