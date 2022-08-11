@@ -18,7 +18,7 @@ app = {
     hiScore: 0,
     cSize:  18,  // size of large characters
     font: null,
-    mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players
+    mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen
 };
 
 function loadImages() {
@@ -64,6 +64,7 @@ function onePlayer() {
     p.newGame();
     app.players.push(p);
     newGame();
+    app.mode = 1;
 }
 
 function twoPlayers() {

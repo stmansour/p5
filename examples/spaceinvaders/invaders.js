@@ -9,6 +9,7 @@ function Invaders() {
     this.invIdx = 0;            // index of invader within the squadrons being shown
     this.dy = 20;               // how much we move down each drop
     this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
+    this.introduced = false;    // a OneShot... true after all ships have been shown once.
 
     this.squadbuilder = function(i1, i2, y) {
         let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron);
@@ -17,7 +18,8 @@ function Invaders() {
     };
 
     this.init = function() {
-        let y = 100;
+        let y = 200;    // game over fast
+        // let y = 100;  // normal play
         let y1 = 40;
         this.squadbuilder(app.b1, app.b2, y + 4 * y1);
         this.squadbuilder(app.b1, app.b2, y + 3 * y1);
@@ -42,39 +44,50 @@ function Invaders() {
             this.showInvaders();
             return;
         }
-        //---------------------------------------------------------------------
-        // to simulate the movement in the original game:
-        //      * move one squadrons at a time, and one invader at a time
-        //        within the squadrons
-        //      * after moving all invaders have squadrons adjust their guidance
-        //      * check to see if a drop is needed, and if so do the drop
-        //      * repeat
-        //---------------------------------------------------------------------
+
         let invaderMoved = false;
         let passComplete = false; // will be true if nextInvader points back to the first squadrons, first invader
-        do {
-            let squadrons = this.squadrons[this.sqIdx]
-            let ship = squadrons.ships[this.invIdx];
-            if (!ship.killed) {
-                if (this.moveVertical) {
-                    ship.relativeMove(0, this.dy);
-                } else {
-                    ship.relativeMove(squadrons.direction * this.speed, 0);
-                }
-                this.checkCollisions();
-                invaderMoved = true;
-            }
+
+        if (!this.introduced) {
+            // just turn them on one-by-one...
+            this.squadrons[this.sqIdx].ships[this.invIdx].introduced = true;
             this.nextInvader();
+            invaderMoved = true;
             passComplete = (this.sqIdx == 0 && this.invIdx == 0);
-        } while (!invaderMoved && !passComplete);
+        } else {
+            //---------------------------------------------------------------------
+            // to simulate the movement in the original game:
+            //      * move one squadrons at a time, and one invader at a time
+            //        within the squadrons
+            //      * after moving all invaders have squadrons adjust their guidance
+            //      * check to see if a drop is needed, and if so do the drop
+            //---------------------------------------------------------------------
+            do {
+                let squadrons = this.squadrons[this.sqIdx];
+                let ship = squadrons.ships[this.invIdx];
+                if (!ship.killed) {
+                    if (this.moveVertical) {
+                        ship.relativeMove(0, this.dy);
+                    } else {
+                        ship.relativeMove(squadrons.direction * this.speed, 0);
+                    }
+                    this.checkCollisions();
+                    invaderMoved = true;
+                }
+                this.nextInvader();
+                passComplete = (this.sqIdx == 0 && this.invIdx == 0);
+            } while (!invaderMoved && !passComplete);
+        }
 
         if (invaderMoved) {
             this.showInvaders();
-
             //-------------------------------------------------------------------
             // Check special conditions
             //-------------------------------------------------------------------
-            if (passComplete) {
+            if (passComplete && !this.introduced) {
+                this.introduced = true;
+            }
+            if (passComplete && this.introduced ) {
                 for (let i = 0; i < this.squadrons.length; i++) {
                     this.squadrons[i].adjustGuidance();
                 }

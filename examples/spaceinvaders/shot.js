@@ -4,7 +4,6 @@ function Shot(x,y) {
     this.expired = false;  // turns true when the shot gets to the top of the screen or when we hit something
 
     this.show = function() {
-        // this.move();
         fill(255);
         noStroke();
         rect(this.x,this.y,2,10);
