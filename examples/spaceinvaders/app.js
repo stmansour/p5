@@ -17,7 +17,7 @@ app = {
     gameStatus: 0,      // 0 = in progress, 1 = player won, 2 = player lost
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
-    hiScore: 0,
+    highScore: 0,
     cSize:  18,         // size of large characters
     font: null,
     mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
@@ -50,6 +50,15 @@ function setMaxShipWidth() {
     }
     if (app.c1.width > app.maxShipWidth) {
         app.maxShipWidth = app.c1.width
+    }
+}
+
+function setGameOver(status) {
+    app.gameOver = true;
+    app.gameStatus = status;
+    if (app.players[app.currentPlayer].score > app.highScore) {
+        app.highScore = app.players[app.currentPlayer].score;
+        hiScore();
     }
 }
 
@@ -98,6 +107,17 @@ function showGameOver() {
     textSize(app.cSize);
     fill(255,80,80);
     text(s, (width - textWidth(s))/2,150);
+
+    if (app.gameStatus == 1) {
+        s = "*** YOU WIN ***";
+        fill(80,255,80);
+        text(s, (width - textWidth(s))/2,180);
+    } else if (app.gameStatus == 2) {
+        s = "YOU LOSE";
+        fill(255,80,80);
+        text(s, (width - textWidth(s))/2,180);
+    }
+
 
     //--------------------------------------------------------------------------
     // we need to leave the screen as it is for a few seconds so the user can
@@ -164,7 +184,7 @@ function hiScore() {
     textSize(app.cSize);
     fill(255);
     text(s, (width - textWidth(s))/2,25);
-    s = zeroFillNumber(app.hiScore,4);
+    s = zeroFillNumber(app.highScore,4);
     text(s, (width - textWidth(s))/2,app.topBar);
 }
 

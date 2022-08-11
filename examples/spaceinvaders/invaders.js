@@ -139,9 +139,8 @@ function Invaders() {
                 ship = squadron.ships[j];
                 let xcheck = ship.x + ship.img1.width >= x1 && ship.x < x2;
                 let ycheck = ship.y + ship.img1.height > y1;
-                app.gameOver = xcheck && ycheck;
-                if (app.gameOver) {
-                    app.gameStatus = 2; // player lost
+                if ( xcheck && ycheck){
+                    setGameOver(2); // player lost
                 }
             }
         }
@@ -153,8 +152,7 @@ function Invaders() {
                 return false;
             }
         }
-        app.gameOver = true;
-        app.gameStatus = 1;     // player won!
+        setGameOver(1); // player wins!
         return true;
     };
 }
