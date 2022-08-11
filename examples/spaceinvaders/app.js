@@ -14,6 +14,7 @@ app = {
     topBar: 50,         // y limit of top area for messages/scores, etc.
     gameOver: false,
     gameOverTimer: null,
+    gameStatus: 0,      // 0 = in progress, 1 = player won, 2 = player lost
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
     hiScore: 0,

@@ -3,6 +3,7 @@ function Player(c) {
     this.score = 0;
     this.credits = c;
     this.lives = 0;
+    this.gamesWon = 0;
 
     this.newGame = function() {
         this.credits -= 1;

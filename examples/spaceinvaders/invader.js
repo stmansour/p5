@@ -1,8 +1,9 @@
-function Invader(x,y,img1,img2) {
+function Invader(x,y,img1,img2,pts) {
     this.x = x;
     this.y = y;
     this.img1 = img1;
     this.img2 = img2;
+    this.points = pts;      // how many points is this invader worth
     this.armsUp = false;    // start by drawing arms down
     this.killed = false;    // this invader has not yet been killed
     this.introduced = false;

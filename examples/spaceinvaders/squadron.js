@@ -13,11 +13,12 @@
 
 /* esversion: 6 */
 
-function Squadron(img1,img2,y,count) {
+function Squadron(img1,img2,y,count,pts) {
     this.img1 = img1;
     this.img2 = img2;
     this.baseY = y;
     this.ships = [];
+    this.points = pts;
     this.numShips = count;  // number of ships in this squadron
     this.leftmost = null;   // leftmost invader that is not killed
     this.rightmost = null;  // rightmost invader that is not killed
@@ -26,7 +27,7 @@ function Squadron(img1,img2,y,count) {
     this.destroyed = false; // true when all ships in the squadron have been killed
     this.directionChangeNeeded; // when one of the invaders is moved left of the left edge or right of the right edge
 
-    this.adjustGuidance = function() {
+    this.reassessStatus = function() {
         if (this.destroyed) {
             return;
         }
@@ -60,11 +61,11 @@ function Squadron(img1,img2,y,count) {
         let x = (width - (this.numShips * app.maxShipWidth + (this.numShips - 1)*this.dx))/2;
         let y = this.baseY;
         for (var i = 0; i < this.numShips; i++) {
-            var inv = new Invader(x,y,this.img1,this.img2);
+            var inv = new Invader(x,y,this.img1,this.img2,this.points);
             this.ships.push(inv);
             x += xSpacing;
         }
-        this.adjustGuidance();
+        this.reassessStatus();
     }
 
     this.show = function() {

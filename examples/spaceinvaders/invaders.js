@@ -11,8 +11,8 @@ function Invaders() {
     this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
     this.introduced = false;    // a OneShot... true after all ships have been shown once.
 
-    this.squadbuilder = function(i1, i2, y) {
-        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron);
+    this.squadbuilder = function(i1, i2, y,pts) {
+        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron,pts);
         squadron.init();
         this.squadrons.push(squadron);
     };
@@ -21,11 +21,11 @@ function Invaders() {
         // let y = 200;    // game over fast
         let y = 100;  // normal play
         let y1 = 40;
-        this.squadbuilder(app.b1, app.b2, y + 4 * y1);
-        this.squadbuilder(app.b1, app.b2, y + 3 * y1);
-        this.squadbuilder(app.a1, app.a2, y + 2 * y1);
-        this.squadbuilder(app.a1, app.a2, y + y1);
-        this.squadbuilder(app.c1, app.c2, y);
+        this.squadbuilder(app.b1, app.b2, y + 4 * y1,10);
+        this.squadbuilder(app.b1, app.b2, y + 3 * y1,10);
+        this.squadbuilder(app.a1, app.a2, y + 2 * y1,20);
+        this.squadbuilder(app.a1, app.a2, y + y1,20);
+        this.squadbuilder(app.c1, app.c2, y,30);
     };
 
     this.nextInvader = function() {
@@ -42,6 +42,10 @@ function Invaders() {
     this.show = function() {
         if (app.gameOver) {
             this.showInvaders();
+            return;
+        }
+
+        if (this.checkDestroyed()) {
             return;
         }
 
@@ -89,7 +93,7 @@ function Invaders() {
             }
             if (passComplete && this.introduced ) {
                 for (let i = 0; i < this.squadrons.length; i++) {
-                    this.squadrons[i].adjustGuidance();
+                    this.squadrons[i].reassessStatus();
                 }
 
                 if (this.moveVertical) {
@@ -136,7 +140,21 @@ function Invaders() {
                 let xcheck = ship.x + ship.img1.width >= x1 && ship.x < x2;
                 let ycheck = ship.y + ship.img1.height > y1;
                 app.gameOver = xcheck && ycheck;
+                if (app.gameOver) {
+                    app.gameStatus = 2; // player lost
+                }
             }
         }
+    };
+
+    this.checkDestroyed = function() {
+        for (let i = 0; i < this.squadrons.length; i++) {
+            if(!this.squadrons[i].destroyed) {
+                return false;
+            }
+        }
+        app.gameOver = true;
+        app.gameStatus = 1;     // player won!
+        return true;
     };
 }

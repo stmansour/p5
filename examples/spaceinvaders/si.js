@@ -9,6 +9,7 @@ function newGame() {
     app.laserCannon = new LaserCannon();
     app.laserCannon.init();
     app.shots = new Shots();
+    app.gameStatus = 0;
 }
 
 function setup() {
@@ -26,6 +27,7 @@ function draw() {
 
     if (app.mode > 0) {
         app.shots.show();
+        app.shots.scanForHits();
         app.invaders.show();
         if (app.invaders.introduced) {
             app.laserCannon.go(); // move before show
