@@ -1,6 +1,5 @@
 function preload() {
     loadImages();
-    app.font = loadFont('assets/PixelSplitter-Bold.ttf');
 }
 
 function newGame() {
@@ -26,27 +25,18 @@ function draw() {
     drawScreen();
 
     if (app.mode > 0) {
-        app.laserCannon.go(); // move before show
-        app.laserCannon.show();
         app.shots.show();
         app.invaders.show();
+        if (app.invaders.introduced) {
+            app.laserCannon.go(); // move before show
+            app.laserCannon.show();
+        }
     } else {
         showSelectPlayers();
     }
 
     if (app.gameOver) {
         showGameOver();
-        if (app.gameOverTimer != null) {
-            return
-        }
-        app.mode = 3;
-
-        // user should see the screen for 5 secs before we move on.
-        app.gameOverTimer = setTimeout( () => {
-            app.mode = 0;
-            app.gameOverTimer = null;
-            app.gameOver = false;
-        }, 5000);
     }
 }
 
@@ -74,7 +64,7 @@ function keyReleased() {
             app.laserCannon.goLeft(false);
             break;
         default:
-            console.log('keyCode = ' + keyCode);
+            // console.log('keyCode = ' + keyCode);
             break;
     }
 }

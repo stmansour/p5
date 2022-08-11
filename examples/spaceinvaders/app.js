@@ -11,13 +11,13 @@ app = {
     shots: null,
     maxShipWidth: 0,
     border: 30,
-    topBar: 50, // y limit of top area for messages/scores, etc.
+    topBar: 50,         // y limit of top area for messages/scores, etc.
     gameOver: false,
     gameOverTimer: null,
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
     hiScore: 0,
-    cSize:  18,  // size of large characters
+    cSize:  18,         // size of large characters
     font: null,
     mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
 };
@@ -30,6 +30,7 @@ function loadImages() {
     app.c1 = loadImage('assets/c1.png');
     app.c2 = loadImage('assets/c2.png');
     app.cannon = loadImage('assets/lasercannon.png');
+    app.font = loadFont('assets/PixelSplitter-Bold.ttf');
 }
 
 function loadAllPixels() {
@@ -96,6 +97,22 @@ function showGameOver() {
     textSize(app.cSize);
     fill(255,80,80);
     text(s, (width - textWidth(s))/2,150);
+
+    //--------------------------------------------------------------------------
+    // we need to leave the screen as it is for a few seconds so the user can
+    // see the results of this game...
+    //--------------------------------------------------------------------------
+    if (app.gameOverTimer != null) {
+        return // if we've already set the timeout, return now so we don't set it again
+    } else {
+        app.mode = 3;
+        // user should see the screen for 5 secs before we move on.
+        app.gameOverTimer = setTimeout( () => {
+            app.mode = 0;
+            app.gameOverTimer = null;
+            app.gameOver = false;
+        }, 5000);
+    }
 }
 
 function scores() {
