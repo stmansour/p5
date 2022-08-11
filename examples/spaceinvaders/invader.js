@@ -11,6 +11,12 @@ function Invader(x,y,img1,img2,pts) {
     this.relativeMove = function (dx,dy) {
         this.x += dx;
         this.y += dy;
+        if (this.x + this.img1.width > width - 5) {
+            this.x = width -5 - this.img1.width;
+        }
+        if (this.x < 5) {
+            this.x = 5;
+        }
         this.armsUp = !this.armsUp;  // switch images when we move
     };
 

@@ -18,6 +18,7 @@ app = {
     players: [],        // array of player objects.
     currentPlayer: 0,   // during play, this can be 0 or 1
     highScore: 0,
+    credits: 0,
     cSize:  18,         // size of large characters
     font: null,
     mode: 0,    // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
@@ -66,13 +67,28 @@ function drawScreen() {
     background(0);
     scores();
     bottomLine();
-    lives();
+    switch(app.mode){
+    case 0:
+        insertCoins();
+        break;
+    case 1:
+        lives();
+        break;
+    case 2:
+        lives();
+        break;
+    }
 }
 
 function onePlayer() {
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
     }
+    if (app.credits < 1) {
+        insertCoins();
+        return;
+    }
+    app.credits -= 1;
     app.mode = 1;
     app.players = [];
     let p = new Player(1);
@@ -86,6 +102,11 @@ function twoPlayers() {
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
     }
+    if (app.credits < 2) {
+        insertCoins();
+        return;
+    }
+    app.credits -= 2;
     app.mode = 2;
     app.players = [];
     app.players.push(new Player(1));  // give him 1 credit
@@ -140,6 +161,7 @@ function scores() {
     score1();
     score2();
     hiScore();
+    showCredits();
 }
 
 function score1() {
@@ -178,6 +200,11 @@ function score2() {
     text(s, width - textWidth(s) - 145,app.topBar);
 }
 
+function coinInserted() {
+    app.credits++;
+    showCredits();
+}
+
 function hiScore() {
     var s = "HI-SCORE"
     noStroke();
@@ -188,17 +215,19 @@ function hiScore() {
     text(s, (width - textWidth(s))/2,app.topBar);
 }
 
+function showCredits() {
+    let s = "CREDITS " + zeroFillNumber(app.credits,2);
+    text(s, (width - textWidth(s) - 25),height - 15);
+    return;
+}
+
 function lives() {
+    if (app.mode != 1 && app.mode !=2) {
+        return;
+    }
     noStroke();
     textSize(app.cSize);
     fill(97,201,59);
-
-    if (app.mode == 0) {
-        let s = "CREDITS 00";
-        text(s, (width - textWidth(s))/2,height - 15);
-        return;
-    }
-
     let player = app.players[app.currentPlayer];
     let y = height - 5;
     let livesRemaining = '' + player.lives;
@@ -209,6 +238,14 @@ function lives() {
         image(app.cannon,x,y);
         x += app.cannon.width + 5;
     }
+}
+
+function insertCoins() {
+    var s = "INSERT COINS TO GET CREDITS"
+    noStroke();
+    textSize(app.cSize);
+    fill(255);
+    text(s, 100,height - 15);
 }
 
 function bottomLine() {

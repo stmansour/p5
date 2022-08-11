@@ -10,6 +10,7 @@ function Invaders() {
     this.dy = 20;               // how much we move down each drop
     this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
     this.introduced = false;    // a OneShot... true after all ships have been shown once.
+    this.debugIterations = 0;
 
     this.squadbuilder = function(i1, i2, y,pts) {
         let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron,pts);
@@ -90,11 +91,13 @@ function Invaders() {
             //-------------------------------------------------------------------
             if (passComplete && !this.introduced) {
                 this.introduced = true;
+                this.debugIterations = 0;
             }
             if (passComplete && this.introduced ) {
                 for (let i = 0; i < this.squadrons.length; i++) {
                     this.squadrons[i].reassessStatus();
                 }
+                this.debugIterations = 0;
 
                 if (this.moveVertical) {
                     this.moveVertical = false;
@@ -111,6 +114,14 @@ function Invaders() {
                         break; // no need to look further
                     }
                 }
+            }
+            this.debugIterations++;
+            if (this.debugIterations > 55) {
+                // something went wrong
+                for (let i = 0; i < this.squadrons.length; i++) {
+                    this.squadrons[i].reassessStatus();
+                }
+                this.debugIterations = 0;
             }
         }
     };
