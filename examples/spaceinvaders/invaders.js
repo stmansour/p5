@@ -2,36 +2,36 @@
 /* esversion: 6 */
 
 function Invaders() {
-    this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
+    this.squadrons = []; // in the airforce, a "squadrons" is a group of squadrons
     this.shipsPerSquadron = 11; // the number of ships for each squadrons
-    this.speed = 1;             // number of pixels to move left or right.
-    this.sqIdx = 0;             // index squadrons being shown
-    this.invIdx = 0;            // index of invader within the squadrons being shown
-    this.dy = 20;               // how much we move down each drop
-    this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
-    this.introduced = false;    // a OneShot... true after all ships have been shown once.
-    this.debugIterations = 0;
+    this.speed = 1; // number of pixels to move left or right.
+    this.sqIdx = 0; // index squadrons being shown
+    this.invIdx = 0; // index of invader within the squadrons being shown
+    this.dy = 20; // how much we move down each drop
+    this.moveVertical = false; // set to true at the edges when we need to lower the squadrons and change direction
+    this.introduced = false; // a OneShot... true after all ships have been shown once.
+    // this.debugIterations = 0;
 
-    this.squadbuilder = function(i1, i2, y,pts) {
-        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron,pts);
+    this.squadbuilder = function(i1, i2, y, pts) {
+        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron, pts);
         squadron.init();
         this.squadrons.push(squadron);
     };
 
     this.init = function() {
         // let y = 200;    // game over fast
-        let y = 100;  // normal play
+        let y = 100; // normal play
         let y1 = 40;
-        this.squadbuilder(app.b1, app.b2, y + 4 * y1,10);
-        this.squadbuilder(app.b1, app.b2, y + 3 * y1,10);
-        this.squadbuilder(app.a1, app.a2, y + 2 * y1,20);
-        this.squadbuilder(app.a1, app.a2, y + y1,20);
-        this.squadbuilder(app.c1, app.c2, y,30);
+        this.squadbuilder(app.b1, app.b2, y + 4 * y1, 10);
+        this.squadbuilder(app.b1, app.b2, y + 3 * y1, 10);
+        this.squadbuilder(app.a1, app.a2, y + 2 * y1, 20);
+        this.squadbuilder(app.a1, app.a2, y + y1, 20);
+        this.squadbuilder(app.c1, app.c2, y, 30);
     };
 
     this.nextInvader = function() {
         this.invIdx += 1;
-        if (this.invIdx >= this.shipsPerSquadron) {
+        if (this.invIdx >= this.squadrons[this.sqIdx].ships.length) {
             this.invIdx = 0
             this.sqIdx += 1;
             if (this.sqIdx >= this.squadrons.length) {
@@ -39,6 +39,7 @@ function Invaders() {
             }
         }
     };
+
 
     this.show = function() {
         if (app.gameOver) {
@@ -84,46 +85,55 @@ function Invaders() {
             } while (!invaderMoved && !passComplete);
         }
 
-        if (invaderMoved) {
-            this.showInvaders();
-            //-------------------------------------------------------------------
-            // Check special conditions
-            //-------------------------------------------------------------------
-            if (passComplete && !this.introduced) {
-                this.introduced = true;
-                this.debugIterations = 0;
-            }
-            if (passComplete && this.introduced ) {
-                for (let i = 0; i < this.squadrons.length; i++) {
-                    this.squadrons[i].reassessStatus();
-                }
-                this.debugIterations = 0;
+        this.showInvaders();
 
-                if (this.moveVertical) {
-                    this.moveVertical = false;
-                    for (var i = 0; i < this.squadrons.length; i++) {
-                        this.squadrons[i].direction = -this.squadrons[i].direction;
-                        this.squadrons[i].directionChangeNeeded = false;
-                    }
-                } else {
-                    for (let i = this.squadrons.length - 1; i >= 0; i--) {
-                        if (this.squadrons[i].destroyed) {
-                            continue;
-                        }
-                        this.moveVertical = this.squadrons[i].directionChangeNeeded;
-                        break; // no need to look further
-                    }
-                }
+        //-------------------------------------------------------------------
+        // If the invaders just completed introducing themselves onto the
+        // screen then mark that the introduction is complete
+        //-------------------------------------------------------------------
+        if (passComplete && !this.introduced) {
+            this.introduced = true;
+            // this.debugIterations = 0;
+        }
+
+        if (passComplete && this.introduced) {
+            for (let i = 0; i < this.squadrons.length; i++) {
+                this.squadrons[i].reassessStatus();
             }
-            this.debugIterations++;
-            if (this.debugIterations > 55) {
-                // something went wrong
+            // this.debugIterations = 0; // // DEBUG:
+
+            if (this.moveVertical) {
+                this.moveVertical = false;
                 for (let i = 0; i < this.squadrons.length; i++) {
-                    this.squadrons[i].reassessStatus();
+                    this.squadrons[i].direction = -this.squadrons[i].direction;
+                    this.squadrons[i].directionChangeNeeded = false;
                 }
-                this.debugIterations = 0;
+            } else {
+                for (let i = this.squadrons.length - 1; i >= 0; i--) {
+                    if (this.squadrons[i].destroyed) {
+                        continue;
+                    }
+                    this.moveVertical = this.squadrons[i].directionChangeNeeded;
+                    break; // no need to look further
+                }
             }
         }
+        //
+        // // DEBUG:
+        // this.debugIterations++;
+        // if (this.debugIterations > 55) {
+        //     // something went wrong
+        //     // try to patch things up...
+        //
+        //     for (let i = 0; i < this.squadrons.length; i++) {
+        //         let squad = this.squadrons[i];
+        //         // squad.reassessStatus();
+        //         // for (var i = 0; i < squad.ships.length; i++) {
+        //         //     if( squad.ships[i].tooFarLeft() ||
+        //         // }
+        //     }
+        //     this.debugIterations = 0;
+        // }
     };
 
     this.showInvaders = function() {
@@ -150,8 +160,8 @@ function Invaders() {
                 ship = squadron.ships[j];
                 let xcheck = ship.x + ship.img1.width >= x1 && ship.x < x2;
                 let ycheck = ship.y + ship.img1.height > y1;
-                if ( xcheck && ycheck){
-                    setGameOver(2); // player lost
+                if (xcheck && ycheck) {
+                    app.setGameOver(2); // player lost
                 }
             }
         }
@@ -159,11 +169,11 @@ function Invaders() {
 
     this.checkDestroyed = function() {
         for (let i = 0; i < this.squadrons.length; i++) {
-            if(!this.squadrons[i].destroyed) {
+            if (!this.squadrons[i].destroyed) {
                 return false;
             }
         }
-        setGameOver(1); // player wins!
+        app.setGameOver(1); // player wins!
         return true;
     };
 }

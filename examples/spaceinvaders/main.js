@@ -1,5 +1,7 @@
+let app = new App();
+
 function preload() {
-    loadImages();
+    app.loadImages();
 }
 
 function newGame() {
@@ -16,8 +18,8 @@ function setup() {
     scale(0.5);
     var canvas = createCanvas(640, 480);
     canvas.parent("theCanvas");
-    loadAllPixels();
-    setMaxShipWidth();
+    app.loadAllPixels();
+    app.setMaxShipWidth();
     textFont(app.font);
     app.mode = 0; // being very explicit
 }
@@ -37,9 +39,6 @@ function draw() {
         showSelectPlayers();
     }
 
-    if (app.gameOver) {
-        showGameOver();
-    }
 }
 
 function keyPressed() {

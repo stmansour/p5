@@ -22,13 +22,13 @@ function LaserCannon() {
     this.go = function() {
         var amt = this.moveAmt;
         if (this.movingLeft) {
-            if (this.x - this.moveAmt < 0) {
+            if (this.x - this.moveAmt < app.border) {
                 amt = 0;
             }
             this.x -= amt;
         }
         if (this.movingRight) {
-            if (this.x + this.moveAmt > width) {
+            if (this.x + this.moveAmt > width - app.border) {
                 amt = 0;
             }
             this.x += amt;

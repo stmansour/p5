@@ -8,13 +8,20 @@ function Invader(x,y,img1,img2,pts) {
     this.killed = false;    // this invader has not yet been killed
     this.introduced = false;
 
+    this.tooFarLeft = function() {
+        return (this.x < 5);
+    }
+    this.tooFarRight = function() {
+        return (this.x + this.img1.width > width - 5);
+    }
+
     this.relativeMove = function (dx,dy) {
         this.x += dx;
         this.y += dy;
-        if (this.x + this.img1.width > width - 5) {
+        if (this.tooFarRight()) {
             this.x = width -5 - this.img1.width;
         }
-        if (this.x < 5) {
+        if (this.tooFarLeft()) {
             this.x = 5;
         }
         this.armsUp = !this.armsUp;  // switch images when we move
