@@ -16,12 +16,14 @@ function newGame() {
 
 function setup() {
     scale(0.5);
-    var canvas = createCanvas(640, 480);
+    var canvas = createCanvas(640, 540);
     canvas.parent("theCanvas");
     app.loadAllPixels();
     app.setMaxShipWidth();
     textFont(app.font);
     app.mode = 0; // being very explicit
+    screeninit();
+
 }
 
 function draw() {

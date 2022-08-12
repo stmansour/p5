@@ -3,6 +3,12 @@
 // user how many lives they have, shows the number of credits, etc.
 //============================================================================
 
+let ad1 = null;
+function screeninit() {
+    ad1 = new Revealer("PLAY SPACE INVADERS",200,200,100);
+    ad1.go();
+}
+
 function drawScreen() {
     background(0);
     scores();
@@ -10,6 +16,7 @@ function drawScreen() {
     switch (app.mode) {
         case 0:
             insertCoins();
+            ad1.show();
             break;
         case 1:
             lives();
@@ -122,7 +129,6 @@ function hiScore() {
 function showCredits() {
     let s = "CREDITS " + zeroFillNumber(app.credits, 2);
     text(s, (width - textWidth(s) - 25), height - 15);
-    return;
 }
 
 function lives() {

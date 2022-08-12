@@ -33,7 +33,8 @@ class App {
         this.c1 = loadImage('assets/c1.png');
         this.c2 = loadImage('assets/c2.png');
         this.cannon = loadImage('assets/lasercannon.png');
-        this.font = loadFont('assets/PixelSplitter-Bold.ttf');
+
+        this.font = loadFont("assets/PixelSplitter-Bold.ttf");
     }
 
     loadAllPixels() {

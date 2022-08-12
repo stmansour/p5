@@ -2,15 +2,14 @@
 /* esversion: 6 */
 
 function Invaders() {
-    this.squadrons = []; // in the airforce, a "squadrons" is a group of squadrons
+    this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
     this.shipsPerSquadron = 11; // the number of ships for each squadrons
-    this.speed = 1; // number of pixels to move left or right.
-    this.sqIdx = 0; // index squadrons being shown
-    this.invIdx = 0; // index of invader within the squadrons being shown
-    this.dy = 20; // how much we move down each drop
-    this.moveVertical = false; // set to true at the edges when we need to lower the squadrons and change direction
-    this.introduced = false; // a OneShot... true after all ships have been shown once.
-    // this.debugIterations = 0;
+    this.speed = 1;             // number of pixels to move left or right.
+    this.sqIdx = 0;             // index squadrons being shown
+    this.invIdx = 0;            // index of invader within the squadrons being shown
+    this.dy = 20;               // how much we move down each drop
+    this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
+    this.introduced = false;    // a OneShot... true after all ships have been shown once.
 
     this.squadbuilder = function(i1, i2, y, pts) {
         let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron, pts);
@@ -65,8 +64,10 @@ function Invaders() {
             // to simulate the movement in the original game:
             //      * move one squadrons at a time, and one invader at a time
             //        within the squadrons
-            //      * after moving all invaders have squadrons adjust their guidance
-            //      * check to see if a drop is needed, and if so do the drop
+            //      * after moving all invaders (passComplete = true) have
+            //        squadrons adjust their guidance
+            //      * check to see if all the invaders need to drop down one row
+            //        and move them down if needed.
             //---------------------------------------------------------------------
             do {
                 let squadrons = this.squadrons[this.sqIdx];
@@ -93,15 +94,12 @@ function Invaders() {
         //-------------------------------------------------------------------
         if (passComplete && !this.introduced) {
             this.introduced = true;
-            // this.debugIterations = 0;
         }
 
         if (passComplete && this.introduced) {
             for (let i = 0; i < this.squadrons.length; i++) {
                 this.squadrons[i].reassessStatus();
             }
-            // this.debugIterations = 0; // // DEBUG:
-
             if (this.moveVertical) {
                 this.moveVertical = false;
                 for (let i = 0; i < this.squadrons.length; i++) {
@@ -118,22 +116,6 @@ function Invaders() {
                 }
             }
         }
-        //
-        // // DEBUG:
-        // this.debugIterations++;
-        // if (this.debugIterations > 55) {
-        //     // something went wrong
-        //     // try to patch things up...
-        //
-        //     for (let i = 0; i < this.squadrons.length; i++) {
-        //         let squad = this.squadrons[i];
-        //         // squad.reassessStatus();
-        //         // for (var i = 0; i < squad.ships.length; i++) {
-        //         //     if( squad.ships[i].tooFarLeft() ||
-        //         // }
-        //     }
-        //     this.debugIterations = 0;
-        // }
     };
 
     this.showInvaders = function() {
