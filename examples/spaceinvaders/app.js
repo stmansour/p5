@@ -1,4 +1,6 @@
-class App {
+/*jshint esversion: 6 */
+
+class SpaceInvadersApp {
     constructor() {
         this.a1 = null; // invader a image arms down
         this.a2 = null; // invader a image arms up
@@ -23,6 +25,7 @@ class App {
         this.cSize = 18; // size of large characters
         this.font = null;
         this.mode = 0; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
+        this.screen = new SIScreen();
     }
 
     loadImages() {
@@ -52,7 +55,7 @@ class App {
             this.maxShipWidth = this.b1.width;
         }
         if (this.c1.width > this.maxShipWidth) {
-            this.maxShipWidth = this.c1.width
+            this.maxShipWidth = this.c1.width;
         }
     }
 

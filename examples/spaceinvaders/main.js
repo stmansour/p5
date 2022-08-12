@@ -1,6 +1,9 @@
-let app = new App();
+/*jshint esversion: 6 */
+
+let app = null;
 
 function preload() {
+    app = new SpaceInvadersApp();
     app.loadImages();
 }
 
@@ -22,12 +25,11 @@ function setup() {
     app.setMaxShipWidth();
     textFont(app.font);
     app.mode = 0; // being very explicit
-    screeninit();
-
+    app.screen.init();
 }
 
 function draw() {
-    drawScreen();
+    app.screen.show();
 
     if (app.mode > 0) {
         app.shots.show();
@@ -38,7 +40,7 @@ function draw() {
             app.laserCannon.show();
         }
     } else {
-        showSelectPlayers();
+        app.screen.showSelectPlayers();
     }
 
 }

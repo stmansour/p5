@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 function LaserCannon() {
     this.width = 0;
     this.height = 0;
@@ -8,16 +10,16 @@ function LaserCannon() {
     this.moveAmt = 8;
 
     this.init = function() {
-        app.cannon.loadPixels()
+        app.cannon.loadPixels();
         this.width = app.cannon.width;
         this.height = app.cannon.height;
         this.y = height - this.height - 60;
         this.x = (width - this.width)/2;
-    }
+    };
 
     this.show = function() {
         image(app.cannon, this.x - this.width/2, this.y);
-    }
+    };
 
     this.go = function() {
         var amt = this.moveAmt;
@@ -33,12 +35,13 @@ function LaserCannon() {
             }
             this.x += amt;
         }
-    }
+    };
 
     this.goLeft = function(t) {
         this.movingLeft = t;
-    }
+    };
+
     this.goRight = function(t) {
         this.movingRight = t;
-    }
+    };
 }

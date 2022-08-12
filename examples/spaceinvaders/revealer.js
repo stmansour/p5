@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 class Revealer {
     constructor(s,x,y,d) {
         this.x = x;
@@ -6,7 +8,7 @@ class Revealer {
         this.d = d;         // delay between characters in msec
         this.tmr = null;    // timer info
         this.amt = 1;       // amount of original string to show
-        this.str = "";   // current string to show, grows over time
+        this.str = "";      // current string to show, grows over time
     }
 
     go() {

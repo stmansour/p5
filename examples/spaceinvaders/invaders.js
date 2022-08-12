@@ -1,5 +1,4 @@
-/* esversion: 6 */
-/* esversion: 6 */
+/*jshint esversion: 6 */
 
 function Invaders() {
     this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
@@ -31,7 +30,7 @@ function Invaders() {
     this.nextInvader = function() {
         this.invIdx += 1;
         if (this.invIdx >= this.squadrons[this.sqIdx].ships.length) {
-            this.invIdx = 0
+            this.invIdx = 0;
             this.sqIdx += 1;
             if (this.sqIdx >= this.squadrons.length) {
                 this.sqIdx = 0;

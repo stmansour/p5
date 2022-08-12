@@ -1,6 +1,7 @@
 // This module contains all the functions that a user would find on the
 // Space Invaders arcade console
 //========================================================================
+/*jshint esversion: 6 */
 
 function onePlayer() {
     if (app.gameOverTimer != null) {

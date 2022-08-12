@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 function Invader(x,y,img1,img2,pts) {
     this.x = x;
     this.y = y;
@@ -10,10 +12,11 @@ function Invader(x,y,img1,img2,pts) {
 
     this.tooFarLeft = function() {
         return (this.x < 5);
-    }
+    };
+    
     this.tooFarRight = function() {
         return (this.x + this.img1.width > width - 5);
-    }
+    };
 
     this.relativeMove = function (dx,dy) {
         this.x += dx;
