@@ -8,7 +8,7 @@ function onePlayer() {
         return; // don't do anything to change the final screen until the timer completes
     }
     if (app.credits < 1) {
-        insertCoins();
+        app.screen.insertCoins();
         return;
     }
     app.credits -= 1;
@@ -26,7 +26,7 @@ function twoPlayers() {
         return; // don't do anything to change the final screen until the timer completes
     }
     if (app.credits < 2) {
-        insertCoins();
+        app.screen.insertCoins();
         return;
     }
     app.credits -= 2;
@@ -39,5 +39,5 @@ function twoPlayers() {
 
 function coinInserted() {
     app.credits++;
-    showCredits();
+    app.screen.showCredits();
 }

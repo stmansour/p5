@@ -50,6 +50,6 @@ function Shots() {
         app.invaders.squadrons[j].reassessStatus();
         this.shots.splice(i,1);
         app.players[app.currentPlayer].score += app.invaders.squadrons[j].ships[k].points;
-        app.currentPlayer == 0 ? score1() : score2();
+        app.currentPlayer == 0 ? app.screen.score1() : app.screen.score2();
     }
 }

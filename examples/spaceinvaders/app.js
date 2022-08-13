@@ -8,6 +8,7 @@ class SpaceInvadersApp {
         this.b2 = null; // invader a image arms up
         this.c1 = null; // invader a image arms down
         this.c2 = null; // invader a image arms up
+        this.d = null;  // mystery ship
         this.cannon = null; // the laser cannon image
         this.invaders = null;
         this.laserCannon = null;
@@ -22,7 +23,7 @@ class SpaceInvadersApp {
         this.currentPlayer = 0; // during play, this can be 0 or 1
         this.highScore = 0;
         this.credits = 0;
-        this.cSize = 18; // size of large characters
+        this.cSize = 14; // size of large characters
         this.font = null;
         this.mode = 0; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
         this.screen = new SIScreen();
@@ -35,6 +36,8 @@ class SpaceInvadersApp {
         this.b2 = loadImage('assets/b2.png');
         this.c1 = loadImage('assets/c1.png');
         this.c2 = loadImage('assets/c2.png');
+        this.c2 = loadImage('assets/c2.png');
+        this.d  = loadImage('assets/d.png');
         this.cannon = loadImage('assets/lasercannon.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
@@ -47,6 +50,7 @@ class SpaceInvadersApp {
         this.b2.loadPixels();
         this.c1.loadPixels();
         this.c2.loadPixels();
+        this.d.loadPixels();
     }
 
     setMaxShipWidth() {
@@ -64,7 +68,7 @@ class SpaceInvadersApp {
         this.gameStatus = status;
         if (this.players[this.currentPlayer].score > this.highScore) {
             this.highScore = this.players[this.currentPlayer].score;
-            hiScore();
+            app.screen.hiScore();
         }
     }
 }

@@ -6,12 +6,51 @@
 
 class SIScreen {
     constructor() {
-        this.ad1 = null;
+        this.ads = [];
+        this.adsIdx = 0;
+        this.adsInProgress = false;
     }
 
     init() {
-        this.ad1 = new Revealer("PLAY SPACE INVADERS", 200, 200, 100);
-        this.ad1.go();
+        let dy = 35;
+        this.ads.push(new Revealer(null,"PLAY SPACE INVADERS", 200, 200, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(null,"*SCORE ADVANCE TABLE*", 200, 200 + dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.d,"= ?  MYSTERY", 200, 200 + 2*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.c1,"= 30 POINTS", 200, 200 + 3*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.b1,"= 20 POINTS", 200, 200 + 4*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.a1,"= 20 POINTS", 200, 200 + 5*dy, dy, 100, nextAdCB));
+    }
+
+    goAds() {
+        if (this.adsInProgress) {
+            return;
+        }
+        this.adsInProgress = true;
+        this.nextAd();
+    }
+
+    nextAd() {
+        if (this.adsIdx < this.ads.length) {
+            this.ads[this.adsIdx].go();
+        } else {
+            this.adsIdx = 0;
+            this.adsInProgress = false;
+        }
+    }
+
+    clearAds() {
+        for (let i = 0; i < this.ads.length; i++) {
+            this.ads[i].reset();
+        }
+        this.adsIdx = 0;
+        this.adsInProgress = false;
+    }
+
+    showAds() {
+        this.goAds(); // checks to see if it's already running
+        for (let i = 0; i < this.ads.length; i++) {
+            this.ads[i].show();
+        }
     }
 
     show() {
@@ -21,13 +60,13 @@ class SIScreen {
         switch (app.mode) {
             case 0:
                 this.insertCoins();
-                this.ad1.show();
+                this.showAds();
                 break;
             case 1:
-                lives();
+                this.lives();
                 break;
             case 2:
-                lives();
+                this.lives();
                 break;
         }
 
@@ -81,6 +120,7 @@ class SIScreen {
                 app.mode = 0;
                 app.gameOverTimer = null;
                 app.gameOver = false;
+                app.screen.clearAds();
             }, 5000);
         }
     }
@@ -169,4 +209,9 @@ class SIScreen {
         let y = height - app.cannon.height - 20;
         line(0, y, width, y);
     }
+}
+
+function nextAdCB() {
+    app.screen.adsIdx++;
+    app.screen.nextAd();
 }
