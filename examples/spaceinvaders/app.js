@@ -66,6 +66,7 @@ class SpaceInvadersApp {
     setGameOver(status) {
         this.gameOver = true;
         this.gameStatus = status;
+        app.invaders.mystery.cancel();
         if (this.players[this.currentPlayer].score > this.highScore) {
             this.highScore = this.players[this.currentPlayer].score;
             app.screen.hiScore();

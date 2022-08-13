@@ -15,6 +15,7 @@ function newGame() {
     app.laserCannon.init();
     app.shots = new Shots();
     app.gameStatus = 0;
+    app.screen.insertCoinsShow = false;
 }
 
 function setup() {

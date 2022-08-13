@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 function Shots() {
     this.shots = [];
 
@@ -17,11 +19,18 @@ function Shots() {
     };
 
     this.scanForHits = function() {
+
         for (var i = this.shots.length - 1; i >= 0; i--) {
             let x1 = this.shots[i].x;
             let y1 = this.shots[i].y;
             let x2 = x1 + 2;
             let y2 = y1 + 10;
+
+            if (app.invaders.mystery.hit(x1,y1,x2,y2)) {
+                this.score(app.invaders.mystery.points);
+                console.log('MYSTER SHIP HIT -- score: ' + app.invaders.mystery.points);
+            }
+
             for (var j = app.invaders.squadrons.length - 1; j >= 0; j--) {
                 let squad = app.invaders.squadrons[j];
                 if (squad.destroyed) {
@@ -49,7 +58,15 @@ function Shots() {
         app.invaders.squadrons[j].ships[k].killed = true;
         app.invaders.squadrons[j].reassessStatus();
         this.shots.splice(i,1);
-        app.players[app.currentPlayer].score += app.invaders.squadrons[j].ships[k].points;
-        app.currentPlayer == 0 ? app.screen.score1() : app.screen.score2();
-    }
+        this.score(app.invaders.squadrons[j].ships[k].points);
+    };
+
+    this.score = function(pts) {
+        app.players[app.currentPlayer].score += pts;
+        if (app.currentPlayer == 0) {
+            app.screen.score1();
+        } else {
+            app.screen.score2();
+        }
+    };
 }

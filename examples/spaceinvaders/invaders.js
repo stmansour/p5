@@ -9,6 +9,7 @@ function Invaders() {
     this.dy = 20;               // how much we move down each drop
     this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
     this.introduced = false;    // a OneShot... true after all ships have been shown once.
+    this.mystery = null;        // shows up at random every 15 - 30 sec, value 100 - 500 points
 
     this.squadbuilder = function(i1, i2, y, pts) {
         let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron, pts);
@@ -25,6 +26,7 @@ function Invaders() {
         this.squadbuilder(app.a1, app.a2, y + 2 * y1, 20);
         this.squadbuilder(app.a1, app.a2, y + y1, 20);
         this.squadbuilder(app.c1, app.c2, y, 30);
+        this.mystery = new MysteryShip();
     };
 
     this.nextInvader = function() {
@@ -93,6 +95,7 @@ function Invaders() {
         //-------------------------------------------------------------------
         if (passComplete && !this.introduced) {
             this.introduced = true;
+            this.mystery.go();
         }
 
         if (passComplete && this.introduced) {
@@ -122,6 +125,7 @@ function Invaders() {
             let squadron = this.squadrons[i];
             squadron.show();
         }
+        this.mystery.show();
     };
 
     this.checkCollisions = function() {

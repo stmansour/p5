@@ -1,11 +1,13 @@
-function Player(c) {
-    this.name = "<1>";
-    this.score = 0;
-    this.credits = c;
-    this.lives = 0;
-    this.gamesWon = 0;
+class Player {
+    constructor(c) {
+        this.name = "<1>";
+        this.score = 0;
+        this.credits = c;
+        this.lives = 0;
+        this.gamesWon = 0;
+    }
 
-    this.newGame = function() {
+    newGame() {
         this.credits -= 1;
         this.score = 0;
         this.lives = 3;

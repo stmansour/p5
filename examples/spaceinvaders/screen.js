@@ -9,16 +9,19 @@ class SIScreen {
         this.ads = [];
         this.adsIdx = 0;
         this.adsInProgress = false;
+        this.insertCoinsShow = false; // don't turn it on until the user trys to play without adding credits
     }
 
     init() {
-        let dy = 35;
-        this.ads.push(new Revealer(null,"PLAY SPACE INVADERS", 200, 200, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(null,"*SCORE ADVANCE TABLE*", 200, 200 + dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.d,"= ?  MYSTERY", 200, 200 + 2*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.c1,"= 30 POINTS", 200, 200 + 3*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.b1,"= 20 POINTS", 200, 200 + 4*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.a1,"= 20 POINTS", 200, 200 + 5*dy, dy, 100, nextAdCB));
+        let dy = 40;
+        let x = 225;
+        let dx = 25;
+        this.ads.push(new Revealer(null," PLAY SPACE INVADERS", x, 200, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(null,"*SCORE ADVANCE TABLE*", x, 200 + dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.d,"= ? MYSTERY", x + dx, 200 + 2*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.c1,"= 30 POINTS", x + dx, 200 + 3*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.b1,"= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.a1,"= 20 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
     }
 
     goAds() {
@@ -196,6 +199,9 @@ class SIScreen {
     }
 
     insertCoins() {
+        if (!this.insertCoinsShow) {
+            return;
+        }
         var s = "INSERT COINS TO GET CREDITS";
         noStroke();
         textSize(app.cSize);

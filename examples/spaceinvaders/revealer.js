@@ -59,8 +59,12 @@ class Revealer {
             return;
         }
         if (this.img != null) {
-            image(this.img,this.x,this.y - this.img.height);
+            const sf = 0.7;
+            let wd = this.img.width * sf;
+            let ht = this.img.height * sf;
+            image(this.img,this.x,this.y - ht, wd, ht);
         }
+        noStroke();
         text(this.str, this.strx,this.stry);
     }
 
