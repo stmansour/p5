@@ -7,17 +7,6 @@ function preload() {
     app.loadImages();
 }
 
-function newGame() {
-    app.invaders = new Invaders();
-    app.invaders.init();
-    app.invaders.speed = 5; // each horizontal move is this many pixels
-    app.laserCannon = new LaserCannon();
-    app.laserCannon.init();
-    app.shots = new Shots();
-    app.gameStatus = 0;
-    app.screen.insertCoinsShow = false;
-}
-
 function setup() {
     scale(0.5);
     var canvas = createCanvas(640, 540);

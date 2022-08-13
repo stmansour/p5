@@ -13,8 +13,6 @@ class MysteryShip {
     }
 
     go() {
-        console.log("MYSTERY - Go!");
-
         this.timer = setTimeout( () => {
             this.timer = null;
             if ( floor(random(0,1) + 0.5) > 0) {
@@ -28,7 +26,7 @@ class MysteryShip {
             }
             this.points = 100 * floor(random(1,6));
             this.moving = true;
-        } , random(3000,5000));  // between 10 and 30 sec
+        } , random(5000,15000));  // between 10 and 30 sec
     }
 
     cancel() {

@@ -18,7 +18,7 @@ function onePlayer() {
     let p = new Player(1);
     p.newGame();
     app.players.push(p);
-    newGame();
+    app.newGame();
     app.mode = 1;
 }
 
@@ -36,7 +36,7 @@ function twoPlayers() {
     app.players = [];
     app.players.push(new Player(1)); // give him 1 credit
     app.players.push(new Player(1));
-    newGame();
+    app.newGame();
 }
 
 function coinInserted() {

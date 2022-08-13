@@ -9,6 +9,7 @@ class SpaceInvadersApp {
         this.c1 = null; // invader a image arms down
         this.c2 = null; // invader a image arms up
         this.d = null;  // mystery ship
+        this.eplode = null;  // explosion graphic
         this.cannon = null; // the laser cannon image
         this.invaders = null;
         this.laserCannon = null;
@@ -38,6 +39,7 @@ class SpaceInvadersApp {
         this.c2 = loadImage('assets/c2.png');
         this.c2 = loadImage('assets/c2.png');
         this.d  = loadImage('assets/d.png');
+        this.explode  = loadImage('assets/x.png');
         this.cannon = loadImage('assets/lasercannon.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
@@ -51,6 +53,7 @@ class SpaceInvadersApp {
         this.c1.loadPixels();
         this.c2.loadPixels();
         this.d.loadPixels();
+        this.explode.loadPixels();
     }
 
     setMaxShipWidth() {
@@ -61,6 +64,17 @@ class SpaceInvadersApp {
         if (this.c1.width > this.maxShipWidth) {
             this.maxShipWidth = this.c1.width;
         }
+    }
+
+    newGame() {
+        this.invaders = new Invaders();
+        this.invaders.init();
+        this.invaders.speed = 5; // each horizontal move is this many pixels
+        this.laserCannon = new LaserCannon();
+        this.laserCannon.init();
+        this.shots = new Shots();
+        this.gameStatus = 0;
+        this.screen.insertCoinsShow = false;
     }
 
     setGameOver(status) {
