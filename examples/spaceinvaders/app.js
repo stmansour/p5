@@ -39,7 +39,7 @@ class SpaceInvadersApp {
         this.c2 = loadImage('assets/c2.png');
         this.c2 = loadImage('assets/c2.png');
         this.d  = loadImage('assets/d.png');
-        this.explode  = loadImage('assets/x.png');
+        this.explode  = loadImage('assets/explode.png');
         this.cannon = loadImage('assets/lasercannon.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");

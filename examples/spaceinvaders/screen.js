@@ -20,8 +20,8 @@ class SIScreen {
         this.ads.push(new Revealer(null,"*SCORE ADVANCE TABLE*", x, 200 + dy, dy, 100, nextAdCB));
         this.ads.push(new Revealer(app.d,"= ? MYSTERY", x + dx, 200 + 2*dy, dy, 100, nextAdCB));
         this.ads.push(new Revealer(app.c1,"= 30 POINTS", x + dx, 200 + 3*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.b1,"= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.a1,"= 20 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.a1,"= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
+        this.ads.push(new Revealer(app.b1,"= 10 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
     }
 
     goAds() {
