@@ -8,6 +8,16 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
     <title>Fourier Series Generator</title>
+    <script>
+    MathJax = {
+      loader: {load: ['input/asciimath', 'output/chtml']}
+    }
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js">
+    </script>
+
 </head>
 
 <body>
@@ -46,10 +56,19 @@
         </tr>
         <tr>
             <td colspan="3" width="800">
+                <p>
                 The best visual representation of a Fourier Series I've seen is
                 in wikipedia <a href="https://en.wikipedia.org/wiki/Fourier_series">at this link</a>.
                 I decided I would try to write something that
                 generates this animation.
+                </p>
+                <p>
+                    The formula for a Fourier Series to approximate a square wave is:<br>
+                    <br>
+                    <span style="padding-left:50px;">
+                    `y = sum_{i=1}^n 4sin(ntheta)/(npi)`&nbsp;&nbsp;&nbsp;where n = 1,3,5,7...
+                    </span>
+                </p>
             </td>
         </tr>
     </table>

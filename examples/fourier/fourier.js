@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 var app = {
     width: 800,
-    height: 500,
+    height: 400,
     theta: 0,
     buf: [],
     c: [],
