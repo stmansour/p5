@@ -6,9 +6,11 @@ var app = {
     buf: [],
     c: [],
     animationFrameRateSlider: null,
-    animationFrameRate: 60,
+    animationFrameRate: 24,
     orderN: 4,
     orderNSlider: null,
+    showCirclesCheckbox: null,
+    showCircles: true,
 };
 
 function setup() {
@@ -23,6 +25,7 @@ function setup() {
     initUI();
     setInnerHTML("animationFrameRate", "" + app.animationFrameRate);
     setInnerHTML("orderN", "" + app.orderN);
+    frameRate(app.animationFrameRate);
 
 }
 
@@ -46,13 +49,15 @@ function draw() {
         y += r * sin(n * app.theta);
 
         // stroke(255);
-        stroke(app.c[j]);
-        noFill();
-        circle(px,py,2 * r);
+        if (app.showCircles) {
+            stroke(app.c[j]);
+            noFill();
+            circle(px,py,2 * r);
+        }
+        fill(255);
+        circle(x,y,4);
         stroke(255);
         line(px,py,x,y);
-        fill(255);
-        circle(x,y,5);
     }
 
     app.buf.unshift(y); // adds to beginning rather than end.
@@ -69,7 +74,7 @@ function draw() {
     if (app.buf.len > 150) {
         app.buf.len.pop();  // keep buf from growing too big
     }
-    app.theta += 0.05;
+    app.theta += 0.02;
 }
 
 function setInnerHTML(id,s) {
@@ -85,9 +90,9 @@ function initUI() {
 
     app.orderNSlider = createSlider(0,6,app.orderN,1);
     app.orderNSlider.parent('orderNSlider');
-    //
-    // app.sliderBranchDecay = createSlider(0,.8,app.branchDecay,.01);
-    // app.sliderBranchDecay.parent('branchDecaySlider');
+
+    app.showCirclesCheckbox = createCheckbox("Show Circles", app.showCircles);
+    app.showCirclesCheckbox.parent('showCirclesCheckbox');
 }
 
 function updateUI() {
@@ -100,7 +105,11 @@ function updateUI() {
 
     app.orderN = app.orderNSlider.value();
     setInnerHTML("orderN", "" + app.orderN);
-    //
-    // app.branchDecay = app.sliderBranchDecay.value();
-    // setInnerHTML("branchDecay", "" + app.branchDecay);
+
+    app.showCircles = app.showCirclesCheckbox.checked();
+    // setInnerHTML("showCircles", "" + app.showCircles);
+}
+
+function circleChecboxChanged() {
+
 }
