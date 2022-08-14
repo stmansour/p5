@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../../p5.js"></script>
+    <script src="fourier.js"></script>
+    <!-- <script src="../../addons/p5.sound.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <title>Fourier Series Generator</title>
+</head>
+
+<body>
+    <script src="fourier.js"></script>
+    <table align="center">
+        <tr>
+            <td colspan="3" align="center">
+                <h2>Fourier Series Generator</h2>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center">
+                <div id="theCanvas"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" height="10"></td>
+        </tr>
+        <tr>
+            <td align="right" width="50%">Frame Rate</td>
+            <td><span id="animationFrameRate">0</span></td>
+            <td><span id="animationFrameRateSlider"></span></td>
+        </tr>
+        <tr>
+            <td align="right" width="50%">Order n</td>
+            <td><span id="orderN">0</span></td>
+            <td><span id="orderNSlider"></span></td>
+        </tr>
+        <tr>
+            <td align="right" width="50%">z</td>
+            <td><span id="branchDecay">0</span></td>
+            <td><span id="branchDecaySlider"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3" height="20"></td>
+        </tr>
+        <tr>
+            <td colspan="3" width="800">
+                The best visual representation of a Fourier Series I've seen is
+                in wikipedia <a href="https://en.wikipedia.org/wiki/Fourier_series">at this link</a>.
+                I decided I would try to write something that
+                generates this animation.
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
