@@ -7,7 +7,7 @@ var app = {
     c: [],
     animationFrameRateSlider: null,
     animationFrameRate: 60,
-    orderN: 2,
+    orderN: 4,
     orderNSlider: null,
 };
 
