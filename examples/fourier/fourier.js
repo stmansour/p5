@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 var app = {
-    width: 800,
+    width: 900,
     height: 400,
     theta: 0,
     buf: [],
@@ -11,22 +11,25 @@ var app = {
     orderNSlider: null,
     showCirclesCheckbox: null,
     showCircles: true,
+    graph: null,
 };
 
 function setup() {
     var canvas = createCanvas(app.width,app.height);
     canvas.parent('theCanvas');
-    app.c.push(color(255,255,50)); // yellow
-    app.c.push(color(50,255,50));   // green
-    app.c.push(color(255,50,50));   // red
-    app.c.push(color(150,150,255));   // blue
-    app.c.push(color(255,50,255));  // magenta
-    app.c.push(color(50,255,255));  // cyan
+    app.c.push(color(255,255,50));  // 0 yellow
+    app.c.push(color(50,255,50));   // 1 green
+    app.c.push(color(255,50,50));   // 2 red
+    app.c.push(color(150,150,255)); // 3 blue
+    app.c.push(color(255,50,255));  // 4 magenta
+    app.c.push(color(50,255,255));  // 5 cyan
+    app.c.push(color(255,164,0));   // 6 orange
     initUI();
     setInnerHTML("animationFrameRate", "" + app.animationFrameRate);
     setInnerHTML("orderN", "" + app.orderN);
     frameRate(app.animationFrameRate);
-
+    app.graph = new Graph( 0, -height/4-75, width/3, height/4+75);
+    app.graph.labels("time","amplitude");
 }
 
 function draw() {
@@ -38,6 +41,7 @@ function draw() {
     let x = 0;
     let y = 0;
 
+    strokeWeight(1);
     for (let j = 0; j < app.orderN; j++) {
         let n = 2*j + 1;
         let px = x;
@@ -48,23 +52,26 @@ function draw() {
         x += r * cos(n * app.theta);
         y += r * sin(n * app.theta);
 
-        // stroke(255);
         if (app.showCircles) {
             stroke(app.c[j]);
             noFill();
             circle(px,py,2 * r);
         }
-        fill(255);
-        circle(x,y,4);
-        stroke(255);
-        line(px,py,x,y);
+        fill(128);
+        stroke(128);
+        circle(x,y,5);      // on the circumference of the circle
+        stroke(128);
+        line(px,py,x,y);    // line from circle origin to the x,y
     }
 
-    app.buf.unshift(y); // adds to beginning rather than end.
+    app.buf.unshift(y);     // adds to beginning rather than end.
 
-    translate(w,0);
-    line(x - w, y, 0, y);
+    translate(w,0);         // set a new origin for the graph we will draw
+    app.graph.axes();
+    line(x - w, y, 0, y);   // line from the circles to the x axis origin of the graph
     beginShape();
+    strokeWeight(2);
+    stroke(app.c[1]);
     noFill();
     for (var i = 0; i < app.buf.length; i++) {
         vertex(i,app.buf[i]);
@@ -88,7 +95,7 @@ function initUI() {
     app.animationFrameRateSlider = createSlider(2,60,app.animationFrameRate,1);
     app.animationFrameRateSlider.parent('animationFrameRateSlider');
 
-    app.orderNSlider = createSlider(0,6,app.orderN,1);
+    app.orderNSlider = createSlider(1,7,app.orderN,1);
     app.orderNSlider.parent('orderNSlider');
 
     app.showCirclesCheckbox = createCheckbox("Show Circles", app.showCircles);
@@ -108,8 +115,4 @@ function updateUI() {
 
     app.showCircles = app.showCirclesCheckbox.checked();
     // setInnerHTML("showCircles", "" + app.showCircles);
-}
-
-function circleChecboxChanged() {
-
 }

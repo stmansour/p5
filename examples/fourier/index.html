@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
+    <title>Fourier Series Generator</title>
     <script src="../../p5.js"></script>
     <script src="fourier.js"></script>
+    <script src="graph.js"></script>
     <!-- <script src="../../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-    <title>Fourier Series Generator</title>
     <script>
     MathJax = {
       loader: {load: ['input/asciimath', 'output/chtml']}
@@ -22,7 +22,7 @@
 
 <body>
     <script src="fourier.js"></script>
-    <table align="center">
+    <table align="center" border=0>
         <tr>
             <td colspan="3" align="center">
                 <h2>Fourier Series Generator</h2>
@@ -42,7 +42,7 @@
             <td><span id="animationFrameRateSlider"></span></td>
         </tr>
         <tr>
-            <td align="right" width="50%">Order n</td>
+            <td align="right" width="50%">Series count</td>
             <td align="right"><span id="orderN">0</span></td>
             <td><span id="orderNSlider"></span></td>
         </tr>
@@ -66,7 +66,9 @@
                     The formula for a Fourier Series to approximate a square wave is:<br>
                     <br>
                     <span style="padding-left:50px;">
-                    `y = sum_{i=1}^n 4sin(ntheta)/(npi)`&nbsp;&nbsp;&nbsp;where n = 1,3,5,7...
+                    `y = sum_{n=1}^\infty 4sin(ntheta)/(npi)`
+                    &nbsp;&nbsp;&nbsp;
+                    where n = 1,3,5,7...
                     </span>
                 </p>
             </td>
