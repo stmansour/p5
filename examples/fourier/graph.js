@@ -26,6 +26,8 @@ class Graph {
         line(0,this.y1, -4, this.y1+8);
         line(0,this.y1,  4, this.y1+8);
 
+        fill(128);
+        noStroke();
         if (this.labelx.length > 0) {
             text(this.labelx, this.x2 - textWidth(this.labelx) - 10, 20);
         }

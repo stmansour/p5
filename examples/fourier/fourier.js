@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 var app = {
-    width: 900,
+    width: 800,
     height: 400,
     theta: 0,
     buf: [],
@@ -28,29 +28,44 @@ function setup() {
     setInnerHTML("animationFrameRate", "" + app.animationFrameRate);
     setInnerHTML("orderN", "" + app.orderN);
     frameRate(app.animationFrameRate);
-    app.graph = new Graph( 0, -height/4-75, width/3, height/4+75);
+    app.graph = new Graph( 0, -height/4-75, width*4/10, height/4+75);
     app.graph.labels("time","amplitude");
 }
 
 function draw() {
     updateUI();
     background(0);
-    let w = width/3;
-    translate(w,height/2);
-
+    strokeWeight(1);
+    let w = width/10;  // divide screen into parts
+    let h = height/app.orderN;
     let x = 0;
     let y = 0;
 
-    strokeWeight(1);
-    for (let j = 0; j < app.orderN; j++) {
-        let n = 2*j + 1;
-        let px = x;
-        let py = y;
+    // //--------------------------------------------
+    // // we can add up to 7 equations. Make a slot
+    // // for each...
+    // //--------------------------------------------
+    // for (let i = 0; i < app.orderN; i++) {
+    //     stroke(app.c[i]);
+    //     // noFill();
+    //     fill(app.c[i]);
+    //     rect(x,y,2*w,h-1);
+    //     y += h;
+    // }
 
-        // fourier:  radius *  4sin(n*theta)/(n*PI)
-        let r = 100 * 4 /(n * PI);
-        x += r * cos(n * app.theta);
-        y += r * sin(n * app.theta);
+    //---------------------------------------------------------------------
+    // TRANSLATE 1:
+    // Set origin to the main circle draw area. This area gets 60% of horz space
+    //---------------------------------------------------------------------
+    push(); // save origin
+    translate(3*w,height/2);  // circle stack in the middle
+    for (let j = 0; j < app.orderN; j++) {
+        let n = 2*j + 1;    // only odd numbers
+        let px = x;         // x from last iteration
+        let py = y;         // y from last iteration
+        let r = 90 * 4 /(n * PI);
+        x += r * cos(n * app.theta);    // update x for this n
+        y += r * sin(n * app.theta);    // update y for this n
 
         if (app.showCircles) {
             stroke(app.c[j]);
@@ -59,24 +74,31 @@ function draw() {
         }
         fill(128);
         stroke(128);
-        circle(x,y,5);      // on the circumference of the circle
+        circle(x,y,5);          // indicator on the circumference of the circle
         stroke(128);
-        line(px,py,x,y);    // line from circle origin to the x,y
+        line(px,py,x,y);        // line from n-1 xy to n xy.  Shows the increment
     }
+    line(x, y, 3*w, y);   // line from the circles to the x axis origin of the graph
+    pop();
 
-    app.buf.unshift(y);     // adds to beginning rather than end.
+    app.buf.unshift(y);     // adds to beginning rather than end. Makes it work like an oscilloscope
 
-    translate(w,0);         // set a new origin for the graph we will draw
+    //---------------------------------------------------
+    // TRANSLATE 2:
+    // Move the origin to the right for the wave graph
+    //---------------------------------------------------
+    push();
+    translate(6*w,height/2);         // graph on the right (60% width)
     app.graph.axes();
-    line(x - w, y, 0, y);   // line from the circles to the x axis origin of the graph
     beginShape();
     strokeWeight(2);
     stroke(app.c[1]);
     noFill();
-    for (var i = 0; i < app.buf.length; i++) {
+    for (let i = 0; i < app.buf.length; i++) {
         vertex(i,app.buf[i]);
     }
     endShape();
+    pop();
 
     if (app.buf.len > 150) {
         app.buf.len.pop();  // keep buf from growing too big
