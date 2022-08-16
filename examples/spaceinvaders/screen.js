@@ -1,31 +1,63 @@
 // This module contains all the functions to update the status of the screen
 // area.  It does not play the game, but it indicates the score, tells the
 // user how many lives they have, shows the number of credits, etc.
+//
+// campaigns contain ads, ads contain revealiers
 //============================================================================
 /*jshint esversion: 6 */
 
 class SIScreen {
     constructor() {
-        this.ads = [];
+        this.campaigns = [];
         this.adsIdx = 0;
+        this.campaignsIdx = 0;
         this.adsInProgress = false;
         this.insertCoinsShow = false; // don't turn it on until the user trys to play without adding credits
+        this.tmr = null;  // we'll leave the last message of an ad campaign up for a few seconds before moving to the next campaign
     }
 
     init() {
+        let ads1 = [
+            [   null, " PLAY SPACE INVADERS"],
+            [   null, "*SCORE ADVANCE TABLE*"],
+            [  app.d, "= ? MYSTERY"],
+            [ app.c1, "= 30 POINTS"],
+            [ app.a1, "= 20 POINTS"],
+            [ app.b1, "= 10 POINTS"],
+        ];
+        let ads2 = [
+            [   null, "INSERT COIN"],
+            [   null, "<1 OR 2 PLAYERS>"],
+            [   null, "*1 PLAYER  1 COIN"],
+            [   null, "*2 PLAYERS 2 COINS"],
+        ];
+        let campaigns = [ ads1, ads2 ];
+
         let dy = 40;
         let x = 225;
         let dx = 25;
-        this.ads.push(new Revealer(null," PLAY SPACE INVADERS", x, 200, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(null,"*SCORE ADVANCE TABLE*", x, 200 + dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.d,"= ? MYSTERY", x + dx, 200 + 2*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.c1,"= 30 POINTS", x + dx, 200 + 3*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.a1,"= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
-        this.ads.push(new Revealer(app.b1,"= 10 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(null, " PLAY SPACE INVADERS",      x,        200, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(null,"*SCORE ADVANCE TABLE*",      x,   200 + dy, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(app.d,         "= ? MYSTERY", x + dx, 200 + 2*dy, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(app.c1,        "= 30 POINTS", x + dx, 200 + 3*dy, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(app.a1,        "= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
+        // this.campaigns[this.campaignsIdx].push(new Revealer(app.b1,        "= 10 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
+        for (let i = 0; i < campaigns.length; i++) {
+            let ads = campaigns[i];
+            let a = [];
+            for (let j = 0; j < ads.length; j++) {
+                let myx = x;
+                if (ads[j][0] != null) {
+                    myx += dx;
+                }
+                a.push(new Revealer( ads[j][0], ads[j][1], myx, 200 + j * dy, dy, 100, nextAdCB ));
+            }
+            this.campaigns.push(a);
+        }
     }
 
     goAds() {
-        if (this.adsInProgress) {
+        if (this.adsInProgress || this.tmr != null) {
             return;
         }
         this.adsInProgress = true;
@@ -33,26 +65,43 @@ class SIScreen {
     }
 
     nextAd() {
-        if (this.adsIdx < this.ads.length) {
-            this.ads[this.adsIdx].go();
+        if (this.adsIdx < this.campaigns[this.campaignsIdx].length) {
+            this.campaigns[this.campaignsIdx][this.adsIdx].go();
         } else {
-            this.adsIdx = 0;
-            this.adsInProgress = false;
+            //------------------------------------------------------
+            // wait some time before switching to the next campaign
+            //------------------------------------------------------
+            this.tmr = setInterval(() => {
+                this.clearAds();
+                this.adsIdx = 0;
+                this.campaignsIdx++;
+                if (this.campaignsIdx >= this.campaigns.length) {
+                    this.campaignsIdx = 0;
+                }
+                this.adsInProgress = false;
+            }, 2000); // wait 2 secs
         }
     }
 
     clearAds() {
-        for (let i = 0; i < this.ads.length; i++) {
-            this.ads[i].reset();
+        for (let i = 0; i < this.campaigns.length; i++) {
+            let ads = this.campaigns[i];
+            for (let j = 0; j < ads.length; j++) {
+                ads[j].reset();
+            }
         }
         this.adsIdx = 0;
         this.adsInProgress = false;
+        if (this.tmr != null) {
+            clearInterval(this.tmr);
+            this.tmr = null;
+        }
     }
 
     showAds() {
         this.goAds(); // checks to see if it's already running
-        for (let i = 0; i < this.ads.length; i++) {
-            this.ads[i].show();
+        for (let i = 0; i < this.campaigns[this.campaignsIdx].length; i++) {
+            this.campaigns[this.campaignsIdx][i].show();
         }
     }
 

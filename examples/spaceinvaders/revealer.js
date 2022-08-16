@@ -26,6 +26,10 @@ class Revealer {
         this.str = "";
     }
 
+    setCb(cb) {
+        this.cb = cb;   // changing the callback function
+    }
+
     go() {
         this.triggered = true;
         this.tmr = setInterval(() => {
