@@ -36,11 +36,19 @@ class Shots {
                 this.explosions.push( new Explosion(app.invaders.mystery.x,app.invaders.mystery.y,app.invaders.mystery.points,1000,cleanOutExplosions,this));
             }
 
+            console.log('shot: ' + [x1,y1,x2,y2]);
+
+            //-------------------------
+            // for all squadrons...
+            //-------------------------
             for (var j = app.invaders.squadrons.length - 1; j >= 0; j--) {
                 let squad = app.invaders.squadrons[j];
                 if (squad.destroyed) {
                     continue;
                 }
+                //------------------------------------
+                // for every ship in the squadron...
+                //------------------------------------
                 for (var k = squad.ships.length - 1; k >= 0; k--) {
                     let ship = squad.ships[k];
                     if (ship.killed) {
@@ -50,6 +58,7 @@ class Shots {
                     let sy1 = ship.y;
                     let sx2 = sx1 + ship.img1.width;
                     let sy2 = sy1 + ship.img1.height;
+                    console.log('ship' + [sx1,sy1,sx2,sy2]);
                     if (sx2 >= x1 && sx1 < x2 && sy2 >= y1 && sy1 < y2) {
                         this.hit(i,j,k,sx1,sy1);
                     }

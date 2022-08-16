@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 function Shot(x,y) {
     this.x = x;
     this.y = y;
@@ -7,10 +8,10 @@ function Shot(x,y) {
         fill(255);
         noStroke();
         rect(this.x,this.y,2,10);
-    }
+    };
 
     this.move = function() {
         this.y -= 4;
         this.expired = this.y <= app.topBar;
-    }
+    };
 }

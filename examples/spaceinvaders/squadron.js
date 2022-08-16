@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 // Squadron - a horizontal row of Invaders
 //
 // A squadron keeps track of:
@@ -25,7 +26,7 @@ function Squadron(img1,img2,y,count,pts) {
     this.direction = 1;     // multiplier, can be 1 or -1
     this.dx = 10;           // 10 pixels between ships
     this.destroyed = false; // true when all ships in the squadron have been killed
-    this.directionChangeNeeded; // when one of the invaders is moved left of the left edge or right of the right edge
+    this.directionChangeNeeded = false; // when one of the invaders is moved left of the left edge or right of the right edge
 
     this.reassessStatus = function() {
         if (this.destroyed) {

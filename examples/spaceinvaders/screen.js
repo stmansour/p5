@@ -36,12 +36,6 @@ class SIScreen {
         let dy = 40;
         let x = 225;
         let dx = 25;
-        // this.campaigns[this.campaignsIdx].push(new Revealer(null, " PLAY SPACE INVADERS",      x,        200, dy, 100, nextAdCB));
-        // this.campaigns[this.campaignsIdx].push(new Revealer(null,"*SCORE ADVANCE TABLE*",      x,   200 + dy, dy, 100, nextAdCB));
-        // this.campaigns[this.campaignsIdx].push(new Revealer(app.d,         "= ? MYSTERY", x + dx, 200 + 2*dy, dy, 100, nextAdCB));
-        // this.campaigns[this.campaignsIdx].push(new Revealer(app.c1,        "= 30 POINTS", x + dx, 200 + 3*dy, dy, 100, nextAdCB));
-        // this.campaigns[this.campaignsIdx].push(new Revealer(app.a1,        "= 20 POINTS", x + dx, 200 + 4*dy, dy, 100, nextAdCB));
-        // this.campaigns[this.campaignsIdx].push(new Revealer(app.b1,        "= 10 POINTS", x + dx, 200 + 5*dy, dy, 100, nextAdCB));
         for (let i = 0; i < campaigns.length; i++) {
             let ads = campaigns[i];
             let a = [];
