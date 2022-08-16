@@ -13,7 +13,7 @@ function Invader(x,y,img1,img2,pts) {
     this.tooFarLeft = function() {
         return (this.x < 5);
     };
-    
+
     this.tooFarRight = function() {
         return (this.x + this.img1.width > width - 5);
     };
