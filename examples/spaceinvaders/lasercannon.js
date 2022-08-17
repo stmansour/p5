@@ -1,47 +1,49 @@
 /*jshint esversion: 6 */
 
-function LaserCannon() {
-    this.width = 0;
-    this.height = 0;
-    this.x = 0;
-    this.y = 0;
-    this.movingLeft = false;
-    this.movingRight = false;
-    this.moveAmt = 8;
+class LaserCannon extends ImagePrimitive {
+    constructor() {
+        super(0,0,app.cannon);
+        this.width = 0;
+        this.height = 0;
+        this.movingLeft = false;
+        this.movingRight = false;
+        this.moveAmt = 8;
+    }
 
-    this.init = function() {
+    init() {
         app.cannon.loadPixels();
         this.width = app.cannon.width;
         this.height = app.cannon.height;
         this.y = height - this.height - 60;
         this.x = (width - this.width)/2;
-    };
+        super.setOriginX(1); // center X
+    }
 
-    this.show = function() {
-        image(app.cannon, this.x - this.width/2, this.y);
-    };
+    // this.show = function() {
+    //     image(app.cannon, this.x - this.width/2, this.y);
+    // };
 
-    this.go = function() {
+    go() {
         var amt = this.moveAmt;
         if (this.movingLeft) {
             if (this.x - this.moveAmt < app.border) {
                 amt = 0;
             }
-            this.x -= amt;
+            super.relativeMove(-amt,0);
         }
         if (this.movingRight) {
             if (this.x + this.moveAmt > width - app.border) {
                 amt = 0;
             }
-            this.x += amt;
+            super.relativeMove(amt,0);
         }
-    };
+    }
 
-    this.goLeft = function(t) {
+    goLeft(t) {
         this.movingLeft = t;
-    };
+    }
 
-    this.goRight = function(t) {
+    goRight(t) {
         this.movingRight = t;
-    };
+    }
 }

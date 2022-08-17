@@ -55,7 +55,7 @@ function Squadron(img1,img2,y,count,pts) {
         } else if (this.leftmost != null) {
             this.directionChangeNeeded = this.leftmost.x - app.border < 0;
         }
-    }
+    };
 
     this.init = function() {
         let xSpacing = app.maxShipWidth + this.dx;
@@ -67,7 +67,7 @@ function Squadron(img1,img2,y,count,pts) {
             x += xSpacing;
         }
         this.reassessStatus();
-    }
+    };
 
     this.show = function() {
         if (this.destroyed) {
@@ -76,5 +76,5 @@ function Squadron(img1,img2,y,count,pts) {
         for (var i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
         }
-    }
+    };
 }

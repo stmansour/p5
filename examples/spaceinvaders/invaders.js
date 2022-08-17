@@ -40,7 +40,6 @@ function Invaders() {
         }
     };
 
-
     this.show = function() {
         if (app.gameOver) {
             this.showInvaders();
@@ -63,8 +62,7 @@ function Invaders() {
         } else {
             //---------------------------------------------------------------------
             // to simulate the movement in the original game:
-            //      * move one squadrons at a time, and one invader at a time
-            //        within the squadrons
+            //      * move one invader per frame
             //      * after moving all invaders (passComplete = true) have
             //        squadrons adjust their guidance
             //      * check to see if all the invaders need to drop down one row
