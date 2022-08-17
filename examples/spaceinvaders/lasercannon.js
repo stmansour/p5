@@ -19,23 +19,16 @@ class LaserCannon extends ImagePrimitive {
         super.setOriginX(1); // center X
     }
 
-    // this.show = function() {
-    //     image(app.cannon, this.x - this.width/2, this.y);
-    // };
-
     go() {
-        var amt = this.moveAmt;
         if (this.movingLeft) {
-            if (this.x - this.moveAmt < app.border) {
-                amt = 0;
+            if (this.x - this.moveAmt >= app.border) {
+                super.relativeMove(-this.moveAmt,0);
             }
-            super.relativeMove(-amt,0);
         }
         if (this.movingRight) {
-            if (this.x + this.moveAmt > width - app.border) {
-                amt = 0;
+            if (this.x + this.moveAmt <= width - app.border) {
+                super.relativeMove(this.moveAmt,0);
             }
-            super.relativeMove(amt,0);
         }
     }
 
