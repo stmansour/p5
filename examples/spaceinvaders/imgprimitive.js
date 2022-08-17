@@ -1,15 +1,23 @@
 /*jshint esversion: 6 */
+// The image primitive class handles:
+//    1. moving an image around the canvas
+//    2. animating between multiple images
+//    3. keeping track of bounds
+//    4. reporting overlap, that is, determining collisions
+//
+// Assumptions:
+//     1. all images in ims are the same size
+//     2. we switch images each time the image is moved
+//
+//-----------------------------------------------------------------------
 class ImagePrimitive {
-    constructor(x,y,img1,img2) {
-        if (typeof img2 === 'undefined') {
-            img2 = null;
-        }
+    constructor(x,y,ims) {
         this.x = x;
         this.y = y;
-        this.img1 = img1;
-        this.img2 = img2;
-        this.show1 = true;
+        this.ims = ims;     // an array of images.
+        // this.show1 = true;
         this.originX = 0;  // 0 = left, 1 = center
+        this.idx = 0;  // current image within this.ims
     }
 
     setOriginX(o) {
@@ -21,40 +29,43 @@ class ImagePrimitive {
     }
 
     tooFarRight() {
-        return (this.x + this.img1.width > width - 5);
+        return (this.x + this.ims[0].width > width - 5);
     }
 
     relativeMove(dx,dy) {
         this.x += dx;
         this.y += dy;
         if (this.tooFarRight()) {
-            this.x = width -5 - this.img1.width;
+            this.x = width -5 - this.ims[0].width;
         }
         if (this.tooFarLeft()) {
             this.x = 5;
         }
-        this.show1 = !this.show1;  // switch images when we move
+        this.idx++;
+        if (this.idx >= this.ims.length) {
+            this.idx = 0;
+        }
     }
 
     xOffset() {
         if (this.originX == 1) {
-            return -this.img1.width/2;
+            return -this.ims[0].width/2;
         }
         return 0;
     }
 
     show() {
         let xoff = this.xOffset();
-        let img = (this.img2 == null) ? this.img1 : ((this.show1) ? this.img1 : this.img2);
-        image(img,this.x + xoff,this.y);
+        // let img = (this.img2 == null) ? this.ims[0] : ((this.show1) ? this.ims[0] : this.img2);
+        image(this.ims[this.idx],this.x + xoff,this.y);
     }
 
     bounds() {
         let xoff = this.xOffset();
-        return [this.x + xoff, this.y, this.x + this.img1.width + xoff, this.y + this.img1.height];
+        return [this.x + xoff, this.y, this.x + this.ims[0].width + xoff, this.y + this.ims[0].height];
     }
 
-    // all the overlap cases:
+    // all the overlaps cases:
     //                     x1                  x2
     //                      *------------------*
     //    *-----*        *----*   *------*    *----*  *-------*
@@ -62,11 +73,11 @@ class ImagePrimitive {
     //               *-------------------------------*
     //               s11                             s12
     //------------------------------------------------------------------
-    overlap(b) {
+    overlaps(b) {
         let x1 = this.x;
         let y1 = this.y;
-        let x2 = x1 + this.img1.width;
-        let y2 = y1 + this.img1.height;
+        let x2 = x1 + this.ims[0].width;
+        let y2 = y1 + this.ims[0].height;
 
         let sx1 = b[0];
         let sy1 = b[1];

@@ -14,9 +14,8 @@
 
 /* esversion: 6 */
 
-function Squadron(img1,img2,y,count,pts) {
-    this.img1 = img1;
-    this.img2 = img2;
+function Squadron(ims,y,count,pts) {
+    this.ims = ims;
     this.baseY = y;
     this.ships = [];
     this.points = pts;
@@ -62,7 +61,7 @@ function Squadron(img1,img2,y,count,pts) {
         let x = (width - (this.numShips * app.maxShipWidth + (this.numShips - 1)*this.dx))/2;
         let y = this.baseY;
         for (var i = 0; i < this.numShips; i++) {
-            var inv = new Invader(x,y,this.img1,this.img2,this.points);
+            var inv = new Invader(x,y,this.ims,this.points);
             this.ships.push(inv);
             x += xSpacing;
         }

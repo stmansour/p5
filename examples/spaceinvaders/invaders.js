@@ -11,8 +11,8 @@ function Invaders() {
     this.introduced = false;    // a OneShot... true after all ships have been shown once.
     this.mystery = null;        // shows up at random every 15 - 30 sec, value 100 - 500 points
 
-    this.squadbuilder = function(i1, i2, y, pts) {
-        let squadron = new Squadron(i1, i2, y, this.shipsPerSquadron, pts);
+    this.squadbuilder = function(ims, y, pts) {
+        let squadron = new Squadron(ims, y, this.shipsPerSquadron, pts);
         squadron.init();
         this.squadrons.push(squadron);
     };
@@ -21,11 +21,11 @@ function Invaders() {
         // let y = 200;    // game over fast
         let y = 100; // normal play
         let y1 = 40;
-        this.squadbuilder(app.b1, app.b2, y + 4 * y1, 10);
-        this.squadbuilder(app.b1, app.b2, y + 3 * y1, 10);
-        this.squadbuilder(app.a1, app.a2, y + 2 * y1, 20);
-        this.squadbuilder(app.a1, app.a2, y + y1, 20);
-        this.squadbuilder(app.c1, app.c2, y, 30);
+        this.squadbuilder([app.b1, app.b2], y + 4 * y1, 10);
+        this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
+        this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
+        this.squadbuilder([app.a1, app.a2], y + y1, 20);
+        this.squadbuilder([app.c1, app.c2], y, 30);
         this.mystery = new MysteryShip();
     };
 
@@ -130,20 +130,13 @@ function Invaders() {
         //-----------------------------------------------
         // did any invader hit the laserCannon?
         //-----------------------------------------------
-        let x1 = app.laserCannon.x;
-        let x2 = app.laserCannon.x + app.cannon.width;
-        let y1 = app.laserCannon.y;
-        let y2 = app.laserCannon.y + app.cannon.height;
         for (let i = 0; i < this.squadrons.length && !app.gameOver; i++) {
             let squadron = this.squadrons[i];
             if (squadron.destroyed) {
                 continue;
             }
             for (var j = 0; j < squadron.ships.length && !app.gameOver; j++) {
-                ship = squadron.ships[j];
-                let xcheck = ship.x + ship.img1.width >= x1 && ship.x < x2;
-                let ycheck = ship.y + ship.img1.height > y1;
-                if (xcheck && ycheck) {
+                if (squadron.ships[j].overlaps(app.laserCannon)) {
                     app.setGameOver(2); // player lost
                 }
             }

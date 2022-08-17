@@ -56,8 +56,8 @@ class Shots {
                     }
                     let sx1 = ship.x;
                     let sy1 = ship.y;
-                    let sx2 = sx1 + ship.img1.width;
-                    let sy2 = sy1 + ship.img1.height;
+                    let sx2 = sx1 + ship.ims[0].width;
+                    let sy2 = sy1 + ship.ims[0].height;
                     // console.log('ship' + [sx1,sy1,sx2,sy2]);
                     if (sx2 >= x1 && sx1 < x2 && sy2 >= y1 && sy1 < y2) {
                         this.hit(i,j,k,sx1,sy1);

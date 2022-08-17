@@ -9,8 +9,10 @@ class SpaceInvadersApp {
         this.c1 = null; // invader a image arms down
         this.c2 = null; // invader a image arms up
         this.d = null;  // mystery ship
+        this.bmb3a = null // bomb 3
         this.eplode = null;  // explosion graphic
         this.cannon = null; // the laser cannon image
+        this.cannonShot = null; // the laser cannon image
         this.invaders = null;
         this.laserCannon = null;
         this.shots = null;
@@ -41,6 +43,8 @@ class SpaceInvadersApp {
         this.d  = loadImage('assets/d.png');
         this.explode  = loadImage('assets/explode.png');
         this.cannon = loadImage('assets/lasercannon.png');
+        this.cannonShot = loadImage('assets/cannonshot.png');
+        this.bmb3a = loadImage('assets/bmb3a.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
     }
@@ -54,6 +58,8 @@ class SpaceInvadersApp {
         this.c2.loadPixels();
         this.d.loadPixels();
         this.explode.loadPixels();
+        this.bmb3a.loadPixels();
+        this.cannonShot.loadPixels();
     }
 
     setMaxShipWidth() {
