@@ -56,11 +56,14 @@ function Squadron(ims,y,count,pts) {
         }
     };
 
-    this.init = function() {
+    this.init = function(n) {
+        if (typeof n === "undefined") {
+            n = this.numShips;
+        }
         let xSpacing = app.maxShipWidth + this.dx;
-        let x = (width - (this.numShips * app.maxShipWidth + (this.numShips - 1)*this.dx))/2;
+        let x = (width - (n * app.maxShipWidth + (n - 1)*this.dx))/2;
         let y = this.baseY;
-        for (var i = 0; i < this.numShips; i++) {
+        for (var i = 0; i < n; i++) {
             var inv = new Invader(x,y,this.ims,this.points);
             this.ships.push(inv);
             x += xSpacing;

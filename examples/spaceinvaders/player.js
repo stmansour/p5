@@ -4,6 +4,7 @@ class Player {
         this.score = 0;
         this.credits = c;
         this.lives = 0;
+        this.wavesCompleted = 0;
         this.gamesWon = 0;
     }
 

@@ -14,25 +14,33 @@ function setup() {
     app.loadAllPixels();
     app.setMaxShipWidth();
     textFont(app.font);
-    app.mode = 0; // being very explicit
+    app.mode = MODE_NOT_PLAYING; // initialization; being very explicit
     app.screen.init();
 }
 
 function draw() {
     app.screen.show();
 
-    if (app.mode > 0) {
-        app.shots.show();
-        app.shots.scanForHits();
-        app.invaders.show();
-        if (app.invaders.introduced) {
-            app.laserCannon.go(); // move before show
-            app.laserCannon.show();
-        }
-    } else {
-        app.screen.showSelectPlayers();
+    switch (app.mode) {
+        case MODE_NOT_PLAYING:
+            app.screen.showSelectPlayers();
+            break;
+        case MODE_NEW_GAME_1_PLAYER:
+        case MODE_NEW_GAME_2_PLAYERS:
+        case MODE_HOLD_SCREEN_MSG:
+        case MODE_NEXT_WAVE:
+            app.shots.show();
+            app.shots.scanForHits();
+            app.invaders.show();
+            if (app.invaders.introduced) {
+                app.laserCannon.go(); // move before show
+                app.laserCannon.show();
+            }
+            break;
+        default:
+            console.log("unknown mode: " + app.mode);
+            break;
     }
-
 }
 
 function keyPressed() {

@@ -104,15 +104,50 @@ class SIScreen {
         this.scores();
         this.bottomLine();
         switch (app.mode) {
-            case 0:
+            case MODE_NOT_PLAYING:
                 this.insertCoins();
                 this.showAds();
+                app.screen.showSelectPlayers();
                 break;
-            case 1:
+            case MODE_NEW_GAME_1_PLAYER:
+            case MODE_NEW_GAME_2_PLAYERS:
+            case MODE_HOLD_SCREEN_MSG:
+            case MODE_NEXT_WAVE:
                 this.lives();
                 break;
-            case 2:
-                this.lives();
+        }
+
+        let stat = app.gameStatus;
+        if (stat > GAME_HOLD_FOR_MESSAGE) {
+            stat -= GAME_HOLD_FOR_MESSAGE;
+        }
+        let s="";
+        switch (stat) {
+            case GAME_IN_PROGRESS:
+                break;
+            case GAME_PLAYER_DEFEATED_WAVE:
+                let n = app.players[app.currentPlayer].wavesCompleted;
+                s = "*** YOU HAVE DEFEATED " + n + " WAVE" + ((n > 1) ? "S" : "") + " ***";
+                fill(80, 255, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
+                break;
+            case GAME_PLAYER_LOST_WAVE:
+                s = "YOU HAVE " + app.players[app.currentPlayer].lives + " MORE LIVES";
+                fill(255, 80, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
+                break;
+            case GAME_PLAYER_LOST:
+                s = "YOU HAVE NO MORE LIVES";
+                fill(255, 80, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
+                break;
+            case GAME_PLAYER_WON:
+                console.log("what do we do now?  I don't know what it means to win!");
+                break;
+            case GAME_HOLD_FOR_MESSAGE:
+                break;
+            default:
+                console.log("unknown wave status: " + status);
                 break;
         }
 
@@ -136,6 +171,7 @@ class SIScreen {
         text(s, (width - textWidth(s)) / 2, 100);
     }
 
+
     showGameOver() {
         noStroke();
         let s = "GAME OVER";
@@ -143,20 +179,10 @@ class SIScreen {
         fill(255, 80, 80);
         text(s, (width - textWidth(s)) / 2, 150);
 
-        if (app.gameStatus == 1) {
-            s = "*** YOU WIN ***";
-            fill(80, 255, 80);
-            text(s, (width - textWidth(s)) / 2, 180);
-        } else if (app.gameStatus == 2) {
-            s = "YOU LOSE";
-            fill(255, 80, 80);
-            text(s, (width - textWidth(s)) / 2, 180);
-        }
-
-        //--------------------------------------------------------------------------
+        // --------------------------------------------------------------------------
         // we need to leave the screen as it is for a few seconds so the user can
         // see the results of this game...
-        //--------------------------------------------------------------------------
+        // --------------------------------------------------------------------------
         if (app.gameOverTimer != null) {
             return; // if we've already set the timeout, return now so we don't set it again
         } else {
@@ -223,9 +249,6 @@ class SIScreen {
     }
 
     lives() {
-        if (app.mode != 1 && app.mode != 2) {
-            return;
-        }
         noStroke();
         textSize(app.cSize);
         fill(97, 201, 59);
@@ -240,6 +263,15 @@ class SIScreen {
             x += app.cannon.width + 5;
         }
     }
+
+    // showWavesCompleted() {
+    //     noStroke();
+    //     textSize(app.cSize);
+    //     fill(97, 201, 59);
+    //     let player = app.players[app.currentPlayer];
+    //     s = "WAVES COMPLETED: " + player.wavesCompleted;
+    //     text(s,(width - textWidth(s))/2,75);
+    // }
 
     insertCoins() {
         if (!this.insertCoinsShow) {

@@ -1,5 +1,18 @@
 /*jshint esversion: 6 */
 
+const MODE_NOT_PLAYING = 0;
+const MODE_NEW_GAME_1_PLAYER = 1;
+const MODE_NEW_GAME_2_PLAYERS = 2;
+const MODE_HOLD_SCREEN_MSG = 3;
+const MODE_NEXT_WAVE = 4;
+
+const GAME_IN_PROGRESS = 0;
+const GAME_PLAYER_DEFEATED_WAVE = 1;
+const GAME_PLAYER_LOST_WAVE = 2;
+const GAME_PLAYER_LOST = 3;
+const GAME_PLAYER_WON = 4;  // I don't know about this, not sure how player wins.
+const GAME_HOLD_FOR_MESSAGE = 100;
+
 class SpaceInvadersApp {
     constructor() {
         this.a1 = null; // invader a image arms down
@@ -9,9 +22,9 @@ class SpaceInvadersApp {
         this.c1 = null; // invader a image arms down
         this.c2 = null; // invader a image arms up
         this.d = null;  // mystery ship
-        this.bmb3a = null // bomb 3
-        this.eplode = null;  // explosion graphic
-        this.cannon = null; // the laser cannon image
+        this.bmb3a = null;      // bomb 3
+        this.eplode = null;     // explosion graphic
+        this.cannon = null;     // the laser cannon image
         this.cannonShot = null; // the laser cannon image
         this.invaders = null;
         this.laserCannon = null;
@@ -28,8 +41,9 @@ class SpaceInvadersApp {
         this.credits = 0;
         this.cSize = 14; // size of large characters
         this.font = null;
-        this.mode = 0; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
+        this.mode = MODE_NOT_PLAYING; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
         this.screen = new SIScreen();
+        this.msgTmr = null;
     }
 
     loadImages() {
@@ -72,24 +86,85 @@ class SpaceInvadersApp {
         }
     }
 
-    newGame() {
+    nextWave() {
         this.invaders = new Invaders();
         this.invaders.init();
         this.invaders.speed = 5; // each horizontal move is this many pixels
         this.laserCannon = new LaserCannon();
         this.laserCannon.init();
         this.shots = new Shots();
-        this.gameStatus = 0;
+        this.gameStatus = GAME_IN_PROGRESS;
         this.screen.insertCoinsShow = false;
     }
 
-    setGameOver(status) {
-        this.gameOver = true;
-        this.gameStatus = status;
-        app.invaders.mystery.cancel();
-        if (this.players[this.currentPlayer].score > this.highScore) {
-            this.highScore = this.players[this.currentPlayer].score;
-            app.screen.hiScore();
+    newGame() {
+        // check for second player
+        this.nextWave();
+    }
+
+    messageUserThenContinue(nowState,thenState) {
+        if (this.msgTmr != null) {
+            console.log("*** ERR:  msgTimer was not null in app.js");
+            clearTimeout(this.msgTmr);
+            this.msgTimr = null;
         }
+        app.mode = nowState;
+        this.msgTmr = setTimeout(() => {
+            this.msgTmr = null;
+            app.mode = thenState;
+            this.nextWave();
+        }, 2000);
+    }
+
+    setWaveCompleted(status) {
+        //-----------------------------
+        // stop this wave....
+        //-----------------------------
+        app.invaders.mystery.cancel();
+        let player = this.players[this.currentPlayer];
+        if (player.score > this.highScore) {
+            this.highScore = player.score;
+        }
+
+        //-----------------------------
+        // update based on what has happened...
+        //-----------------------------
+        switch (status) {
+            case GAME_IN_PROGRESS:
+                break;
+            case GAME_PLAYER_DEFEATED_WAVE:
+                player.wavesCompleted++;
+                app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_DEFEATED_WAVE;
+                this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
+                break;
+            case GAME_PLAYER_LOST_WAVE:
+                app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_LOST_WAVE;
+                if (player.lives > 0) {
+                    player.lives--;
+                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
+                } else {
+                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);
+                }
+                break;
+            case GAME_PLAYER_LOST:
+                this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);
+                break;
+            case GAME_PLAYER_WON:
+                console.log("what do we do now?  I don't know what it means to win!");
+                break;
+            case GAME_HOLD_FOR_MESSAGE:
+                break;
+            default:
+                console.log("unknown wave status: " + status);
+
+        }
+
+        // TODO: next player logic
+
+
+        if (player.lives == 0) {
+            this.gameOver = true;
+        }
+
     }
 }

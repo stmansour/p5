@@ -13,18 +13,19 @@ function Invaders() {
 
     this.squadbuilder = function(ims, y, pts) {
         let squadron = new Squadron(ims, y, this.shipsPerSquadron, pts);
-        squadron.init();
+        // squadron.init(); // normal call
+        squadron.init(1); // for debugging
         this.squadrons.push(squadron);
     };
 
     this.init = function() {
-        // let y = 200;    // game over fast
-        let y = 100; // normal play
         let y1 = 40;
+        // let y = 100; // normal play
+        let y = 260;    // game over fast
         this.squadbuilder([app.b1, app.b2], y + 4 * y1, 10);
-        this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
-        this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
-        this.squadbuilder([app.a1, app.a2], y + y1, 20);
+        // this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
+        // this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
+        // this.squadbuilder([app.a1, app.a2], y + y1, 20);
         this.squadbuilder([app.c1, app.c2], y, 30);
         this.mystery = new MysteryShip();
     };
@@ -41,7 +42,7 @@ function Invaders() {
     };
 
     this.show = function() {
-        if (app.gameOver) {
+        if (app.gameOver || app.mode == MODE_HOLD_SCREEN_MSG) {
             this.showInvaders();
             return;
         }
@@ -137,7 +138,8 @@ function Invaders() {
             }
             for (var j = 0; j < squadron.ships.length && !app.gameOver; j++) {
                 if (squadron.ships[j].overlaps(app.laserCannon)) {
-                    app.setGameOver(2); // player lost
+                    app.setWaveCompleted(GAME_PLAYER_LOST_WAVE); // player lost wave
+                    return;
                 }
             }
         }
@@ -149,7 +151,7 @@ function Invaders() {
                 return false;
             }
         }
-        app.setGameOver(1); // player wins!
+        app.setWaveCompleted(GAME_PLAYER_DEFEATED_WAVE); // player defeated the wave!
         return true;
     };
 }

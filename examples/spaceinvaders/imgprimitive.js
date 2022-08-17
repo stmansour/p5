@@ -73,12 +73,12 @@ class ImagePrimitive {
     //               *-------------------------------*
     //               s11                             s12
     //------------------------------------------------------------------
-    overlaps(b) {
+    overlaps(ob) {
         let x1 = this.x;
         let y1 = this.y;
         let x2 = x1 + this.ims[0].width;
         let y2 = y1 + this.ims[0].height;
-
+        let b = ob.bounds();
         let sx1 = b[0];
         let sy1 = b[1];
         let sx2 = b[2];

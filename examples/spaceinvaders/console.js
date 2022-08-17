@@ -13,13 +13,13 @@ function onePlayer() {
         return;
     }
     app.credits -= 1;
-    app.mode = 1;
+    app.mode = MODE_NEW_GAME_1_PLAYER;
     app.players = [];
     let p = new Player(1);
     p.newGame();
     app.players.push(p);
     app.newGame();
-    app.mode = 1;
+    app.mode = MODE_NEW_GAME_1_PLAYER;
 }
 
 function twoPlayers() {
@@ -32,7 +32,7 @@ function twoPlayers() {
         return;
     }
     app.credits -= 2;
-    app.mode = 2;
+    app.mode = MODE_NEW_GAME_2_PLAYERS;
     app.players = [];
     app.players.push(new Player(1)); // give him 1 credit
     app.players.push(new Player(1));
