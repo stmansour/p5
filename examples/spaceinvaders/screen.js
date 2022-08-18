@@ -14,6 +14,7 @@ class SIScreen {
         this.adsInProgress = false;
         this.insertCoinsShow = false; // don't turn it on until the user trys to play without adding credits
         this.tmr = null;  // we'll leave the last message of an ad campaign up for a few seconds before moving to the next campaign
+        this.statusMsg = "";
     }
 
     init() {
@@ -100,7 +101,6 @@ class SIScreen {
     }
 
     show() {
-        background(0);
         this.scores();
         this.bottomLine();
         switch (app.mode) {
@@ -126,25 +126,33 @@ class SIScreen {
             case GAME_IN_PROGRESS:
                 break;
             case GAME_PLAYER_DEFEATED_WAVE:
+                this.statusMsg = "";
                 let n = app.players[app.currentPlayer].wavesCompleted;
                 s = "*** YOU HAVE DEFEATED " + n + " WAVE" + ((n > 1) ? "S" : "") + " ***";
                 fill(80, 255, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 80);
+                this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST_WAVE:
-                s = "YOU HAVE " + app.players[app.currentPlayer].lives + " MORE LIVES";
+                this.statusMsg = "";
+                s = "PREPARE FOR NEXT WAVE  -  LIVES REMAINING: " + app.players[app.currentPlayer].lives;
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 80);
+                this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST:
+                this.statusMsg = "";
                 s = "YOU HAVE NO MORE LIVES";
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 80);
+                this.gameOver = true;
                 break;
             case GAME_PLAYER_WON:
                 console.log("what do we do now?  I don't know what it means to win!");
                 break;
             case GAME_HOLD_FOR_MESSAGE:
+                fill(255, 80, 80);
+                text(this.statusMsg, (width - textWidth(this.statusMsg)) / 2, 80);
                 break;
             default:
                 console.log("unknown wave status: " + status);
@@ -287,7 +295,7 @@ class SIScreen {
     bottomLine() {
         stroke(97, 201, 59);
         strokeWeight(2);
-        let y = height - app.cannon.height - 20;
+        let y = app.bottomLineHeight;
         line(0, y, width, y);
     }
 }

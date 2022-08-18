@@ -19,7 +19,7 @@ function setup() {
 }
 
 function draw() {
-    app.screen.show();
+    background(0);
 
     switch (app.mode) {
         case MODE_NOT_PLAYING:
@@ -32,6 +32,7 @@ function draw() {
             app.shots.show();
             app.shots.scanForHits();
             app.invaders.show();
+            app.invaders.scanForHits();
             if (app.invaders.introduced) {
                 app.laserCannon.go(); // move before show
                 app.laserCannon.show();
@@ -41,6 +42,8 @@ function draw() {
             console.log("unknown mode: " + app.mode);
             break;
     }
+
+    app.screen.show();
 }
 
 function keyPressed() {

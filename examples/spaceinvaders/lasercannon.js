@@ -8,15 +8,21 @@ class LaserCannon extends ImagePrimitive {
         this.movingLeft = false;
         this.movingRight = false;
         this.moveAmt = 8;
+        this.destroyed = false;
     }
 
     init() {
-        app.cannon.loadPixels();
         this.width = app.cannon.width;
         this.height = app.cannon.height;
         this.y = height - this.height - 60;
         this.x = (width - this.width)/2;
         super.setOriginX(1); // center X
+    }
+
+    show() {
+        if (!this.destroyed) {
+            super.show();
+        }
     }
 
     go() {

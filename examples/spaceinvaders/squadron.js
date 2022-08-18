@@ -14,20 +14,23 @@
 
 /* esversion: 6 */
 
-function Squadron(ims,y,count,pts) {
-    this.ims = ims;
-    this.baseY = y;
-    this.ships = [];
-    this.points = pts;
-    this.numShips = count;  // number of ships in this squadron
-    this.leftmost = null;   // leftmost invader that is not killed
-    this.rightmost = null;  // rightmost invader that is not killed
-    this.direction = 1;     // multiplier, can be 1 or -1
-    this.dx = 10;           // 10 pixels between ships
-    this.destroyed = false; // true when all ships in the squadron have been killed
-    this.directionChangeNeeded = false; // when one of the invaders is moved left of the left edge or right of the right edge
+class Squadron {
+    constructor(ims,y,count,pts) {
+        this.ims = ims;
+        this.baseY = y;
+        this.ships = [];
+        this.points = pts;
+        this.numShips = count;  // number of ships in this squadron
+        this.leftmost = null;   // leftmost invader that is not killed
+        this.rightmost = null;  // rightmost invader that is not killed
+        this.direction = 1;     // multiplier, can be 1 or -1
+        this.dx = 10;           // 10 pixels between ships
+        this.destroyed = false; // true when all ships in the squadron have been killed
+        this.directionChangeNeeded = false; // when one of the invaders is moved left of the left edge or right of the right edge
+        this.bombs = null;
+    }
 
-    this.reassessStatus = function() {
+    reassessStatus() {
         if (this.destroyed) {
             return;
         }
@@ -54,9 +57,9 @@ function Squadron(ims,y,count,pts) {
         } else if (this.leftmost != null) {
             this.directionChangeNeeded = this.leftmost.x - app.border < 0;
         }
-    };
+    }
 
-    this.init = function(n) {
+    init(n) {
         if (typeof n === "undefined") {
             n = this.numShips;
         }
@@ -69,14 +72,28 @@ function Squadron(ims,y,count,pts) {
             x += xSpacing;
         }
         this.reassessStatus();
-    };
+        this.bombs = new Bombs();
+    }
 
-    this.show = function() {
+    show() {
+        this.bombs.show();  // the bombs still fall even if the ships were destroyed.
         if (this.destroyed) {
             return;
         }
-        for (var i = 0; i < this.ships.length; i++) {
+        for (let i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
+
+            // don't drop any more bombs if we've frozen the screen...
+            if (app.gameStatus < GAME_HOLD_FOR_MESSAGE && app.invaders.introduced) {
+                let r = random(1,4000);
+                if (r < 2 ) {
+                    this.bombs.fire(this.ships[i].x, this.ships[i].y);
+                }
+            }
         }
-    };
+    }
+
+    scanForHits() {
+        return this.bombs.scanForHits();
+    }
 }

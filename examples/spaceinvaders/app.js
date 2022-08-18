@@ -44,6 +44,7 @@ class SpaceInvadersApp {
         this.mode = MODE_NOT_PLAYING; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
         this.screen = new SIScreen();
         this.msgTmr = null;
+        this.bottomLineHeight = 0;
     }
 
     loadImages() {
@@ -55,10 +56,17 @@ class SpaceInvadersApp {
         this.c2 = loadImage('assets/c2.png');
         this.c2 = loadImage('assets/c2.png');
         this.d  = loadImage('assets/d.png');
+        this.bmb1a = loadImage('assets/bmb1a.png');
+        this.bmb1b = loadImage('assets/bmb1b.png');
+        this.bmb2a = loadImage('assets/bmb2a.png');
+        this.bmb2b = loadImage('assets/bmb2b.png');
+        this.bmb2c = loadImage('assets/bmb2c.png');
+        this.bmb3a = loadImage('assets/bmb3a.png');
+        this.bmb3b = loadImage('assets/bmb3b.png');
+        this.bmb3c = loadImage('assets/bmb3c.png');
         this.explode  = loadImage('assets/explode.png');
         this.cannon = loadImage('assets/lasercannon.png');
         this.cannonShot = loadImage('assets/cannonshot.png');
-        this.bmb3a = loadImage('assets/bmb3a.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
     }
@@ -71,9 +79,18 @@ class SpaceInvadersApp {
         this.c1.loadPixels();
         this.c2.loadPixels();
         this.d.loadPixels();
-        this.explode.loadPixels();
+        this.bmb1a.loadPixels();
+        this.bmb1b.loadPixels();
+        this.bmb2a.loadPixels();
+        this.bmb2b.loadPixels();
+        this.bmb2c.loadPixels();
         this.bmb3a.loadPixels();
+        this.bmb3b.loadPixels();
+        this.bmb3c.loadPixels();
+        this.explode.loadPixels();
+        this.cannon.loadPixels();
         this.cannonShot.loadPixels();
+        app.bottomLineHeight = height - app.cannon.height - 20;
     }
 
     setMaxShipWidth() {
@@ -98,8 +115,33 @@ class SpaceInvadersApp {
     }
 
     newGame() {
-        // check for second player
+        // TODO: check for second player
         this.nextWave();
+    }
+
+    gameHasStopped() {
+        let v = app.laserCannon.destroyed;
+        v = v || app.invaders.destroyed;
+        v = v || (app.players[app.currentPlayer].lives == 0);
+        return v;
+    }
+
+    clearScreenForMessages() {
+        let stat = app.gameStatus;
+        if (stat > GAME_HOLD_FOR_MESSAGE) {
+            stat -= GAME_HOLD_FOR_MESSAGE;
+        }
+        if (stat == GAME_PLAYER_DEFEATED_WAVE ||
+            stat == GAME_PLAYER_LOST_WAVE ||
+            stat == GAME_PLAYER_LOST ||
+            stat == GAME_PLAYER_LOST) {
+            return true;
+        }
+        return false;
+    }
+
+    stopGame() {
+        this.invaders.mystery.cancel();  // cancel any mystery ship timeouts
     }
 
     messageUserThenContinue(nowState,thenState) {
@@ -113,7 +155,7 @@ class SpaceInvadersApp {
             this.msgTmr = null;
             app.mode = thenState;
             this.nextWave();
-        }, 2000);
+        }, 5000);
     }
 
     setWaveCompleted(status) {
@@ -126,9 +168,9 @@ class SpaceInvadersApp {
             this.highScore = player.score;
         }
 
-        //-----------------------------
-        // update based on what has happened...
-        //-----------------------------
+        //--------------------------------------
+        // update based on status...
+        //--------------------------------------
         switch (status) {
             case GAME_IN_PROGRESS:
                 break;
@@ -156,7 +198,6 @@ class SpaceInvadersApp {
                 break;
             default:
                 console.log("unknown wave status: " + status);
-
         }
 
         // TODO: next player logic

@@ -12,6 +12,9 @@ class Shots {
     }
 
     show() {
+        if (app.gameHasStopped()) {
+            return;
+        }
         for (var i = 0; i < this.shots.length; i++) {
             this.shots[i].show();
             this.shots[i].move();

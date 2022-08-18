@@ -14,18 +14,18 @@ function Invaders() {
     this.squadbuilder = function(ims, y, pts) {
         let squadron = new Squadron(ims, y, this.shipsPerSquadron, pts);
         // squadron.init(); // normal call
-        squadron.init(1); // for debugging
+        squadron.init(); // for debugging
         this.squadrons.push(squadron);
     };
 
     this.init = function() {
         let y1 = 40;
-        // let y = 100; // normal play
-        let y = 260;    // game over fast
+        let y = 100; // normal play
+        // let y = 260;    // game over fast
         this.squadbuilder([app.b1, app.b2], y + 4 * y1, 10);
-        // this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
-        // this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
-        // this.squadbuilder([app.a1, app.a2], y + y1, 20);
+        this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
+        this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
+        this.squadbuilder([app.a1, app.a2], y + y1, 20);
         this.squadbuilder([app.c1, app.c2], y, 30);
         this.mystery = new MysteryShip();
     };
@@ -42,7 +42,10 @@ function Invaders() {
     };
 
     this.show = function() {
-        if (app.gameOver || app.mode == MODE_HOLD_SCREEN_MSG) {
+        if (app.gameHasStopped() || app.mode == MODE_HOLD_SCREEN_MSG) {
+            if (app.clearScreenForMessages()) {
+                return;
+            }
             this.showInvaders();
             return;
         }
@@ -127,16 +130,29 @@ function Invaders() {
         this.mystery.show();
     };
 
+    this.scanForHits = function() {
+        if (app.gameHasStopped()) {
+            return true;
+        }
+        for (var i = 0; i < this.squadrons.length; i++) {
+            let squadron = this.squadrons[i];
+            if (squadron.scanForHits()) {
+                return true; // no need to search further
+            }
+        }
+        return false;
+    };
+
     this.checkCollisions = function() {
         //-----------------------------------------------
         // did any invader hit the laserCannon?
         //-----------------------------------------------
-        for (let i = 0; i < this.squadrons.length && !app.gameOver; i++) {
+        for (let i = 0; i < this.squadrons.length && !app.gameHasStopped(); i++) {
             let squadron = this.squadrons[i];
             if (squadron.destroyed) {
                 continue;
             }
-            for (var j = 0; j < squadron.ships.length && !app.gameOver; j++) {
+            for (var j = 0; j < squadron.ships.length && !app.gameHasStopped(); j++) {
                 if (squadron.ships[j].overlaps(app.laserCannon)) {
                     app.setWaveCompleted(GAME_PLAYER_LOST_WAVE); // player lost wave
                     return;
