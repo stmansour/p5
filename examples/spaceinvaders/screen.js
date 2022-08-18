@@ -128,23 +128,27 @@ class SIScreen {
             case GAME_PLAYER_DEFEATED_WAVE:
                 this.statusMsg = "";
                 let n = app.players[app.currentPlayer].wavesCompleted;
-                s = "*** YOU HAVE DEFEATED " + n + " WAVE" + ((n > 1) ? "S" : "") + " ***";
+                s = "WAVES DEFEATED: " + n;
                 fill(80, 255, 80);
-                text(s, (width - textWidth(s)) / 2, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
+                s = "WELL DONE";
+                text(s, (width - textWidth(s)) / 2, 205);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST_WAVE:
                 this.statusMsg = "";
-                s = "PREPARE FOR NEXT WAVE  -  LIVES REMAINING: " + app.players[app.currentPlayer].lives;
+                s = "PREPARE FOR NEXT WAVE";
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
+                s = "LIVES REMAINING: " + app.players[app.currentPlayer].lives;
+                text(s, (width - textWidth(s)) / 2, 205);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST:
                 this.statusMsg = "";
                 s = "YOU HAVE NO MORE LIVES";
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 80);
+                text(s, (width - textWidth(s)) / 2, 180);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_WON:
