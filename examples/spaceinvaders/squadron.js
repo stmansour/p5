@@ -82,6 +82,9 @@ class Squadron {
         }
         for (let i = 0; i < this.ships.length; i++) {
             this.ships[i].show();  // always show first
+            if (this.ships[i].killed) {
+                continue;  // killed invaders can't drop bombs
+            }
 
             // don't drop any more bombs if we've frozen the screen...
             if (app.gameStatus < GAME_HOLD_FOR_MESSAGE && app.invaders.introduced) {
