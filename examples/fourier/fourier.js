@@ -35,7 +35,7 @@ function setup() {
 function draw() {
     updateUI();
     background(0);
-    strokeWeight(1);
+    strokeWeight(2);
     let w = width/10;  // divide screen into parts
     let h = height/app.orderN;
     let x = 0;
@@ -91,7 +91,7 @@ function draw() {
     translate(6*w,height/2);         // graph on the right (60% width)
     app.graph.axes();
     beginShape();
-    strokeWeight(2);
+    strokeWeight(3);
     stroke(app.c[1]);
     noFill();
     for (let i = 0; i < app.buf.length; i++) {

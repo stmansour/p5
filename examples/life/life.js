@@ -36,7 +36,6 @@ function newGame() {
     initLife();
     turnOffSpecialFunctions(true);
     disableStopContinue(false);
-    app.screen.clearAds();
     loop();
 }
 
