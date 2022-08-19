@@ -20,8 +20,8 @@ function Invaders() {
 
     this.init = function() {
         let y1 = 40;
-        let y = 100; // normal play
         // let y = 260;    // game over fast
+        let y = app.players[app.currentPlayer].waveTop;
         this.squadbuilder([app.b1, app.b2], y + 4 * y1, 10);
         this.squadbuilder([app.b1, app.b2], y + 3 * y1, 10);
         this.squadbuilder([app.a1, app.a2], y + 2 * y1, 20);
@@ -155,6 +155,7 @@ function Invaders() {
             for (var j = 0; j < squadron.ships.length && !app.gameHasStopped(); j++) {
                 if (squadron.ships[j].overlaps(app.laserCannon)) {
                     app.setWaveCompleted(GAME_PLAYER_LOST_WAVE); // player lost wave
+                    app.loseTasks();
                     return;
                 }
             }
@@ -168,6 +169,7 @@ function Invaders() {
             }
         }
         app.setWaveCompleted(GAME_PLAYER_DEFEATED_WAVE); // player defeated the wave!
+        app.winTasks();
         return true;
     };
 }

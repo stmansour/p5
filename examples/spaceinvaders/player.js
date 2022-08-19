@@ -6,6 +6,7 @@ class Player {
         this.lives = 0;
         this.wavesCompleted = 0;
         this.gamesWon = 0;
+        this.waveTop = 100;  // gets bigger every time the player wins a wave
     }
 
     newGame() {

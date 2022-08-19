@@ -42,6 +42,7 @@ class Bombs {
                 app.screen.statusMsg = "WAVE OVER  -  LASER CANNON DESTROYED";
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE;
                 app.stopGame();
+                app.loseTasks();
                 this.explosions.push( new Explosion(this.hitx, this.hity,0,5000,concludeLostWave,this));
                 return true;
             }

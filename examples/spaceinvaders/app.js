@@ -119,6 +119,17 @@ class SpaceInvadersApp {
         this.nextWave();
     }
 
+    // call immediately after win detected for tasks that should be done
+    // only once upon winning a game.
+    winTasks() {
+        this.players[this.currentPlayer].waveTop += 20; // next wave moves closer
+    }
+
+    // same as winTasks only for losing the wave
+    loseTasks() {
+
+    }
+
     gameHasStopped() {
         let v = app.laserCannon.destroyed;
         v = v || app.invaders.destroyed;

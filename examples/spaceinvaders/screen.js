@@ -137,7 +137,11 @@ class SIScreen {
                 break;
             case GAME_PLAYER_LOST_WAVE:
                 this.statusMsg = "";
-                s = "PREPARE FOR NEXT WAVE";
+                if (app.players[app.currentPlayer].lives > 0) {
+                    s = "PREPARE FOR NEXT WAVE";
+                } else {
+                    s = "YOU HAVE BEEN DEFEATED BY THE INVADERS -- SHAME ON YOU";
+                }
                 fill(255, 80, 80);
                 text(s, (width - textWidth(s)) / 2, 180);
                 s = "LIVES REMAINING: " + app.players[app.currentPlayer].lives;
