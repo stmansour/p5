@@ -15,9 +15,8 @@ class ImagePrimitive {
         this.x = x;
         this.y = y;
         this.ims = ims;     // an array of images.
-        // this.show1 = true;
-        this.originX = 0;  // 0 = left, 1 = center
-        this.idx = 0;  // current image within this.ims
+        this.originX = 0;   // 0 = left, 1 = center
+        this.idx = 0;       // current image within this.ims
     }
 
     setOriginX(o) {
@@ -36,7 +35,7 @@ class ImagePrimitive {
         this.x += dx;
         this.y += dy;
         if (this.tooFarRight()) {
-            this.x = width -5 - this.ims[0].width;
+            this.x = width - 5 - this.ims[0].width;
         }
         if (this.tooFarLeft()) {
             this.x = 5;
@@ -76,7 +75,7 @@ class ImagePrimitive {
     overlaps(ob) {
         let x1 = this.x + this.xOffset();
         let y1 = this.y;
-        let x2 = x1 + this.ims[0].width + this.xOffset;
+        let x2 = x1 + this.ims[0].width + this.xOffset();
         let y2 = y1 + this.ims[0].height;
         let b = ob.bounds();
         let sx1 = b[0];

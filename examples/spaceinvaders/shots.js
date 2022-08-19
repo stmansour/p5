@@ -28,7 +28,7 @@ class Shots {
     }
 
     scanForHits() {
-        for (var i = this.shots.length - 1; i >= 0; i--) {
+        for (let i = this.shots.length - 1; i >= 0; i--) {
             let x1 = this.shots[i].x;
             let y1 = this.shots[i].y;
             let x2 = x1 + 2;
@@ -44,15 +44,29 @@ class Shots {
             //-------------------------
             // for all squadrons...
             //-------------------------
-            for (var j = app.invaders.squadrons.length - 1; j >= 0; j--) {
+            for (let j = app.invaders.squadrons.length - 1; j >= 0; j--) {
                 let squad = app.invaders.squadrons[j];
-                if (squad.destroyed) {
+                //-------------------------------------------------------------
+                // Check for bomb collisions. Existing bombs still drop after
+                // squadron and/or individual invaders are killed.
+                //-------------------------------------------------------------
+                let bombDestroyed = false;
+                for (let j = squad.bombs.length - j; j >= 0; j--) {
+                    if (this.overlaps(squad.apps.bombs[j])) {
+                        this.shots.splice(i,1);     // remove this shot
+                        squad.bombs.splice(j,1);    // remove this bomb;
+                        bombDestroyed = true;
+                    }
+                }
+
+
+                if (bombDestroyed || squad.destroyed) {
                     continue;
                 }
                 //------------------------------------
                 // for every ship in the squadron...
                 //------------------------------------
-                for (var k = squad.ships.length - 1; k >= 0; k--) {
+                for (let k = squad.ships.length - 1; k >= 0; k--) {
                     let ship = squad.ships[k];
                     if (ship.killed) {
                         continue;
@@ -66,9 +80,12 @@ class Shots {
                         this.hit(i,j,k,sx1,sy1);
                     }
                 }
+
             }
+
         }
     }
+
 
     hit(i,j,k,x,y) {
         // explode the invader in squadron j position k
