@@ -17,7 +17,7 @@ class Bombs {
         if (app.gameHasStopped()) {
             return;
         }
-        for (var i = 0; i < this.bombs.length; i++) {
+        for (let i = 0; i < this.bombs.length; i++) {
             this.bombs[i].show();
             this.bombs[i].move();
             if (this.bombs[i].expired) {
@@ -34,7 +34,7 @@ class Bombs {
     }
 
     scanForHits() {
-        for (var i = this.bombs.length - 1; i >= 0; i--) {
+        for (let i = this.bombs.length - 1; i >= 0; i--) {
             if (app.laserCannon.overlaps(this.bombs[i])) {
                 this.hitx = app.laserCannon.x;
                 this.hity = app.laserCannon.y;

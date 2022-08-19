@@ -29,10 +29,12 @@ class Shots {
 
     scanForHits() {
         for (let i = this.shots.length - 1; i >= 0; i--) {
-            let x1 = this.shots[i].x;
-            let y1 = this.shots[i].y;
+            let shot = this.shots[i];
+            let x1 = shot.x;
+            let y1 = shot.y;
             let x2 = x1 + 2;
             let y2 = y1 + 10;
+            let bombDestroyed = false;
 
             if (app.invaders.mystery.hit(x1,y1,x2,y2)) {
                 this.score(app.invaders.mystery.points);
@@ -46,23 +48,22 @@ class Shots {
             //-------------------------
             for (let j = app.invaders.squadrons.length - 1; j >= 0; j--) {
                 let squad = app.invaders.squadrons[j];
+
                 //-------------------------------------------------------------
                 // Check for bomb collisions. Existing bombs still drop after
                 // squadron and/or individual invaders are killed.
                 //-------------------------------------------------------------
-                let bombDestroyed = false;
-                for (let j = squad.bombs.length - j; j >= 0; j--) {
-                    if (this.overlaps(squad.apps.bombs[j])) {
+                for (let k = squad.bombs.length - 1; k >= 0; k--) {
+                    if (shot.overlaps(squad.apps.bombs[k])) {
                         this.shots.splice(i,1);     // remove this shot
                         squad.bombs.splice(j,1);    // remove this bomb;
                         bombDestroyed = true;
                     }
                 }
-
-
                 if (bombDestroyed || squad.destroyed) {
                     continue;
                 }
+
                 //------------------------------------
                 // for every ship in the squadron...
                 //------------------------------------
@@ -80,9 +81,10 @@ class Shots {
                         this.hit(i,j,k,sx1,sy1);
                     }
                 }
-
+                if (bombDestroyed) {
+                    continue;
+                }
             }
-
         }
     }
 
