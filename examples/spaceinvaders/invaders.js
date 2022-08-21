@@ -1,24 +1,31 @@
 /*jshint esversion: 6 */
+class Invaders {
+    constructor(t_testMode,testdata) {
+        this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
+        this.shipsPerSquadron = 11; // the number of ships for each squadrons
+        this.speed = 1;             // number of pixels to move left or right.
+        this.sqIdx = 0;             // index squadrons being shown
+        this.invIdx = 0;            // index of invader within the squadrons being shown
+        this.dy = 20;               // how much we move down each drop
+        this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
+        this.introduced = false;    // a OneShot... true after all ships have been shown once.
+        this.mystery = null;        // shows up at random every 15 - 30 sec, value 100 - 500 points
+        this.testMode = (typeof t_testMode === 'undefined') ? false : t_testMode;
+        this.testdata = (typeof testdata === 'undefined') ? null : testdata;
+    }
 
-function Invaders() {
-    this.squadrons = [];        // in the airforce, a "squadrons" is a group of squadrons
-    this.shipsPerSquadron = 11; // the number of ships for each squadrons
-    this.speed = 1;             // number of pixels to move left or right.
-    this.sqIdx = 0;             // index squadrons being shown
-    this.invIdx = 0;            // index of invader within the squadrons being shown
-    this.dy = 20;               // how much we move down each drop
-    this.moveVertical = false;  // set to true at the edges when we need to lower the squadrons and change direction
-    this.introduced = false;    // a OneShot... true after all ships have been shown once.
-    this.mystery = null;        // shows up at random every 15 - 30 sec, value 100 - 500 points
-
-    this.squadbuilder = function(ims, y, pts) {
-        let squadron = new Squadron(ims, y, this.shipsPerSquadron, pts);
+    squadbuilder(ims, y, pts) {
+        let ships = this.shipsPerSquadron;
+        if (this.testMode) {
+            ships = this.testdata.numShipsPerSquad;
+        }
+        let squadron = new Squadron(ims, y, ships, pts);
         // squadron.init(); // normal call
         squadron.init(); // for debugging
         this.squadrons.push(squadron);
-    };
+    }
 
-    this.init = function() {
+    init() {
         let y1 = 40;
         // let y = 260;    // game over fast
         let y = app.players[app.currentPlayer].waveTop;
@@ -28,9 +35,17 @@ function Invaders() {
         this.squadbuilder([app.a1, app.a2], y + y1, 20);
         this.squadbuilder([app.c1, app.c2], y, 30);
         this.mystery = new MysteryShip();
-    };
+    }
 
-    this.nextInvader = function() {
+    activeInvaderCount() {
+        let n = 0;
+        for (let i = 0; i < this.squadrons.length; i++) {
+            n += this.squadrons[i].activeShips;
+        }
+        return n;
+    }
+
+    nextInvader() {
         this.invIdx += 1;
         if (this.invIdx >= this.squadrons[this.sqIdx].ships.length) {
             this.invIdx = 0;
@@ -41,7 +56,7 @@ function Invaders() {
         }
     };
 
-    this.show = function() {
+    show() {
         if (app.gameHasStopped() || app.mode == MODE_HOLD_SCREEN_MSG) {
             if (app.clearScreenForMessages()) {
                 return;
@@ -79,7 +94,9 @@ function Invaders() {
                     if (this.moveVertical) {
                         ship.relativeMove(0, this.dy);
                     } else {
-                        ship.relativeMove(squadrons.direction * this.speed, 0);
+                        if (!this.testMode || (this.testMode && !this.testdata.dontMoveInvaders) ) {
+                            ship.relativeMove(squadrons.direction * this.speed, 0);
+                        }
                     }
                     this.checkCollisions();
                     invaderMoved = true;
@@ -120,17 +137,17 @@ function Invaders() {
                 }
             }
         }
-    };
+    }
 
-    this.showInvaders = function() {
+    showInvaders() {
         for (var i = 0; i < this.squadrons.length; i++) {
             let squadron = this.squadrons[i];
             squadron.show();
         }
         this.mystery.show();
-    };
+    }
 
-    this.scanForHits = function() {
+    scanForHits() {
         if (app.gameHasStopped()) {
             return true;
         }
@@ -141,9 +158,9 @@ function Invaders() {
             }
         }
         return false;
-    };
+    }
 
-    this.checkCollisions = function() {
+    checkCollisions() {
         //-----------------------------------------------
         // did any invader hit the laserCannon?
         //-----------------------------------------------
@@ -160,9 +177,9 @@ function Invaders() {
                 }
             }
         }
-    };
+    }
 
-    this.checkDestroyed = function() {
+    checkDestroyed() {
         for (let i = 0; i < this.squadrons.length; i++) {
             if (!this.squadrons[i].destroyed) {
                 return false;
@@ -171,5 +188,5 @@ function Invaders() {
         app.setWaveCompleted(GAME_PLAYER_DEFEATED_WAVE); // player defeated the wave!
         app.winTasks();
         return true;
-    };
+    }
 }

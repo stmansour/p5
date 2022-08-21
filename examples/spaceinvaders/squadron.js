@@ -20,6 +20,7 @@ class Squadron {
         this.baseY = y;
         this.ships = [];
         this.points = pts;
+        this.activeShips = 0;   // count of ships in this squad that have not been killed
         this.numShips = count;  // number of ships in this squadron
         this.leftmost = null;   // leftmost invader that is not killed
         this.rightmost = null;  // rightmost invader that is not killed
@@ -36,11 +37,13 @@ class Squadron {
         }
         this.leftmost = null;
         this.rightmost = null;
+        let n = 0;
         for (var i = 0; i < this.ships.length; i++) {
             let ship = this.ships[i];
             if (ship.killed) {
                 continue;
             }
+            n++;
             if (this.leftmost == null) {
                 this.leftmost = ship;
             }
@@ -51,6 +54,7 @@ class Squadron {
                 this.rightmost = ship;
             }
         }
+        this.activeShips = n;
         this.destroyed = (this.leftmost == null && this.rightmost == null);
         if (this.direction > 0 && this.rightmost != null) {
             this.directionChangeNeeded = this.rightmost.x + app.maxShipWidth + app.border > width;

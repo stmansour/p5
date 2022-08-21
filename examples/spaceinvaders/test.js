@@ -3,7 +3,11 @@
 let app = null;
 
 function preload() {
-    app = new SpaceInvadersApp();
+    var testdata = {
+        numShipsPerSquad: 1,
+        dontMoveInvaders: true,
+    };
+    app = new SpaceInvadersApp(true,testdata);
     app.loadImages();
 }
 
@@ -29,7 +33,6 @@ function draw() {
         case MODE_NEW_GAME_2_PLAYERS:
         case MODE_HOLD_SCREEN_MSG:
         case MODE_NEXT_WAVE:
-            app.setSpeed();
             app.shots.show();
             app.shots.scanForHits();
             app.invaders.show();

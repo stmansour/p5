@@ -14,7 +14,7 @@ const GAME_PLAYER_WON = 4;  // I don't know about this, not sure how player wins
 const GAME_HOLD_FOR_MESSAGE = 100;
 
 class SpaceInvadersApp {
-    constructor() {
+    constructor(t_testMode,testdata) {
         this.a1 = null; // invader a image arms down
         this.a2 = null; // invader a image arms up
         this.b1 = null; // invader a image arms down
@@ -45,6 +45,8 @@ class SpaceInvadersApp {
         this.screen = new SIScreen();
         this.msgTmr = null;
         this.bottomLineHeight = 0;
+        this.testMode = (typeof t_testMode === 'undefined') ? false : t_testMode;
+        this.testdata = (typeof testdata === 'undefined') ? null : testdata;
     }
 
     loadImages() {
@@ -104,7 +106,7 @@ class SpaceInvadersApp {
     }
 
     nextWave() {
-        this.invaders = new Invaders();
+        this.invaders = new Invaders(this.testMode,this.testdata);
         this.invaders.init();
         this.invaders.speed = 5; // each horizontal move is this many pixels
         this.laserCannon = new LaserCannon();
@@ -117,6 +119,15 @@ class SpaceInvadersApp {
     newGame() {
         // TODO: check for second player
         this.nextWave();
+    }
+
+    setSpeed() {
+        let n = this.invaders.activeInvaderCount();
+        if (n == 1) {
+            this.invaders.speed = 10;
+        } else if (n < 7) {
+            this.invaders.speed = 5;
+        }
     }
 
     // call immediately after win detected for tasks that should be done
