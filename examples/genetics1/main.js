@@ -3,7 +3,7 @@ var app = {
     width: 800,
     height: 400,
     phrase: "Approaching like a drowning wall of love",
-    population: [],
+    population: null,
     populationSize: 500,
     generations: 0,
     mutationRate: 0.009,
@@ -12,11 +12,7 @@ var app = {
 };
 
 function newPopulation() {
-    let p = [];
-    for (var i = 0; i < app.populationSize; i++) {
-        p.push(new DNA(i));
-    }
-    app.population = p;
+    app.population = new Population(this.populationSize);
 }
 
 function setup() {
@@ -29,13 +25,13 @@ function draw() {
     // compute fitness
     let j = 0;
     for (let i = 0; i < app.population.length; i++) {
-        app.population[i].determineFitness();
-        if (app.population[i].fitness > app.population[j].fitness) {
+        app.population.p[i].determineFitness();
+        if (app.population.p[i].fitness > app.population.p[j].fitness) {
             j = i;
         }
     }
-    app.bestDNA = app.population[j].genes;
-    app.bestFitness = app.population[j].fitness;
+    app.bestDNA = app.population.p[j].genes;
+    app.bestFitness = app.population.p[j].fitness;
     updateUI();
     if (app.bestFitness > 0.999999) {
         app.population.sort((a,b) => {
@@ -54,9 +50,9 @@ function draw() {
     // create a mating pool
     let matingPool = [];
     for (let i = 0; i < app.population.length; i++) {
-        let n = floor(app.population[i].fitness * 100);  // n is now an integer between 0 and 100
+        let n = floor(app.population.p[i].fitness * 100);  // n is now an integer between 0 and 100
         for (let j = 0; j < n; j++) {
-            matingPool.push(app.population[i]);
+            matingPool.push(app.population.p[i]);
         }
     }
 
@@ -89,7 +85,7 @@ function chooseParents(p) {
 function showPopulation() {
     let s = "";
     for (let i = 0; i < 50; i++) {
-        s += HtmlEncode(app.population[i].genes) + "<br>";
+        s += HtmlEncode(app.population.p[i].genes) + "<br>";
     }
     setInnerHTML("populationData",s);
 }
