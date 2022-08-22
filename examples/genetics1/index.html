@@ -33,7 +33,28 @@
                 amount of time would eventually type any textual work you can think of, like the complete works
                 of William Shakespear. My favorite variation came from Mr. Burns in
                 <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
-                While that is true, the probability of that happening is so low
+                While that is true, the probability of that happening is so low that it cannot be used.
+                To be more specific:
+                <ul>
+                    <li>
+                        There are 95 possible characters available for the text (upper and lower case,
+                        punctuation, special characters).
+                    </li>
+                    <li>
+                        There are 40 characters in the target phrase.
+                    </li>
+                    <li>The probability of randomly selecting all the right characters to match
+                        the target phrase is 1 in 95<sup>40</sup>.
+                    </li>
+                </ul>
+                which is roughly 1.285 x 10<sup>79</sup>,
+                which is incomprehensible.  But to break it down further, if we set up a parallel processing
+                solution which could randomly produce 1 billion random texts 40 chars long per second,
+                it would take around 4.07 x 10<sup>62</sup> years to get to the target phrase. Even if we
+                reduced the possible character set to 26 letters and a space, it would still take
+                5.69 x 10<sup>40</sup> years to get to that target phrase. The earth
+                has only been in existence for about 4.3 x 10<sup>9</sup> years.
+
             </p>
             </td>
         </tr>
@@ -73,7 +94,7 @@
         <tr>
             <td align="right"  >Population</td>
             <td width="20"></td>
-            <td align="left" style="font-family:'Courier New';"><span id="populationData">0</span></td>
+            <td width="800" align="left" style="font-family:'Courier New';"><span id="populationData">0</span></td>
         </tr>
     </table>
 </body>
