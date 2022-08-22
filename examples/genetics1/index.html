@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Genetic Test Program 1</title>
+    <script src="../../p5.js"></script>
+    <script src="dna.js"></script>
+    <script src="main.js"></script>
+    <!-- <script src="../../addons/p5.sound.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <table align="center" border=0>
+        <tr>
+            <td colspan="3" align="center">
+                <div id="theCanvas"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" height="10" align="center">
+            <h1>Genetic Programming 1</h1>
+            <p>Evolve to a generation of characters that matches the Target Phrase</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" height="10" align="left">
+            <p style="font-size:12pt;">The purpose of this code is to use concepts from genetics and natural
+                selection to solve problems that might otherwise by unsolvable in a
+                practical sense. One example, the
+                <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem">Infinite Monkey Theorem</a>
+                states that an infinite number of monkeys hitting keys on a typewriter for an infinite
+                amount of time would eventually type any textual work you can think of, like the complete works
+                of William Shakespear. My favorite variation came from Mr. Burns in
+                <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
+                While that is true, the probability of that happening is so low
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td align="right" >Target Phrase</td>
+            <td width="20"></td>
+            <td align="left" style="font-family:'Courier New';font-size:24pt;" ><span id="targetPhrase">0</span></td>
+        </tr>
+        <tr>
+            <td align="right"  >Initial Population</td>
+            <td width="20"></td>
+            <td align="left"><span id="initialPopulation">0</span></td>
+        </tr>
+        <tr>
+            <td align="right" >Mutation Rate</td>
+            <td width="20"></td>
+            <td align="left"><span id="mutationRate"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3" bgcolor="#bbbbbb" height="10"></td>
+        </tr>
+        <tr>
+            <td align="right"  >Generations</td>
+            <td width="20"></td>
+            <td align="left"><span id="generations">0</span></td>
+        </tr>
+        <tr>
+            <td align="right"  >Best result so far</td>
+            <td width="20"></td>
+            <td align="left"><span id="bestDNA">0</span></td>
+        </tr>
+        <tr>
+            <td align="right"  >Best fitness so far</td>
+            <td width="20"></td>
+            <td align="left"><span id="bestFitness">0</span></td>
+        </tr>
+        <tr>
+            <td align="right"  >Population</td>
+            <td width="20"></td>
+            <td align="left" style="font-family:'Courier New';"><span id="populationData">0</span></td>
+        </tr>
+    </table>
+</body>
+
+</html>
