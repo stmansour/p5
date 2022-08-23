@@ -65,8 +65,5 @@ class Population {
             }
             return 0;
         });
-
     }
-
-
 }

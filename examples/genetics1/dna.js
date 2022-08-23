@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 
 //  A trivial DNA class that supports:
-//    * determining its fitness  (THIS BELONGS SOMEWHERE ELSE)
+//    * determining its fitness  (THIS PROBABLY BELONGS SOMEWHERE ELSE)
 //    * crossover
 //    * mutation
 //============================================================================
@@ -62,5 +62,4 @@ class DNA {
             }
         }
     }
-
 }
