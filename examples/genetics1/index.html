@@ -5,6 +5,7 @@
     <title>Genetic Test Program 1</title>
     <script src="../../p5.js"></script>
     <script src="dna.js"></script>
+    <script src="population.js"></script>
     <script src="main.js"></script>
     <!-- <script src="../../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -19,22 +20,23 @@
         </tr>
         <tr>
             <td colspan="3" height="10" align="center">
-            <h1>Genetic Programming 1</h1>
-            <p>Evolve to a generation of characters that matches the Target Phrase</p>
+                <h1>Genetic Programming 1</h1>
+                <p>Evolve to a generation of characters that matches the Target Phrase</p>
             </td>
         </tr>
         <tr>
-            <td colspan="3" height="10" align="left">
-            <p style="font-size:12pt;">The purpose of this code is to use concepts from genetics and natural
-                selection to solve problems that might otherwise by unsolvable in a
-                practical sense. One example, the
-                <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem">Infinite Monkey Theorem</a>
-                states that an infinite number of monkeys hitting keys on a typewriter for an infinite
-                amount of time would eventually type any textual work you can think of, like the complete works
-                of William Shakespear. My favorite variation came from Mr. Burns in
-                <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
-                While that is true, the probability of that happening is so low that it cannot be used.
-                To be more specific:
+            <td colspan="3" height="10" align="left" style="font-size:12pt;">
+                <p >The purpose of this code is to use concepts from genetics and natural
+                    selection to solve problems that might otherwise by unsolvable in a
+                    practical sense. One example, the
+                    <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem">Infinite Monkey Theorem</a>
+                    states that an infinite number of monkeys hitting keys on a typewriter for an infinite
+                    amount of time would eventually type any textual work you can think of, like the complete works
+                    of William Shakespear. My favorite variation came from Mr. Burns in
+                    <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
+                    While that is true, the probability of that happening is so low that it cannot be used.
+                    To be more specific:
+                </p>
                 <ul>
                     <li>
                         There are 95 possible characters available for the text (upper and lower case,
@@ -47,30 +49,35 @@
                         the target phrase is 1 in 95<sup>40</sup>.
                     </li>
                 </ul>
-                which is roughly 1.285 x 10<sup>79</sup>,
-                which is incomprehensible.  But to break it down further, if we set up a parallel processing
-                solution which could randomly produce 1 billion random texts 40 chars long per second,
-                it would take around 4.07 x 10<sup>62</sup> years to get to the target phrase. Even if we
-                reduced the possible character set to 26 letters and a space, it would still take
-                5.69 x 10<sup>40</sup> years to get to that target phrase. The earth
-                has only been in existence for about 4.3 x 10<sup>9</sup> years.
-
-            </p>
+                <p>
+                    which is roughly 1.285 x 10<sup>79</sup>,
+                    which is incomprehensible. But to break it down further, if we set up a parallel processing
+                    solution which could randomly produce and check 1 billion random 40
+                    character phrases every second,
+                    it would take around 4.07 x 10<sup>62</sup> years to get to the target phrase. Even if we
+                    reduced the possible character set to 26 letters and a space, it would still take
+                    5.69 x 10<sup>40</sup> years to get to that target phrase. The earth
+                    has only been in existence for about 4.3 x 10<sup>9</sup> years.
+                </p>
             </td>
         </tr>
         <tr>
-            <td width="200" align="right" >Target Phrase</td>
+            <td width="200" align="right">Target Phrase</td>
             <td width="20"></td>
-            <td align="left"
-                style="font-family:'Andale Mono', 'Courier New', monospace;font-size:20pt;font-weight:bold;" ><span id="targetPhrase">0</span></td>
+            <td align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:20pt;font-weight:bold;"><span id="targetPhrase">0</span></td>
         </tr>
         <tr>
-            <td width="200" align="right"  >Initial Population</td>
+            <td width="200" align="right">Initial Population</td>
             <td width="20"></td>
             <td align="left"><span id="initialPopulation">0</span></td>
         </tr>
         <tr>
-            <td width="200" align="right" >Mutation Rate</td>
+            <td width="200" align="right">Gen 0 Best Match</td>
+            <td width="20"></td>
+            <td align="left"><span id="gen0BestDNA">0</span></td>
+        </tr>
+        <tr>
+            <td width="200" align="right">Mutation Rate</td>
             <td width="20"></td>
             <td align="left"><span id="mutationRate"></span></td>
         </tr>
@@ -78,7 +85,7 @@
             <td colspan="3" bgcolor="#bbbbbb" height="10"></td>
         </tr>
         <tr>
-            <td width="200" align="right"  >Generations</td>
+            <td width="200" align="right">Generations</td>
             <td width="20"></td>
             <td align="left"><span id="generations">0</span></td>
         </tr>
@@ -88,12 +95,12 @@
             <td align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:18pt;font-weight:bold;"><span id="bestDNA">0</span></td>
         </tr>
         <tr>
-            <td width="200" align="right"  >Best fitness so far</td>
+            <td width="200" align="right">Best fitness so far</td>
             <td width="20"></td>
             <td align="left"><span id="bestFitness">0</span></td>
         </tr>
         <tr>
-            <td align="right"  >Population</td>
+            <td align="right">Top 50</td>
             <td width="20"></td>
             <td width="800" align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:12pt;font-weight: bold;"><span id="populationData">0</span></td>
         </tr>
