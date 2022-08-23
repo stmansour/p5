@@ -3,13 +3,14 @@ var app = {
     width: 800,
     height: 400,
     phrase: "Approaching like a drowning wall of love",
+    // phrase: "I'm the twenty dollar man",
     population: null,
     populationSize: 500,
     mutationRate: 0.009,
     bestDNA: "",
     bestFitness: 0,
     gen0BestDNA: "",
-    displayPopCount: 50,
+    displayPopCount: 5,
 };
 
 function setup() {

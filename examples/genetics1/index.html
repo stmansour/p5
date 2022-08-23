@@ -21,7 +21,7 @@
         <tr>
             <td colspan="3" height="10" align="center">
                 <h1>Genetic Programming 1</h1>
-                <p>Evolve to a generation of characters that matches the Target Phrase</p>
+                <p>Evolve a random population of of characters to match a Target Phrase by simulating natural selection</p>
             </td>
         </tr>
         <tr>
@@ -34,8 +34,8 @@
                     amount of time would eventually type any textual work you can think of, like the complete works
                     of William Shakespear. My favorite variation came from Mr. Burns in
                     <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
-                    While that is true, the probability of that happening is so low that it cannot be used.
-                    To be more specific:
+                    While that is true, the probability of that happening is so low that it is irrelevant.
+                    Consider the problem of randomly getting to our target phrase:
                 </p>
                 <ul>
                     <li>
@@ -50,14 +50,22 @@
                     </li>
                 </ul>
                 <p>
-                    which is roughly 1.285 x 10<sup>79</sup>,
+                    The chances are roughly 1.285 x 10<sup>79</sup>,
                     which is incomprehensible. But to break it down further, if we set up a parallel processing
                     solution which could randomly produce and check 1 billion random 40
                     character phrases every second,
                     it would take around 4.07 x 10<sup>62</sup> years to get to the target phrase. Even if we
                     reduced the possible character set to 26 letters and a space, it would still take
-                    5.69 x 10<sup>40</sup> years to get to that target phrase. The earth
-                    has only been in existence for about 4.3 x 10<sup>9</sup> years.
+                    5.69 x 10<sup>40</sup> years, still incomprehensibly long. The earth
+                    has only existed for about 4.3 x 10<sup>9</sup> years.
+                </p>
+                <p>The algorithm used here simulates natural selection found in life on earth... in the
+                    following way -- the natural selection process favors those text phrases that resemble
+                    our target phrase. Each successive generation is the result of a breeding process
+                    that is more successful the closer parents' are to the target phrase. The parents each
+                    supply half the "DNA" to their child, and the child has random mutations.  The result
+                    is very effective at selecting generations that move toward the target phrase. The
+                    solution for a 40-character frame usually happens in less than 4000 generations.
                 </p>
             </td>
         </tr>
@@ -100,7 +108,7 @@
             <td align="left"><span id="bestFitness">0</span></td>
         </tr>
         <tr>
-            <td align="right">Top 50</td>
+            <td align="right">Top 5</td>
             <td width="20"></td>
             <td width="800" align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:12pt;font-weight: bold;"><span id="populationData">0</span></td>
         </tr>
