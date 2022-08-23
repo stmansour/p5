@@ -6,12 +6,14 @@
     <script src="../../p5.js"></script>
     <script src="dna.js"></script>
     <script src="population.js"></script>
+    <script src="randompop.js"></script>
     <script src="main.js"></script>
     <!-- <script src="../../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
+    <a href="../index.html">P5JS Projects</a>
     <table align="center" border=0>
         <tr>
             <td colspan="3" align="center">
@@ -28,18 +30,19 @@
             <td colspan="3" height="10" align="left" style="font-size:12pt;">
                 <p >The purpose of this code is to use concepts from genetics and natural
                     selection to solve problems that might otherwise by unsolvable in a
-                    practical sense. One example, the
-                    <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem">Infinite Monkey Theorem</a>
-                    states that an infinite number of monkeys hitting keys on a typewriter for an infinite
-                    amount of time would eventually type any textual work you can think of, like the complete works
-                    of William Shakespear. My favorite variation came from Mr. Burns in
+                    practical sense. One example: the
+                    <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem">Infinite Monkey Theorem</a>.
+                    My favorite variation is shown in
                     <a href="https://www.youtube.com/watch?v=loMEF18Ir4s">this clip from The Simpsons</a>.
-                    While that is true, the probability of that happening is so low that it is irrelevant.
-                    Consider the problem of randomly getting to our target phrase:
+                    Instead of monkeys, we'll use a random number generator to select characters to try to create the
+                    phrase "Approaching like a drowning wall of love" from a random "population" of strings. The code
+                    compares two approaches to solving this problem:
+                    a purely random approach (the monkeys) and a simplified model of genetics and natural selection.
+                    In a nutshell, the complexity of problem is this:
                 </p>
                 <ul>
                     <li>
-                        There are 95 possible characters available for the text (upper and lower case,
+                        There are 95 possible characters available for the phrase (upper and lower case,
                         punctuation, special characters).
                     </li>
                     <li>
@@ -51,21 +54,23 @@
                 </ul>
                 <p>
                     The chances are roughly 1.285 x 10<sup>79</sup>,
-                    which is incomprehensible. But to break it down further, if we set up a parallel processing
-                    solution which could randomly produce and check 1 billion random 40
-                    character phrases every second,
-                    it would take around 4.07 x 10<sup>62</sup> years to get to the target phrase. Even if we
-                    reduced the possible character set to 26 letters and a space, it would still take
+                    which is incomprehensible. But to break it down further, if we set up system that could
+                    randomly produce and check 1 billion random 40 character phrases every second,
+                    it would take, on average, around 4.07 x 10<sup>62</sup> years to get to the target phrase.
+                    Even if we reduced the character set to 26 letters and a space, it would still take
                     5.69 x 10<sup>40</sup> years, still incomprehensibly long. The earth
                     has only existed for about 4.3 x 10<sup>9</sup> years.
                 </p>
-                <p>The algorithm used here simulates natural selection found in life on earth... in the
-                    following way -- the natural selection process favors those text phrases that resemble
-                    our target phrase. Each successive generation is the result of a breeding process
-                    that is more successful the closer parents' are to the target phrase. The parents each
-                    supply half the "DNA" to their child, and the child has random mutations.  The result
-                    is very effective at selecting generations that move toward the target phrase. The
-                    solution for a 40-character frame usually happens in less than 4000 generations.
+                <p>
+                    The random approach will almost certainly not produce any meaningful result by the time
+                    the genetic approach has achieved the goal.
+                    The genetic approach uses natural selection. Each successive generation is the result of a "breeding process"
+                    where parents that are more like the target phrase have a better chance of breeding. Each parent
+                    supplies half the "DNA" to their child.  There is also some random mutations that can occur in the child
+                    (totally random characters that may or may not make it closer to the target phrase).
+                    The result is very effective at selecting generations that move toward the target phrase. The
+                    solution for a 40-character frame usually happens in less than 4000 generations. Natural
+                    Selection is extraordinarily efficient compared to pure randomness.
                 </p>
             </td>
         </tr>
@@ -80,6 +85,19 @@
             <td align="left"><span id="initialPopulation">0</span></td>
         </tr>
         <tr>
+            <td width="200" align="right">Generations</td>
+            <td width="20"></td>
+            <td align="left"><span id="generations">0</span></td>
+        </tr>
+        <tr>
+            <td colspan="3" bgcolor="#bbbbbb" height="10"></td>
+        </tr>
+        <tr>
+            <td>GENETIC SELECTION</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
             <td width="200" align="right">Gen 0 Best Match</td>
             <td width="20"></td>
             <td align="left"><span id="gen0BestDNA">0</span></td>
@@ -88,14 +106,6 @@
             <td width="200" align="right">Mutation Rate</td>
             <td width="20"></td>
             <td align="left"><span id="mutationRate"></span></td>
-        </tr>
-        <tr>
-            <td colspan="3" bgcolor="#bbbbbb" height="10"></td>
-        </tr>
-        <tr>
-            <td width="200" align="right">Generations</td>
-            <td width="20"></td>
-            <td align="left"><span id="generations">0</span></td>
         </tr>
         <tr>
             <td width="200" align="right">Best result so far</td>
@@ -111,6 +121,29 @@
             <td align="right">Top 5</td>
             <td width="20"></td>
             <td width="800" align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:12pt;font-weight: bold;"><span id="populationData">0</span></td>
+        </tr>
+        <tr>
+            <td colspan="3" bgcolor="#bbbbbb" height="10"></td>
+        </tr>
+        <tr>
+            <td>RANDOM SELECTION</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td width="200" align="right">Best result so far</td>
+            <td width="20"></td>
+            <td align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:18pt;font-weight:bold;"><span id="bestRandom">0</span></td>
+        </tr>
+        <tr>
+            <td width="200" align="right">Best fitness so far</td>
+            <td width="20"></td>
+            <td align="left"><span id="bestRandomFitness">0</span></td>
+        </tr>
+        <tr>
+            <td align="right">Top 5</td>
+            <td width="20"></td>
+            <td width="800" align="left" style="font-family:'Andale Mono', 'Courier New', monospace;font-size:12pt;font-weight: bold;"><span id="randomPopData">0</span></td>
         </tr>
     </table>
 </body>

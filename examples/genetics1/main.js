@@ -4,6 +4,7 @@ var app = {
     height: 400,
     phrase: "Approaching like a drowning wall of love",
     // phrase: "I'm the twenty dollar man",
+    randompop: null,
     population: null,
     populationSize: 500,
     mutationRate: 0.009,
@@ -16,20 +17,24 @@ var app = {
 function setup() {
     app.population = new Population(app.populationSize);
     app.gen0BestDNA = app.population.best.genes;
+    app.randompop = new RandomPopulation(app.populationSize);
 }
 
 function draw() {
-    showPopulation(app.displayPopCount);  // show what we got
+    showPopulations(app.displayPopCount);  // show what we got
 
     // compute fitness
     app.population.determineFitness();
     app.bestDNA = app.population.best.genes;
     app.bestFitness = app.population.best.fitness;
 
+    app.randompop.createNextGeneration();
+    app.randompop.determineFitness();
+
     updateUI();
-    if (app.bestFitness > 0.999999) {
+    if (app.bestFitness > 0.999999 || app.randompop.best.fitness > 0.999999) {
         app.population.sortBest();
-        showPopulation(app.displayPopCount);
+        showPopulations(app.displayPopCount);
         noLoop();
         return;
     }
@@ -41,12 +46,18 @@ function draw() {
 }
 
 
-function showPopulation(n) {
+function showPopulations(n) {
     let s = "";
     for (let i = 0; i < n; i++) {
         s += HtmlEncode(app.population.p[i].genes) + "<br>";
     }
     setInnerHTML("populationData",s);
+
+    s = "";
+    for (let i = 0; i < n; i++) {
+        s += HtmlEncode(app.randompop.p[i].genes) + "<br>";
+    }
+    setInnerHTML("randomPopData",s);
 }
 
 function HtmlEncode(s) {
@@ -82,6 +93,9 @@ function updateUI() {
     setInnerHTML("mutationRate", ((app.mutationRate * 100).toFixed(2)) + "%" );
     setInnerHTML("bestFitness",'' + app.bestFitness + ((app.bestFitness == 1) ? "  *** GOAL REACHED! ***" : ""));
     setInnerHTML("gen0BestDNA",app.gen0BestDNA);
+
+    setInnerHTML("bestRandom",app.randompop.best.genes);
+    setInnerHTML("bestRandomFitness",app.randompop.best.fitness);
 }
 
 function setCharAt(str,index,chr) {
