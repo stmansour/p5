@@ -8,6 +8,7 @@
     <script src="population.js"></script>
     <script src="randompop.js"></script>
     <script src="main.js"></script>
+    <script src="ui.js"></script>
     <!-- <script src="../../addons/p5.sound.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -59,18 +60,20 @@
                     it would take, on average, around 4.07 x 10<sup>62</sup> years to get to the target phrase.
                     Even if we reduced the character set to 26 letters and a space, it would still take
                     5.69 x 10<sup>40</sup> years, still incomprehensibly long. The earth
-                    has only existed for about 4.3 x 10<sup>9</sup> years.
+                    has only existed for about 4.5 x 10<sup>9</sup> years.
                 </p>
                 <p>
                     The random approach will almost certainly not produce any meaningful result by the time
                     the genetic approach has achieved the goal.
                     The genetic approach uses natural selection. Each successive generation is the result of a "breeding process"
                     where parents that are more like the target phrase have a better chance of breeding. Each parent
-                    supplies half the "DNA" to their child.  There is also some random mutations that can occur in the child
-                    (totally random characters that may or may not make it closer to the target phrase).
-                    The result is very effective at selecting generations that move toward the target phrase. The
-                    solution for a 40-character frame usually happens in less than 4000 generations. Natural
-                    Selection is extraordinarily efficient compared to pure randomness.
+                    supplies half the "DNA" to their child.  Random mutations can also occur in the child
+                    (totally random characters that may or may not make it closer to the target phrase). This
+                    turns out to be critically important in getting to a solution.
+                    The net result is very effective at evolving generations of phrases that move toward the target phrase. The
+                    solution for a 40-character frame usually happens in less than 4000 generations. The Genetic algorithm
+                    is an efficient way to quickly arrive at great solutions
+                    when there are seemingly infinite possible solutions.
                 </p>
             </td>
         </tr>
