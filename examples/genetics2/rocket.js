@@ -1,15 +1,23 @@
 /*jshint esversion: 6 */
 
 class Rocket {
-    constructor() {
+    constructor(dna) {
         this.reset();
-        this.dna = new DNA();
+        this.id = app.UID;
+        app.UID++;
+        if (typeof dna === "undefined") {
+            this.dna = new DNA();
+        } else {
+            this.dna = dna;
+        }
+        this.done = false;
     }
 
     reset() {
         this.pos = createVector(width/2,height);  // position
         this.vel = createVector();  // velocity
         this.acc = createVector();  // acceleration
+        this.fitness = 0;
     }
 
     applyForce(f) {
@@ -17,11 +25,12 @@ class Rocket {
     }
 
     update() {
-        this.applyForce(this.dna.genes[app.idx]);
-
-        this.vel.add(this.acc);
-        this.pos.add(this.vel);
-        this.acc.mult(0);
+        if (!this.done) {
+            this.applyForce(this.dna.genes[app.cycle]);
+            this.vel.add(this.acc);
+            this.pos.add(this.vel);
+            this.acc.mult(0);
+        }
     }
 
     show() {
@@ -33,5 +42,27 @@ class Rocket {
         fill(255,180);
         rect(0,0, 25,5);
         pop();
+
+        if (!this.done) {
+            let d = this.distanceToTarget();
+            if (d < app.targetDiameter) {
+                this.done = true;  // this rocket has achieved its goal
+                this.calculateFitness();
+                this.fitness *= (app.lifespan - app.cycle); // this bonus rewards those who make it in fewer cycles
+            }
+        }
+    }
+
+    calculateFitness() {
+        this.fitness = map( this.distanceToTarget(),0,width,width,0);
+    }
+
+    distanceToTarget() {
+        return dist(app.targetx,app.targety,this.pos.x,this.pos.y);
+    }
+
+    makeChild(p) {
+        let childDNA = this.dna.crossover(p.dna);
+        return new Rocket(childDNA);
     }
 }
