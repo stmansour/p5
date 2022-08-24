@@ -11,6 +11,7 @@ class Rocket {
             this.dna = dna;
         }
         this.done = false;
+        this.cycles = -1;   // how many cycles does it take to reach the goal. only valid if done == true
     }
 
     reset() {
@@ -47,8 +48,9 @@ class Rocket {
             let d = this.distanceToTarget();
             if (d < app.targetDiameter) {
                 this.done = true;  // this rocket has achieved its goal
+                this.cycles = app.cycle;
                 this.calculateFitness();
-                this.fitness *= (app.lifespan - app.cycle); // this bonus rewards those who make it in fewer cycles
+                this.fitness += (app.lifespan - app.cycle); // this bonus rewards those who make it in fewer cycles
             }
         }
     }
