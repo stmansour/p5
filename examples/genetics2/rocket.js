@@ -15,7 +15,7 @@ class Rocket {
     }
 
     reset() {
-        this.pos = createVector(width/2,height);  // position
+        this.pos = createVector(width/2,height-50);  // position
         this.vel = createVector();  // velocity
         this.acc = createVector();  // acceleration
         this.fitness = 0;
