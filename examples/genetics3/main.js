@@ -5,17 +5,19 @@ let app = {
     height: 500,
     population: null,
     populationSize: 200,
-    lifespan: 200,  // each rocket lives for 200 frames
+    lifespan: 250,  // each rocket lives for 200 frames
     cycle: 0,       // current index into genes, frame of the generation, from 0 to lifespan-1
     targetx: 0,
     targety: 0,
     targetDiameter: 25,
     results: null,
     UID: 0,         // available to all, just increment after use
+    obstacles: null,
 };
 
 function setup() {
     let c = createCanvas(app.width, app.height);
+    app.obstacles = new Obstacles(1);
     c.parent('theCanvas');
     app.population = new Population();
     app.targetx = width/2;
@@ -25,6 +27,7 @@ function setup() {
 function draw() {
     background(0);
     app.population.run();
+    app.obstacles.show();
     updateUI();
     app.cycle++;
     if (app.cycle >= app.lifespan) {

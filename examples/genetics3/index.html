@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../../p5.js"></script>
+    <!-- <script src="../../addons/p5.sound.min.js"></script> -->
+    <script src="dna.js"></script>
+    <script src="obstacle.js"></script>
+    <script src="obstacles.js"></script>
+    <script src="population.js"></script>
+    <script src="rocket.js"></script>
+    <script src="main.js"></script>
+    <script src="ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <title>Genetics 3 - Rockets and Obstacles</title>
+</head>
+
+<body>
+    <a href="../index.html">P5JS Projects</a>
+    <table align="center">
+        <tr>
+            <td colspan="3" align="center">
+                <h2>Genetics 3 - Rockets and Obstacles</h2>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div id="theCanvas"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" height="10"></td>
+        </tr>
+        <tr>
+            <td align="left" width="50%">Cycle:&nbsp;<span id="cycle">0</span></td>
+            <td></td>
+            <td><button onclick="startStop();">PAUSE / CONTINUE</button></td>
+        </tr>
+        <tr>
+            <td align="left" width="50%">Generation:&nbsp;<span id="generation">0</span></td>
+            <td></td>
+            <td><span id="initialBranchLenSlider"></span></td>
+        </tr>
+        <tr>
+            <td align="left" width="50%"><span id="stats">0</span></td>
+            <td></td>
+            <td><span id="branchDecaySlider"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3" height="20"></td>
+        </tr>
+        <tr>
+            <td colspan="3" width="800">
+                Overview goes here.
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
