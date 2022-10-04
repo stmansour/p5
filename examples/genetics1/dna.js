@@ -36,9 +36,12 @@ class DNA {
     }
 
     crossover(d) {
+        return this.crossover1(d);
+    }
+
+    crossover1(d) {
         let child = new DNA(); // we know its id is not unique, we'll name it later
         let gl = this.genes.length;
-        // let m = floor(random(gl));
         for (let i = 0; i < gl; i++) {
             if (random() > 0.5) {
                 child.genes += this.genes[i];
@@ -48,7 +51,19 @@ class DNA {
         }
         return child;
     }
-
+    crossover2(d) {
+        let child = new DNA(); // we know its id is not unique, we'll name it later
+        let gl = this.genes.length;
+        let m = gl/2;
+        for (let i = 0; i < gl; i++) {
+            if (i > m) {
+                child.genes += this.genes[i];
+            } else {
+                child.genes += d.genes[i];
+            }
+        }
+        return child;
+    }
 
     mutate() {
         for (let i = 0; i < this.genes.length; i++) {

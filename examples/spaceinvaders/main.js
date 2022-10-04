@@ -50,9 +50,11 @@ function draw() {
 function keyPressed() {
     switch (keyCode) {
         case RIGHT_ARROW:
+        case 190:
             app.laserCannon.goRight(true);
             break;
         case LEFT_ARROW:
+        case 188:
             app.laserCannon.goLeft(true);
             break;
         case 32:
@@ -65,9 +67,11 @@ function keyPressed() {
 function keyReleased() {
     switch (keyCode) {
         case RIGHT_ARROW:
+        case 190:
             app.laserCannon.goRight(false);
             break;
         case LEFT_ARROW:
+        case 188:
             app.laserCannon.goLeft(false);
             break;
         default:
