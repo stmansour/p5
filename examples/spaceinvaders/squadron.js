@@ -92,7 +92,7 @@ class Squadron {
 
             // don't drop any more bombs if we've frozen the screen...
             if (app.gameStatus < GAME_HOLD_FOR_MESSAGE && app.invaders.introduced) {
-                let r = random(1,4000);
+                let r = random(1,app.players[app.currentPlayer].bombDropOdds);
                 if (r < 2 ) {
                     this.bombs.fire(this.ships[i].x, this.ships[i].y);
                 }

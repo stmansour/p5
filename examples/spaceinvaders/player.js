@@ -7,6 +7,7 @@ class Player {
         this.wavesCompleted = 0;
         this.gamesWon = 0;
         this.waveTop = 100;  // gets bigger every time the player wins a wave
+        this.bombDropOdds = 4000;
     }
 
     newGame() {

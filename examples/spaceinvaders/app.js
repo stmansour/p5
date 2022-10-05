@@ -134,6 +134,10 @@ class SpaceInvadersApp {
     // only once upon winning a game.
     winTasks() {
         this.players[this.currentPlayer].waveTop += 20; // next wave moves closer
+        this.players[this.currentPlayer].bombDropOdds -= 400;
+        if (this.players[this.currentPlayer].bombDropOdds < 1000) {
+            this.players[this.currentPlayer].bombDropOdds = 1000;
+        }
     }
 
     // same as winTasks only for losing the wave
