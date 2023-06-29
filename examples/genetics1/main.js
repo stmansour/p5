@@ -29,10 +29,15 @@ function draw() {
         showPopulations(app.displayPopCount);
         noLoop();
     } else {
+        //---------------------------------
+        //  Next RANDOM generation...
+        //---------------------------------
         app.randompop.createNextGeneration();               // another random population
         app.randompop.determineFitness();                   // check it for fitness
 
-        // evolve next generation:
+        //---------------------------------
+        //  Next GENETIC generation...
+        //---------------------------------
         app.population.createMatingPool();                  // closer the phrase is to the target phrase, the better its chances of being selected for mating
         app.population.createNextGeneration();              // includes DNA crossover and mutation
         app.population.determineFitness();                  // how well each new member of the population compares to the target phrase

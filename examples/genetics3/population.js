@@ -5,6 +5,7 @@ class Population {
         this.fleetsize = app.populationSize;
         this.matingPool = [];
         this.generation = 0;
+        this.best = null;
         for (let i = 0; i < this.fleetsize; i++) {
             this.fleet[i] = new Rocket();
         }
@@ -27,12 +28,19 @@ class Population {
         let results = {
             generation: this.generation,
             success: 0,
+            best: null,
         };
+        let maxfit = 0;
         for (let i = 0; i < this.fleet.length; i++) {
-            if (this.fleet[i].done) {
+            if (this.fleet[i].done && !this.fleet[i].hitObstacle) {
                 results.success++;
             }
+            if (this.fleet[i].fitness > maxfit) {
+                maxfit = this.fleet[i].fitness;
+                this.best = this.fleet[i];
+            }
         }
+        results.best = this.best;
         return results;
     }
 
@@ -62,9 +70,14 @@ class Population {
     nextGeneration() {
         this.calculateFitness();
         this.createMatingPool();
-        for (var i = 0; i < this.fleet.length; i++) {
+        for (var i = 0; i < this.fleetsize; i++) {
             let parents = this.chooseParents();
             this.fleet[i] = parents[0].makeChild(parents[1]);
+        }
+
+        // ensure that the best of the generation carries forward
+        if (this.best != null) {
+            this.fleet[this.fleetsize] = new Rocket(this.best.DNA);
         }
         this.generation++;
     }

@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 let app = {
     horzCells: 70,
     vertCells: 50,
@@ -10,6 +11,7 @@ let app = {
     seed: 0,
     stable: 0,
 };
+
 function setup() {
     var canvas = createCanvas(700,500);
     canvas.parent('lifeCanvas');
@@ -32,6 +34,25 @@ function draw() {
     app.generations += 1;
 }
 
+function drawGeneration() {
+    background(200);
+    app.cellw = width / app.horzCells;
+    app.cellh = height / app.vertCells;
+    noStroke();
+
+    for (var i = 0; i < app.vertCells; i++) {
+      for (var j = 0; j < app.horzCells; j++) {
+          if (app.grid[i][j].alive) {
+              fill('blue');
+          } else {
+              fill('white');
+          }
+          rect(j*app.cellw+1, i*app.cellh+1, app.cellw-2, app.cellh-2);
+      }
+    }
+}
+
+
 function newGame() {
     initLife();
     turnOffSpecialFunctions(true);
@@ -44,8 +65,8 @@ function initLife() {
     for (var i = 0; i < app.ancestorDepth; i++) {
         app.ancestors.push(null);
     }
-    app.grid = null,
-    app.generations = 0
+    app.grid = null;
+    app.generations = 0;
 
     // check for seed...
     app.seed = getSeed();
@@ -70,26 +91,6 @@ function getSeed() {
 
     var x = parseInt(el.value, 10);
     return x;
-}
-
-function drawGeneration() {
-    background(0);
-    app.cellw = width / app.horzCells;
-    app.cellh = height / app.vertCells;
-
-    for (var i = 0; i < app.vertCells; i++) {
-      for (var j = 0; j < app.horzCells; j++) {
-          strokeWeight(.25);
-          stroke('black');
-          rect(j*app.cellw, i*app.cellh, app.cellw, app.cellh);
-          if (app.grid[i][j].alive) {
-              fill('blue');
-          } else {
-              fill('white');
-          }
-          rect(j*app.cellw+1, i*app.cellh+1, app.cellw-2, app.cellh-2);
-      }
-    }
 }
 
 function shiftGenerations() {
