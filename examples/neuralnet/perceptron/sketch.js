@@ -114,7 +114,10 @@ function setup() {
         stroke('white')        
         ellipse(x, y, 12 , 12);
       }
-      setInnerHTML("weights",app.ptron.weightsToString());
+      setInnerHTML("weights0","w0: " + app.ptron.weights[0].toFixed(4));
+      setInnerHTML("weights1",'w1: ' + app.ptron.weights[1].toFixed(4));
+      setInnerHTML("weights2",'w2: ' + app.ptron.weights[2].toFixed(4));
+      setInnerHTML("dataIndex", '' + app.count );
     }
   }
   

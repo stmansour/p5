@@ -1,7 +1,6 @@
-/* jshint esversion: 6 */
 let dog;
 let displayedImage;
-let displayedImageName="dog.png";
+let displayedImageName="dog.png"
 let mappedImageName="dog100x100.jpg";
 
 //               0         1         2
@@ -97,4 +96,5 @@ function draw() {
     if (el != null) {
         el.innerHTML = s;
     }
+
 }
