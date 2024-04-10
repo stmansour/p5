@@ -22,8 +22,8 @@ function f(x) {
 // setup - called only once in the lifetime of the sketch
 //----------------------------------------------------------------
 function setup() {
-    canvasWidth = 700;
-    canvasHeight = 700;
+    canvasWidth = 600;
+    canvasHeight = 600;
     let canvas = createCanvas(canvasWidth,canvasHeight)
     canvas.parent('canvas-container'); // Attach the canvas to the div
 
