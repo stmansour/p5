@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../../../p5.js"></script>
+    <script src="sketch.js"></script>
+    <script src="perceptron.js"></script>
+    <meta charset="utf-8" />
+    <title>Neural Networks - Perceptron</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <a href="../../index.html">P5JS Projects</a>
+    <table align="center">
+        <tr>
+            <td colspan="3" align="center">
+                <h2>Neural Networks - Perceptron</h2>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="left">
+                Perceptron: <span id="weights">0</span>
+            </td>
+        </tr>
+    </table>
+    <!-- Container for the P5.js canvas -->
+    <div id="canvas-container"></div>
+    <!-- Static text below the canvas -->
+    <div id="static-text">
+        <h2>The Perceptron</h2>
+        <p>
+            A perceptron is one of the simplest forms of a neural network, primarily used for binary classification
+            tasks, invented in 1957 by Frank Rosenblatt. It functions by taking multiple input values, each
+            multiplied by a weight, and sums these products together.
+        </p>
+
+        <div class="formula">
+            \( \text{output} = f\left(\sum_{i=1}^{n} w_i \cdot x_i + b\right) \)
+        </div>
+        <h2>Training the Perceptron</h2>
+        <p>The training process involves adjusting the weights and bias to minimize errors on the training data. This is
+            done by updating the weights for every iteration based on the difference between the expected and actual
+            outputs. Notice that the change is dampened by \( \eta \), the learning rate. If \( \eta \) is large, the
+            weights will be adjust faster, but they won't converge as well. If \( \eta \) is very small, the weights
+            will converge better, but it will take a longer time to train:</p>
+        <div class="formula">
+            \( w_i = w_i + \Delta w_i \)
+        </div>
+        <div class="formula">
+            \( \Delta w_i = \eta (y - \hat{y}) x_i \)
+        </div>
+        <h2>Limitations</h2>
+        <p>
+            The perceptron can only solve problems that are linearly separable. It struggles with non-linear problems,
+            such as the XOR problem. This limitation led to the development of multi-layer perceptrons (MLP) and the
+            backpropagation algorithm, which can model complex, non-linear decision boundaries. MLP will be the focus
+            of my next project.
+        </p>
+    </div>
+</body>
+
+</html>
