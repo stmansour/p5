@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../../../p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="sketch.js"></script>
+    <meta charset="utf-8" />
+    <title>Neural Networks - TensorFlow XOR</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <a href="../../index.html">P5JS Projects</a>
+    <table align="center" width="850px" border="0">
+        <tr>
+            <td colspan="3" align="center">
+                <h2>Neural Networks - TensorFlow XOR</h2>
+            </td>
+        </tr>
+        <tr>
+           <td colspan  ="3" align="center">
+           </td>
+        </tr>
+        <tr>
+            <table align="center">
+                <tr>
+                    <td>Inputs: &nbsp;&nbsp;2</td>
+                    <td width="50"></td>
+                    <td>Hidden Nodes: &nbsp;&nbsp;<span id="hidden" class="mono">0</span></td>
+                    <td width="50"></td>
+                    <td>Outputs: &nbsp;&nbsp;1</td>
+                </tr>
+                <tr>
+                    <td>State: &nbsp;&nbsp;<span id="statespan" class="mono">training</span></td>
+                    <td width="50"></td>
+                    <td>Loss: &nbsp;&nbsp;<span id="lossspan" class="mono">0</span></td>
+                    <td width="50"></td>
+                    <td>Training Pass: &nbsp;&nbsp;<span id="traincount" class="mono">0</span></td>
+                </tr>
+            </table>
+        </tr>
+    </table>
+    <!-- Container for the P5.js canvas -->
+    <div align="center" id="canvas-container"></div>
+    <!-- Static text below the canvas -->
+    <table align="center" width="850px">
+        <tr>
+            <td>
+                <div id="static-text">
+                    <h2>The XOR Neural Network</h2>
+                    <p>
+                        After going through all the matrix math needed to "feed-forward" inputs to the neural network
+                        to the output, and then backpropagation to adjust the weights, I thought about writing my
+                        own library for neural networks. But I opted to use Tensor Flow for many reasons. A couple
+                        of big reasons were (a) they have a bunch of functions to choose from for backpropagation of
+                        errors, (b) it's in javascript which makes it easy to write visualization graphics, and (c)
+                        it supports CPU and GPU. This is my first tensor flow project. You gotta start somewhere.
+                    </p>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

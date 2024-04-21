@@ -7,6 +7,7 @@ let app = {
   xmax: 1,
   ymax: 1,
   ptron: null, // A Perceptron object
+  loop: 0,
 };
 let training = new Array(2000); // A list of points we will use to "train" the perceptron
 
@@ -85,6 +86,9 @@ function setup() {
     //---------------------------------------------------------
     // Train the Perceapp.ptron with one "training" point at a time
     //---------------------------------------------------------
+    if (app.count == 0) {
+      app.loop++;
+    }
     app.ptron.train(training[app.count].input, training[app.count].output);
     app.count = (app.count + 1) % training.length;
   
@@ -118,6 +122,7 @@ function setup() {
       setInnerHTML("weights1",'w1: ' + app.ptron.weights[1].toFixed(4));
       setInnerHTML("weights2",'w2: ' + app.ptron.weights[2].toFixed(4));
       setInnerHTML("dataIndex", '' + app.count );
+      setInnerHTML("looper", '' + app.loop );
     }
   }
   
