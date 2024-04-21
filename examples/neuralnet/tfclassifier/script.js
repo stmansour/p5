@@ -67,7 +67,7 @@ function evaluate() {
         answer.dispose();
         drawImage(INPUTS[OFFSET]);
     })
-    let output = model.predict()
+    // let output = model.predict()
 }
 
 const CANVAS = document.getElementById('canvas');
