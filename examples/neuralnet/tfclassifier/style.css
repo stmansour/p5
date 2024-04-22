@@ -1,14 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
 
-body {
-    font-family: helvetica, arial, sans-serif;
+html, body {
+    font-family: 'Rajdhani', helvetica, arial, sans-serif;
+    background-color: #cbf2f7;
     margin: 2em;
 }
 
-h1 {
-    font-family:  helvetica, arial, sans-serif;
-    color: #004FcF;
-}
 
 canvas {
     display: block;
@@ -46,7 +44,7 @@ p {
 .box {
     width: 45%;
     margin: 1%;
-    border: 1px solid #cdcdcd;
+    border: 1px solid black;
     /* display: inline-block; */
     min-height: 400px;
     text-align: center;

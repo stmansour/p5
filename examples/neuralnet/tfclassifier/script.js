@@ -38,7 +38,10 @@ async function train() {
 }
 
 function logProgress(epoch, logs) {
-    console.log(`Epoch ${epoch + 1}: Loss = ${logs.loss}, Accuracy = ${logs.acc}`);
+    // console.log(`Epoch ${epoch + 1}: Loss = ${logs.loss}, Accuracy = ${logs.acc}`);
+    setInnerHTML("epochs",epoch+1);
+    setInnerHTML("lossspan", '' + (logs.loss).toFixed(7));
+    setInnerHTML("traincount", '' + (epoch+1));
 }
 
 
@@ -84,4 +87,11 @@ function drawImage(image) {
 
     CTX.putImageData(imageData, 0, 0); // render the updated array
     setTimeout(evaluate,2000)
+}
+
+function setInnerHTML(id,s) {
+    let el = document.getElementById(id);
+    if (el != null) {
+        el.innerHTML = s;
+    }
 }
