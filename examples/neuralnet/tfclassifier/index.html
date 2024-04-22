@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Import the webpage's stylesheet -->
     <link rel="stylesheet" href="style.css">
+    <script src="nndiagram.js"></script>
 </head>
 
 <body>
@@ -33,7 +34,7 @@
     <section class="box">
         <h2>Input Image</h2>
         <p>The image is a 28x28 pixel grayscale from the MNIST dataset</p>
-        <canvas id="canvas" width="28" height="28"></canvas>
+        <canvas id="tfcanvas" width="28" height="28"></canvas>
     </section>
 
     <section class="box">
@@ -43,11 +44,20 @@
         <p id="prediction">Model is training...</p>
     </section>
 
+    <table align="center" width="800px" border="1">
+        <tr height="650">
+            <td>
+                <canvas id="neuralNetworkCanvas" width="800" height="650"></canvas>
+            </td>
+        </tr>
+    </table>
+
     <!-- Import TensorFlow.js library -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js" type="text/javascript"></script>
 
     <!-- Import the page's JavaScript to do some stuff -->
     <script type="module" src="script.js"></script>
+
 </body>
 
 </html>

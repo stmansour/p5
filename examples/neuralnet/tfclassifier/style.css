@@ -7,13 +7,21 @@ html, body {
     margin: 2em;
 }
 
-
-canvas {
+#tfcanvas {
     display: block;
     width: 28px;
     height: 28px;
     margin: 10px auto 5px auto;
     zoom: 6;
+}
+
+#neuralNetworkCanvas {
+    display: block;
+    width: 800px; /* explicitly set the width */
+    height: 650px; /* explicitly set the height */
+    margin: 10px auto;
+    background-color: #fff; /* Optional: for better visibility */
+    border: 1px solid black; /* Optional: to see the canvas boundaries clearly */
 }
 
 p#prediction {
