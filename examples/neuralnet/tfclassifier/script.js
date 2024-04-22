@@ -1,7 +1,7 @@
 import { TRAINING_DATA } from './mnist.js';
 
-let noderadius = 5;
-let nodespacing = 10;
+let noderadius = 8;
+let nodespacing = 4;
 let neuralNetwork = {
     layers: [
         {
