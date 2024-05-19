@@ -1,0 +1,169 @@
+/*jshint esversion: 6 */
+
+let rez = 10;
+let field;
+let rows, cols;
+let hlf, hrez;
+
+function setInnerHTML(id,s) {
+  let el = document.getElementById(id);
+  if (el != null) {
+      el.innerHTML = s;
+  }
+}
+
+//----------------------------------------------------------------
+// setup - called only once in the lifetime of the sketch
+//----------------------------------------------------------------
+function setup() {
+  let canvasWidth = 600;
+  let canvasHeight = 600;
+  let canvas = createCanvas(canvasWidth, canvasHeight)
+  canvas.parent('canvas-container'); // Attach the canvas to the div
+  rows = 1+floor(canvasHeight / rez);
+  cols = 1+floor(canvasWidth / rez);
+  rez2 = rez/2;
+  hlf = floor(rez2);
+  field = [rows*cols];
+
+
+  for (let i = 0; i < rows; i++) {
+    for (let j =  0; j < cols; j++) {
+      let fpt = createFPT();
+      fpt.val = floor(random(2));
+      fpt.row = j;
+      fpt.col = i;
+      fpt.x = i*rez + rez2;
+      fpt.y = j*rez + rez2;
+      fpt.z = 0;
+      fpt.name = fpt.row+','+fpt.col;
+      field[i + j*cols] = fpt;
+    }
+  }
+}
+
+// We need to draw lines separating the filled from the unfilled corners.
+// In this diagram, the Os represent unfilled corners, and the Xs represent
+// filled corners.  The lines are drawn to the center of the edge lines.
+// That is, between a and b, between b and c, and so on.
+//            a
+//       0----+----0     0----+----0     0----+----0     0----+----0
+//       |         |     |         |     |         |     |         |
+//     d +    0    + b   +    1    +     +    2    +     +----3----+
+//       |         |     |  \      |     |      /  |     |         |
+//       0----+----0     1----+----0     0----+----1     1----+----1
+//            c
+//          no line         c -> d          c -> b          b -> d
+//  
+//            a
+//       0----+----1     0----+----1     0----+----1     0----+----1
+//       |      \  |     |  /      |     |    |    |     |  /      |
+//     d +    4    + b   +    5    +     +    6    +     +    7    +
+//       |         |     |      /  |     |    |    |     |         |
+//       0----+----0     1----+----0     0----+----1     1----+----1
+//            c
+//          a -> b          d -> a          a -> c          d -> a
+//                          c -> b
+//
+//            a
+//       1----+----0     1----+----0     1----+----0     1----+----0
+//       |  /      |     |    |    |     |  /      |     |      \  |
+//     d +    8    + b   +    9    +     +   10    +     +   11    +
+//       |         |     |    |    |     |      /  |     |         |
+//       0----+----0     1----+----0     0----+----1     1----+----1
+//            c
+//          a -> d          a -> c          d -> a          a -> b
+//                                          c -> b
+//            a
+//       1----+----1     1----+----1     1----+----1     1----+----1
+//       |         |     |         |     |         |     |         |
+//     d +---12----+ b   +   13    +     +   14    +     +   15    +
+//       |         |     |      /  |     | \       |     |         |
+//       0----+----0     1----+----0     0----+----1     1----+----1
+//            c
+//          d -> b          c -> b         d -> c          no line
+//                          
+//
+// 
+
+function draw() {
+  background(127);
+  setInnerHTML("rows", rows);
+  setInnerHTML("cols", cols);
+  setInnerHTML("gridsize", rez);
+  
+  for (let i = 0; i < rows-1; i++) {
+    for (let j =  0; j < cols-1; j++) {
+      let f = field[i*cols + j];
+
+      // Set the color to the field value
+      stroke(f.val*255);
+      strokeWeight(rez * 0.4);
+      point(f.x,f.y);
+      strokeWeight(0);
+      // fill(127)
+      // text(f.name, f.x,f.y);
+
+      //------------------------------------------------
+      // calculate a,b,c,d for this square of dots...
+      //------------------------------------------------
+      let a = createVector(f.x + rez2, f.y       );
+      let b = createVector(f.x + rez , f.y + rez2);
+      let c = createVector(f.x + rez2, f.y + rez );
+      let d = createVector(f.x       , f.y + rez2);
+
+      let state = getState(field[i*cols + j].val, field[i*cols + 1+ j].val, field[(i+1)*cols +j].val, field[(i+1)*cols + j+1].val);
+
+      stroke(0,0,255);
+      strokeWeight(1);
+      //----------
+      // test box
+      //----------
+      // vline(a,b); 
+      // vline(c,b);
+      // vline(c,d);
+      // vline(a,d);
+
+      stroke(255);
+      switch(state) {
+        case  0: /*no lines*/ break;
+        case  1: vline(c, d); break;
+        case  2: vline(b, c); break;
+        case  3: vline(b, d); break;
+        case  4: vline(a, b); break;
+        case  5: vline(a, d); vline(b, c); break;
+        case  6: vline(a, c); break;
+        case  7: vline(a, d); break;
+        case  8: vline(a, d); break;
+        case  9: vline(a, c); break;
+        case 10: vline(a, d); vline(c, b); break;
+        case 11: vline(a, b); break;
+        case 12: vline(b, d); break;
+        case 13: vline(b, c); break;
+        case 14: vline(c, d); break;
+        case 15: /*no lines*/ break;
+      } 
+    }  
+  }  
+
+}
+
+function cp(i,j) {
+  console.log(field[i*cols + j].val +"   " +field[i*cols +j +1].val);
+  console.log(field[(i+1)*cols + j].val +"   " +field[(i+1)*cols +j+1].val);
+}
+
+// getState determins which line to draw based on the surrounding "dots".
+// Note:
+// I'm not sure how javascript represents its numbers. If this operation
+// was being done on an integers, we could do this differently. For now,
+// we're just going to do a brute-force method...
+//------------------------------------------------------------------------
+function getState(a,b,c,d) {
+  return a*8 + b*4 + c*1 + d*2;
+}
+
+function vline(a,b) {
+  line(a.x ,a.y, b.x, b.y);
+  line(a.x ,a.y, b.x, b.y);
+}
