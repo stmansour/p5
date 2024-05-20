@@ -4,11 +4,18 @@ let rez = 10;
 let field;
 let rows, cols;
 let hlf, hrez;
+let checkbox;
+let slider;
+let dotSquareCheckbox;
+let setupCalled = false;
+let canvasWidth;
+let canvasHeight;
+let canvas;
 
-function setInnerHTML(id,s) {
+function setInnerHTML(id, s) {
   let el = document.getElementById(id);
   if (el != null) {
-      el.innerHTML = s;
+    el.innerHTML = s;
   }
 }
 
@@ -16,28 +23,40 @@ function setInnerHTML(id,s) {
 // setup - called only once in the lifetime of the sketch
 //----------------------------------------------------------------
 function setup() {
-  let canvasWidth = 600;
-  let canvasHeight = 600;
-  let canvas = createCanvas(canvasWidth, canvasHeight)
-  canvas.parent('canvas-container'); // Attach the canvas to the div
-  rows = 1+floor(canvasHeight / rez);
-  cols = 1+floor(canvasWidth / rez);
-  rez2 = rez/2;
+
+  if (!setupCalled) {
+    setupCalled = true;
+    canvasWidth = 800;
+    canvasHeight = 600;
+    canvas = createCanvas(canvasWidth, canvasHeight)
+    canvas.parent('canvas-container'); // Attach the canvas to the div
+    slider = createSlider(5, 40, rez);
+    slider.parent('slider-container');
+    checkbox = createCheckbox("Mapped Color", true);
+    checkbox.parent('checkbox-container');
+    dotSquareCheckbox = createCheckbox("Dots", true);
+    dotSquareCheckbox.parent('dotSquare-container');
+  }
+
+  rows = 1 + floor(canvasHeight / rez);
+  cols = 1 + floor(canvasWidth / rez);
+  rez2 = rez / 2;
   hlf = floor(rez2);
-  field = [rows*cols];
+  field = [rows * cols];
 
 
   for (let i = 0; i < rows; i++) {
-    for (let j =  0; j < cols; j++) {
+    for (let j = 0; j < cols; j++) {
       let fpt = createFPT();
-      fpt.val = floor(random(2));
-      fpt.row = j;
-      fpt.col = i;
-      fpt.x = i*rez + rez2;
-      fpt.y = j*rez + rez2;
+      fpt.realval = random(1);  // a val from 0 to 1
+      fpt.val = fpt.realval > 0.5 ? 1 : 0; // mapped to a binary value
+      fpt.row = i;
+      fpt.col = j;
+      fpt.x = j * rez + rez2;
+      fpt.y = i * rez + rez2;
       fpt.z = 0;
-      fpt.name = fpt.row+','+fpt.col;
-      field[i + j*cols] = fpt;
+      fpt.name = fpt.row + ',' + fpt.col;
+      fput(i,j,fpt);
     }
   }
 }
@@ -87,70 +106,86 @@ function setup() {
 // 
 
 function draw() {
+  if (slider.value() != rez) {
+    rez = slider.value();
+    setup();
+  }
   background(127);
   setInnerHTML("rows", rows);
   setInnerHTML("cols", cols);
   setInnerHTML("gridsize", rez);
-  
-  for (let i = 0; i < rows-1; i++) {
-    for (let j =  0; j < cols-1; j++) {
-      let f = field[i*cols + j];
+
+
+
+  for (let i = 0; i < rows - 1; i++) {
+    for (let j = 0; j < cols - 1; j++) {
+      let f = field[i * cols + j];
 
       // Set the color to the field value
-      stroke(f.val*255);
-      strokeWeight(rez * 0.4);
-      point(f.x,f.y);
-      strokeWeight(0);
+      let v = f.realval;
+      if (checkbox.checked()) {
+        v = f.val;
+      }
+      stroke(v * 255);
+      if (dotSquareCheckbox.checked()) {
+        strokeWeight(rez * 0.4);
+        point(f.x, f.y);
+      } else {
+        strokeWeight(0);
+        fill(v * 255);
+        rect(f.x - rez2 / 2, f.y - rez2 / 2, rez2 + rez2 / 2, rez2 + rez2 / 2);
+      }
+
+
       // fill(127)
       // text(f.name, f.x,f.y);
 
       //------------------------------------------------
       // calculate a,b,c,d for this square of dots...
       //------------------------------------------------
-      let a = createVector(f.x + rez2, f.y       );
-      let b = createVector(f.x + rez , f.y + rez2);
-      let c = createVector(f.x + rez2, f.y + rez );
-      let d = createVector(f.x       , f.y + rez2);
+      let a = createVector(f.x + rez2, f.y);
+      let b = createVector(f.x + rez, f.y + rez2);
+      let c = createVector(f.x + rez2, f.y + rez);
+      let d = createVector(f.x, f.y + rez2);
 
-      let state = getState(field[i*cols + j].val, field[i*cols + 1+ j].val, field[(i+1)*cols +j].val, field[(i+1)*cols + j+1].val);
+      // console.log("i=" + i + " j=" + j);
 
-      stroke(0,0,255);
+      // let state = getState(field.get([i,j].val, field.get(i,j+1).val, field[(i + 1) * cols + j].val, field[(i + 1) * cols + j + 1].val);
+      let state = getState(
+        fget(i, j).val,
+        fget(i, j + 1).val,
+        fget(i + 1, j).val,
+        fget(i + 1, j + 1).val);
+
+      stroke(0, 0, 255);
       strokeWeight(1);
-      //----------
-      // test box
-      //----------
-      // vline(a,b); 
-      // vline(c,b);
-      // vline(c,d);
-      // vline(a,d);
 
       stroke(255);
-      switch(state) {
-        case  0: /*no lines*/ break;
-        case  1: vline(c, d); break;
-        case  2: vline(b, c); break;
-        case  3: vline(b, d); break;
-        case  4: vline(a, b); break;
-        case  5: vline(a, d); vline(b, c); break;
-        case  6: vline(a, c); break;
-        case  7: vline(a, d); break;
-        case  8: vline(a, d); break;
-        case  9: vline(a, c); break;
+      switch (state) {
+        case 0: /*no lines*/ break;
+        case 1: vline(c, d); break;
+        case 2: vline(b, c); break;
+        case 3: vline(b, d); break;
+        case 4: vline(a, b); break;
+        case 5: vline(a, d); vline(b, c); break;
+        case 6: vline(a, c); break;
+        case 7: vline(a, d); break;
+        case 8: vline(a, d); break;
+        case 9: vline(a, c); break;
         case 10: vline(a, d); vline(c, b); break;
         case 11: vline(a, b); break;
         case 12: vline(b, d); break;
         case 13: vline(b, c); break;
         case 14: vline(c, d); break;
         case 15: /*no lines*/ break;
-      } 
-    }  
-  }  
-
+      }
+    }
+  }
 }
 
-function cp(i,j) {
-  console.log(field[i*cols + j].val +"   " +field[i*cols +j +1].val);
-  console.log(field[(i+1)*cols + j].val +"   " +field[(i+1)*cols +j+1].val);
+function cp(i, j) {
+  console.log(field[i * cols + j].val + "   " + field[i * cols + j + 1].val);
+  console.log(field[(i + 1) * cols + j].val + "   " + field[(i + 1) * cols + j + 1].val);
 }
 
 // getState determins which line to draw based on the surrounding "dots".
@@ -159,11 +194,11 @@ function cp(i,j) {
 // was being done on an integers, we could do this differently. For now,
 // we're just going to do a brute-force method...
 //------------------------------------------------------------------------
-function getState(a,b,c,d) {
-  return a*8 + b*4 + c*1 + d*2;
+function getState(a, b, c, d) {
+  return a * 8 + b * 4 + c * 1 + d * 2;
 }
 
-function vline(a,b) {
-  line(a.x ,a.y, b.x, b.y);
-  line(a.x ,a.y, b.x, b.y);
+function vline(a, b) {
+  line(a.x, a.y, b.x, b.y);
+  line(a.x, a.y, b.x, b.y);
 }
