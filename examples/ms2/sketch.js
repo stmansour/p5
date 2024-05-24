@@ -1,13 +1,15 @@
 /*jshint esversion: 6 */
 
-let rez = 10;
+let rez = 50;
 let field;
 let rows, cols;
+let cellWidth;
+let cellHeight;
 let hlf, hrez;
 let checkbox;
 let slider;
 let dotSquareCheckbox;
-let setupCalled = false;
+let showMappedColor = false;
 let canvasWidth;
 let canvasHeight;
 let canvas;
@@ -19,46 +21,55 @@ function setInnerHTML(id, s) {
   }
 }
 
+function resetField() {
+  rows = floor(canvasHeight / rez);
+  cols = floor(canvasWidth / rez);
+  rez2 = rez / 2;
+  hlf = floor(rez2);
+
+  field = new FIELD(rows, cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      let fpt = new FPT();
+      fpt.realval = random(1);  // a val from 0 to 1
+      fpt.val = fpt.realval > 0.5 ? 1 : 0; // mapped to a binary value
+      fpt.row = i;
+      fpt.col = j;
+      fpt.x = j * rez + rez2;  // center of cell x
+      fpt.y = i * rez + rez2;  // center of cell y
+      fpt.z = 0;
+      fpt.name = fpt.row + ',' + fpt.col;
+      field.set(i, j, fpt);
+    }
+  }
+}
+
 //----------------------------------------------------------------
 // setup - called only once in the lifetime of the sketch
 //----------------------------------------------------------------
 function setup() {
 
-  if (!setupCalled) {
-    setupCalled = true;
-    canvasWidth = 800;
-    canvasHeight = 600;
-    canvas = createCanvas(canvasWidth, canvasHeight)
-    canvas.parent('canvas-container'); // Attach the canvas to the div
-    slider = createSlider(5, 40, rez);
-    slider.parent('slider-container');
-    checkbox = createCheckbox("Mapped Color", true);
-    checkbox.parent('checkbox-container');
-    dotSquareCheckbox = createCheckbox("Dots", true);
-    dotSquareCheckbox.parent('dotSquare-container');
-  }
+  setupCalled = true;
+  canvasWidth = 800;
+  canvasHeight = 600;
 
-  rows = 1 + floor(canvasHeight / rez);
-  cols = 1 + floor(canvasWidth / rez);
+  rows = canvasHeight / rez;
+  cols = canvasWidth / rez;
   rez2 = rez / 2;
   hlf = floor(rez2);
-  field = [rows * cols];
+  field = new FIELD(rows, cols);
 
+  canvas = createCanvas(canvasWidth, canvasHeight)
+  canvas.parent('canvas-container'); // Attach the canvas to the div
+  slider = createSlider(5, rez, rez);
+  slider.parent('slider-container');
+  checkbox = createCheckbox("Mapped Color", true);
+  checkbox.parent('checkbox-container');
+  dotSquareCheckbox = createCheckbox("Dots", true);
+  dotSquareCheckbox.parent('dotSquare-container');
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let fpt = createFPT();
-      fpt.realval = random(1);  // a val from 0 to 1
-      fpt.val = fpt.realval > 0.5 ? 1 : 0; // mapped to a binary value
-      fpt.row = i;
-      fpt.col = j;
-      fpt.x = j * rez + rez2;
-      fpt.y = i * rez + rez2;
-      fpt.z = 0;
-      fpt.name = fpt.row + ',' + fpt.col;
-      fput(i, j, fpt);
-    }
-  }
+  resetField();
+
 }
 
 // We need to draw lines separating the filled from the unfilled corners.
@@ -108,72 +119,24 @@ function setup() {
 function draw() {
   if (slider.value() != rez) {
     rez = slider.value();
-    setup();
+    resetField();
   }
+  showMappedColor = checkbox.checked();
   background(127);
   setInnerHTML("rows", rows);
   setInnerHTML("cols", cols);
   setInnerHTML("gridsize", rez);
 
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      let f = field.get(i, j);
 
-
-  for (let i = 0; i < rows - 1; i++) {
-    for (let j = 0; j < cols - 1; j++) {
-      let f = field[i * cols + j];
-
-      // Set the color to the field value
-      let v = f.realval;
-      let urv = checkbox.checked();  // use real value or mapped value
-
-      if (!urv) {
-        v = f.val;
-      }
-      stroke(v * 255);
       if (dotSquareCheckbox.checked()) {
-        strokeWeight(rez * 0.4);
-        point(f.x, f.y);
+        f.dotDraw();
       } else {
-        strokeWeight(0);
-        fill(v * 255);
-        rect(f.x - rez2 / 2, f.y - rez2 / 2, rez2 + rez2 / 2, rez2 + rez2 / 2);
+        f.draw();
       }
 
-      let vec = getVectors(i,j);
-      let a = vec[0];
-      let b = vec[1];
-      let c = vec[2];
-      let d = vec[3];
-
-      // let state = getState(field.get([i,j].val, field.get(i,j+1).val, field[(i + 1) * cols + j].val, field[(i + 1) * cols + j + 1].val);
-      let state = getState(
-        fget(i, j).val,
-        fget(i, j + 1).val,
-        fget(i + 1, j + 1).val,
-        fget(i + 1, j).val);
-
-
-      stroke(0, 0, 255);
-      strokeWeight(1);
-
-      stroke(255);
-      switch (state) {
-        case 0: /*no lines*/ break;
-        case 1: vline(c, d); break;
-        case 2: vline(b, c); break;
-        case 3: vline(b, d); break;
-        case 4: vline(a, b); break;
-        case 5: vline(a, d); vline(b, c); break;
-        case 6: vline(a, c); break;
-        case 7: vline(a, d); break;
-        case 8: vline(a, d); break;
-        case 9: vline(a, c); break;
-        case 10: vline(a, d); vline(c, b); break;
-        case 11: vline(a, b); break;
-        case 12: vline(b, d); break;
-        case 13: vline(b, c); break;
-        case 14: vline(c, d); break;
-        case 15: /*no lines*/ break;
-      }
     }
   }
 }
@@ -198,6 +161,32 @@ function vline(a, b) {
   line(a.x, a.y, b.x, b.y);
 }
 
-function shadeCreateVector(f) {
 
+function fget(i, j) {
+  return field[i * cols + j];
+}
+
+function fput(i, j, fpt) {
+  field[i * cols + j] = fpt;
+}
+
+/**
+* getVectors - instead of choosing mid-points between the 4 dots, we move the connect
+* point based on the real color value of the dot (rather than the mapped color).
+* @param {*} i - row
+* @param {*} j - col
+* @returns 4 vectors, a,b,c,d that represent the points to which lines can be drawn
+*/
+function getVectors(i, j) {
+  let f = fget(i, j);
+
+  //------------------------------------------------
+  // calculate a,b,c,d for this square of dots...
+  //------------------------------------------------
+  let a = createVector(f.x + rez2, f.y);        // between i,j and i,j+1
+  let b = createVector(f.x + rez, f.y + rez2);  // between i,j+1 and i+1,j+1
+  let c = createVector(f.x + rez2, f.y + rez);  // between i+1,j+1 and i,j+1
+  let d = createVector(f.x, f.y + rez2);        // between i,j+1 and i,j
+
+  return [a, b, c, d];
 }

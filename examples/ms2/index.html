@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../../p5.js"></script>
+    <script src="sketch.js"></script>
+    <script src="fpt.js"></script>
+    <script src="field.js"></script>
+    <meta charset="utf-8" />
+    <title>Marching Squares</title>
+    <!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <a href="../../index.html">P5JS Projects</a>
+    <table align="center" width="850px" border="0">
+        <tr>
+            <td colspan="3" align="center">
+                <h2>Marching Squares</h2>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center">
+            </td>
+        </tr>
+    </table>
+    <!-- Container for the P5.js canvas -->
+    <div align="center" id="canvas-container"></div>
+    <!-- Static text below the canvas -->
+    <table align="center" width="850px">
+        <tr>
+            <td>
+                <div id="static-text">
+                    <h2>The Marching Squares</h2>
+                    <table align="center" border="0">
+                        <tr>
+                            <td align="right">Rows:</td>
+                            <td align="left" id="rows" width="50"></td>
+                            <td align="right">Columns:</td>
+                            <td align="left" id="cols" width="50"></td>
+                            <td align="right">Grid Size:</td>
+                            <td align="left" id="gridsize" width="50"></td>
+                        </tr>
+                    </table>
+                    <table align="center" border="0">
+                        <tr>
+                            <td id="checkbox-container"></td>
+                            <td width="10"></td>
+                            <td id="dotSquare-container"> </td>
+                            <td width="10"></td>
+                            <td colspan="2" align="right">Contour Size: </td>
+                            <td id="slider-container" colspan="2"></td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
