@@ -152,9 +152,7 @@ function draw() {
         fget(i + 1, j).val);
 
 
-      stroke(0, 0, 255);
       strokeWeight(1);
-
       stroke(255);
       switch (state) {
         case 0: /*no lines*/ break;
@@ -196,8 +194,4 @@ function getState(a, b, c, d) {
 function vline(a, b) {
   line(a.x, a.y, b.x, b.y);
   line(a.x, a.y, b.x, b.y);
-}
-
-function shadeCreateVector(f) {
-
 }

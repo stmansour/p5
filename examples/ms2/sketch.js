@@ -1,14 +1,15 @@
 /*jshint esversion: 6 */
 
-let rez = 50;
+let rez = 25;
 let field;
 let rows, cols;
 let cellWidth;
 let cellHeight;
 let hlf, hrez;
-let checkbox;
+let mappedColorCheckbox;
 let slider;
 let dotSquareCheckbox;
+let gridCheckbox;
 let showMappedColor = false;
 let canvasWidth;
 let canvasHeight;
@@ -30,7 +31,7 @@ function resetField() {
   field = new FIELD(rows, cols);
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      let fpt = new FPT();
+      let fpt = new FPT(field);
       fpt.realval = random(1);  // a val from 0 to 1
       fpt.val = fpt.realval > 0.5 ? 1 : 0; // mapped to a binary value
       fpt.row = i;
@@ -48,28 +49,30 @@ function resetField() {
 // setup - called only once in the lifetime of the sketch
 //----------------------------------------------------------------
 function setup() {
-
   setupCalled = true;
   canvasWidth = 800;
   canvasHeight = 600;
-
   rows = canvasHeight / rez;
   cols = canvasWidth / rez;
   rez2 = rez / 2;
   hlf = floor(rez2);
   field = new FIELD(rows, cols);
 
+  //-------------------------------------
+  // User Interface Features...
+  //-------------------------------------
   canvas = createCanvas(canvasWidth, canvasHeight)
   canvas.parent('canvas-container'); // Attach the canvas to the div
-  slider = createSlider(5, rez, rez);
+  slider = createSlider(5, 50, rez);
   slider.parent('slider-container');
-  checkbox = createCheckbox("Mapped Color", true);
-  checkbox.parent('checkbox-container');
+  mappedColorCheckbox = createCheckbox("Mapped Color", false);
+  mappedColorCheckbox.parent('mappedColorCheckbox-container');
   dotSquareCheckbox = createCheckbox("Dots", true);
   dotSquareCheckbox.parent('dotSquare-container');
+  gridCheckbox = createCheckbox("Grid", true);
+  gridCheckbox.parent('gridCheckbox-container');
 
   resetField();
-
 }
 
 // We need to draw lines separating the filled from the unfilled corners.
@@ -121,8 +124,8 @@ function draw() {
     rez = slider.value();
     resetField();
   }
-  showMappedColor = checkbox.checked();
-  background(127);
+  field.mappedColor = mappedColorCheckbox.checked();  // update to whatever the user has last selected
+  background(field.bgColor);
   setInnerHTML("rows", rows);
   setInnerHTML("cols", cols);
   setInnerHTML("gridsize", rez);
@@ -132,18 +135,16 @@ function draw() {
       let f = field.get(i, j);
 
       if (dotSquareCheckbox.checked()) {
-        f.dotDraw();
+        f.drawDot();
       } else {
         f.draw();
       }
-
+      if (gridCheckbox.checked()) {
+        f.drawGrid();
+      }
     }
   }
-}
-
-function cp(i, j) {
-  console.log(field[i * cols + j].val + "   " + field[i * cols + j + 1].val);
-  console.log(field[(i + 1) * cols + j].val + "   " + field[(i + 1) * cols + j + 1].val);
+  field.drawConnectors();
 }
 
 // getState determins which line to draw based on the surrounding "dots".
@@ -152,9 +153,9 @@ function cp(i, j) {
 // was being done on an integers, we could do this differently. For now,
 // we're just going to do a brute-force method...
 //------------------------------------------------------------------------
-function getState(a, b, c, d) {
-  return a * 8 + b * 4 + c * 2 + d * 1;
-}
+// function getState(a, b, c, d) {
+//   return a * 8 + b * 4 + c * 2 + d * 1;
+// }
 
 function vline(a, b) {
   line(a.x, a.y, b.x, b.y);
@@ -162,13 +163,13 @@ function vline(a, b) {
 }
 
 
-function fget(i, j) {
-  return field[i * cols + j];
-}
+// function fget(i, j) {
+//   return field[i * cols + j];
+// }
 
-function fput(i, j, fpt) {
-  field[i * cols + j] = fpt;
-}
+// function fput(i, j, fpt) {
+//   field[i * cols + j] = fpt;
+// }
 
 /**
 * getVectors - instead of choosing mid-points between the 4 dots, we move the connect
