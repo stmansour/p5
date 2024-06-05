@@ -4,7 +4,9 @@ let canvasWidth;
 let canvasHeight;
 let canvas;
 
-let c1, c2, c3;
+let queue = [];
+let allCircles = [];
+let epsilon = 0.1;  // tolerance for overlap and tangency
 
 function setInnerHTML(id, s) {
   let el = document.getElementById(id);
@@ -17,84 +19,103 @@ function setInnerHTML(id, s) {
 // setup - called only once in the lifetime of the sketch
 //----------------------------------------------------------------
 function setup() {
-  canvasWidth = 400;
-  canvasHeight = 400;
+  canvasWidth = 800;
+  canvasHeight = 600;
   //-------------------------------------
   // User Interface Features...
   //-------------------------------------
   canvas = createCanvas(canvasWidth, canvasHeight)
   canvas.parent('canvas-container'); // Attach the canvas to the div
 
-  c1 = new Circle(-1 / 200, 200, 200);
-  c2 = new Circle(1 / 100, 100, 200);
-  c3 = new Circle(1 / 100, 300, 200);
+  let r = height / 2;
+  let h2 = height / 2;
+  let w2 = width / 2;
+  let r2 = r / 2;
+  let r4 = r / 4;
+  let rr = 124;
+  let c1, c2, c3;
+  let m = h2 *7/8;
+  let m2 = m / 2;
+  let h = Math.sqrt(3) * m / 2;
+
+
+  angleMode(DEGREES);
+  let starters = [
+    // 0
+    new Circle(-1 / r, w2, h2),
+    new Circle(1 / (r * 3 / 4), w2, height - (r * 3 / 4)),
+    new Circle(1 / (r / 4), w2, r / 4),
+
+    // 1
+    new Circle(-1 / r, w2, h2),
+    new Circle(1 / r2, w2 - r2, h2),
+    new Circle(1 / r2, w2 + r2, h2),
+
+    // 2
+    new Circle(1 / m2,        w2, h2 - h2/8 - h/2 ),
+    new Circle( 1 / m2, w2 - m/2, h2 - h2/8 + h/2),
+    new Circle( 1 / m2, w2 + m/2, h2 - h2/8 + h/2),
+  ];
+
+  let n = starters.length / 3;
+  let s = floor(n * Math.random());
+  let i = s * 3;
+
+  c1 = starters[i];
+  c2 = starters[i + 1];
+  c3 = starters[i + 2];
+
+  allCircles = [c1, c2, c3];
+  queue = [[c1, c2, c3]];
+
+  let good = areTangential(c1, c2, c3);
+  console.log(good);
+}
+
+function nextGeneration() {
+  let nextQueue = [];
+  for (let triplet of queue) {
+    let [c1, c2, c3] = triplet;
+    let k4 = descartes(c1, c2, c3);  // returns an array of 2 vals
+    let newCircles = complexDescartes(c1, c2, c3, k4);  // returns an array of 4 circles
+
+    for (let c of newCircles) {
+      if (validate(c, c1, c2, c3)) {
+        allCircles.push(c);
+        let t1 = [c1, c2, c];
+        let t2 = [c1, c3, c];
+        let t3 = [c2, c3, c];
+        nextQueue = nextQueue.concat([t1, t2, t3])
+      }
+    }
+  }
+  queue = nextQueue;
+}
+
+function mousePressed() {
+  nextGeneration();
+  draw();
 }
 
 function draw() {
-  background(20);
+  background(255);
+  let len1 = allCircles.length; // Current total circles
+  nextGeneration();             // Generate next generation of circles
+  let len2 = allCircles.length; // New total circles
 
-  c1.show();
-  c2.show();
-  c3.show();
+  //---------------------------------------------
+  // Stop drawing when no new circles are added
+  //---------------------------------------------
+  if (len1 == len2) {
+    console.log('done');
+    noLoop();
+  }
 
-  let k4 = descartes(c1, c2, c3);
-  let locs = complexDescartes(c1, c2, c3, k4[0]);
-  let d01 = new Circle(k4[0], locs[0].a, locs[0].b);
-  d01.show();
-  let d02 = new Circle(k4[0], locs[1].a, locs[1].b);
-  d02.show();
-
-  locs = complexDescartes(c1, c2, c3, k4[1]);
-  let d11 = new Circle(k4[1], locs[0].a, locs[0].b);
-  d11.show();
-  let d12 = new Circle(k4[1], locs[1].a, locs[1].b);
-  d12.show();
-}
-/**
- *  Create a descartes circle for the 3 supplied circles.
- * 
- * k4 = k1 + k2 + k3 +/- SQRT(k1*k2 + k2*k3 + k3*k1)
- * 
- * @param {*} c1 - a circle object
- * @param {*} c2 - a circle object
- * @param {*} c3 - a circle object
- * 
- * @return an array of 2 curvatures for the descartes circle
- */
-function descartes(c1, c2, c3) {
-  let k1 = c1.bend;
-  let k2 = c2.bend;
-  let k3 = c3.bend;
-
-  let sum = k1 + k2 + k3;
-  let root = 2 * Math.sqrt(k1 * k2 + k2 * k3 + k3 * k1);
-  return [sum + root, sum - root];
+  //-----------------------
+  // Display all circles
+  //-----------------------
+  for (let c of allCircles) {
+    c.show();
+  }
 }
 
-/**
- * compute the x,y locations of the descartes circle given the 3 supplied circles.
- * 
- * @param {*} c1 - a circle object
- * @param {*} c2 - a circle object
- * @param {*} c3 - a circle object
- * 
- * @return four x,y locations of the descartes circle
- */
-function complexDescartes(c1, c2, c3, k4) {
-  let k1 = c1.bend;
-  let k2 = c2.bend;
-  let k3 = c3.bend;
-  let z1 = c1.center;
-  let z2 = c2.center;
-  let z3 = c3.center;
-
-  let zk1 = z1.scale(k1);
-  let zk2 = z2.scale(k2);
-  let zk3 = z3.scale(k3);
-
-  let sum = zk1.add(zk2).add(zk3);
-  let root = zk1.multiply(zk2).add(zk2.multiply(zk3)).add(zk1.multiply(zk3));
-  root = root.sqrt().scale(2);
-
-  return [sum.add(root).scale(1 / k4), sum.subtract(root).scale(1 / k4)];
-}

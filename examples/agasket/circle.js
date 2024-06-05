@@ -6,9 +6,13 @@ class Circle {
     }
 
     show() {
-        stroke(255);
+        stroke(0);
         strokeWeight(1);
         noFill();
         circle(this.center.a, this.center.b, this.radius * 2);
     }
+
+    dist(other) {
+        return Math.hypot(this.center.a - other.center.a, this.center.b - other.center.b);
+      }
 }
