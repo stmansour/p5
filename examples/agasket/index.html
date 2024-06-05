@@ -7,6 +7,7 @@
     <script src="complex.js"></script>
     <script src="circle.js"></script>
     <script src="descartes.js"></script>
+    <script src="interface.js"></script>
     <meta charset="utf-8" />
     <title>Apollonian Gasket</title>
     <!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
@@ -14,7 +15,7 @@
 </head>
 
 <body>
-    <a href="../../index.html">P5JS Projects</a>
+    <a href="../index.html">P5JS Projects</a>
     <table align="center" width="850px" border="0">
         <tr>
             <td colspan="3" align="center">
@@ -31,12 +32,38 @@
     <!-- Static text below the canvas -->
     <table align="center" width="850px">
         <tr>
-            <td>
-                <div id="static-text">
-                    <h2>The Apollonian Gasket</h2>
-                </div>
+            <td align="center">
+                <table align="center">
+                    <tr>
+                        <td><button id="pattern1">Pattern 1</button>&nbsp;&nbsp;
+                            <button id="pattern2">Pattern 2</button>&nbsp;&nbsp;
+                            <button id="pattern3">Pattern 3</button>&nbsp;&nbsp;
+                            <button id="randomPattern">Random Pattern</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span id="colorCheckbox-container"></span>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
+    </table>
+    </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="static-text">
+                <h2>The Apollonian Gasket</h2>
+                <p>
+                    The Apollonian Gasket is a pattern that begins with a triplet of circles, each tangent to the
+                    other two, and successively filling in more circles, each tangent to another three. See the
+                    <a href="https://en.wikipedia.org/wiki/Apollonian_gasket">wikipedia page</a> for more details.
+                </p>
+            </div>
+        </td>
+    </tr>
     </table>
 </body>
 

@@ -3,6 +3,9 @@
 let canvasWidth;
 let canvasHeight;
 let canvas;
+let colorCheckbox;
+
+let starters;
 
 let queue = [];
 let allCircles = [];
@@ -21,9 +24,6 @@ function setInnerHTML(id, s) {
 function setup() {
   canvasWidth = 800;
   canvasHeight = 600;
-  //-------------------------------------
-  // User Interface Features...
-  //-------------------------------------
   canvas = createCanvas(canvasWidth, canvasHeight)
   canvas.parent('canvas-container'); // Attach the canvas to the div
 
@@ -33,14 +33,12 @@ function setup() {
   let r2 = r / 2;
   let r4 = r / 4;
   let rr = 124;
-  let c1, c2, c3;
-  let m = h2 *7/8;
+  let m = h2 * 7 / 8;
   let m2 = m / 2;
   let h = Math.sqrt(3) * m / 2;
 
-
   angleMode(DEGREES);
-  let starters = [
+  starters = [
     // 0
     new Circle(-1 / r, w2, h2),
     new Circle(1 / (r * 3 / 4), w2, height - (r * 3 / 4)),
@@ -52,25 +50,36 @@ function setup() {
     new Circle(1 / r2, w2 + r2, h2),
 
     // 2
-    new Circle(1 / m2,        w2, h2 - h2/8 - h/2 ),
-    new Circle( 1 / m2, w2 - m/2, h2 - h2/8 + h/2),
-    new Circle( 1 / m2, w2 + m/2, h2 - h2/8 + h/2),
+    new Circle(1 / m2, w2, h2 - h2 / 8 - h / 2),
+    new Circle(1 / m2, w2 - m / 2, h2 - h2 / 8 + h / 2),
+    new Circle(1 / m2, w2 + m / 2, h2 - h2 / 8 + h / 2),
   ];
 
   let n = starters.length / 3;
   let s = floor(n * Math.random());
-  let i = s * 3;
+  setCirclesTo(s);
 
-  c1 = starters[i];
-  c2 = starters[i + 1];
-  c3 = starters[i + 2];
+  //-------------------------------------
+  // User Interface Features...
+  //-------------------------------------
+  createInterface();
+}
+
+function setCirclesTo(s) {
+  let i = s * 3;
+  let c1 = starters[i];
+  let c2 = starters[i + 1];
+  let c3 = starters[i + 2];
 
   allCircles = [c1, c2, c3];
   queue = [[c1, c2, c3]];
 
-  let good = areTangential(c1, c2, c3);
-  console.log(good);
+  if (!areTangential(c1, c2, c3)) {
+    console.log("not tangential", c1, c2, c3)
+  }
+  loop();
 }
+
 
 function nextGeneration() {
   let nextQueue = [];
@@ -107,7 +116,6 @@ function draw() {
   // Stop drawing when no new circles are added
   //---------------------------------------------
   if (len1 == len2) {
-    console.log('done');
     noLoop();
   }
 
