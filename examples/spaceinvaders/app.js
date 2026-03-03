@@ -47,6 +47,8 @@ class SpaceInvadersApp {
         this.bottomLineHeight = 0;
         this.testMode = (typeof t_testMode === 'undefined') ? false : t_testMode;
         this.testdata = (typeof testdata === 'undefined') ? null : testdata;
+        this.resumeSameWave = false;  // when true, nextWave continuation resumes current wave
+        this.sound = new SISound();
     }
 
     loadImages() {
@@ -112,8 +114,27 @@ class SpaceInvadersApp {
         this.laserCannon = new LaserCannon();
         this.laserCannon.init();
         this.shots = new Shots();
+        this.bunkers = new Bunkers();
+        this.bunkers.init();
         this.gameStatus = GAME_IN_PROGRESS;
         this.screen.insertCoinsShow = false;
+    }
+
+    // Resume same wave after player was hit (invaders stay where they are).
+    resumeWave() {
+        this.laserCannon = new LaserCannon();
+        this.laserCannon.init();
+        this.shots = new Shots();
+        this.bunkers.init();  // fresh bunkers each life
+        for (let i = 0; i < this.invaders.squadrons.length; i++) {
+            this.invaders.squadrons[i].bombs.bombs = [];
+            this.invaders.squadrons[i].bombs.explosions = [];
+            this.invaders.squadrons[i].bombs.hitx = 0;
+            this.invaders.squadrons[i].bombs.hity = 0;
+        }
+        this.gameStatus = GAME_IN_PROGRESS;
+        this.screen.insertCoinsShow = false;
+        this.resumeSameWave = false;
     }
 
     newGame() {
@@ -174,13 +195,19 @@ class SpaceInvadersApp {
         if (this.msgTmr != null) {
             console.log("*** ERR:  msgTimer was not null in app.js");
             clearTimeout(this.msgTmr);
-            this.msgTimr = null;
+            this.msgTmr = null;
         }
         app.mode = nowState;
         this.msgTmr = setTimeout(() => {
             this.msgTmr = null;
             app.mode = thenState;
-            this.nextWave();
+            if (thenState === MODE_NEXT_WAVE) {
+                if (this.resumeSameWave) {
+                    this.resumeWave();
+                } else {
+                    this.nextWave();
+                }
+            }
         }, 5000);
     }
 
@@ -201,6 +228,7 @@ class SpaceInvadersApp {
             case GAME_IN_PROGRESS:
                 break;
             case GAME_PLAYER_DEFEATED_WAVE:
+                this.resumeSameWave = false;
                 player.wavesCompleted++;
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_DEFEATED_WAVE;
                 this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
@@ -209,6 +237,7 @@ class SpaceInvadersApp {
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_LOST_WAVE;
                 if (player.lives > 0) {
                     player.lives--;
+                    this.resumeSameWave = true;  // resume same wave (invaders stay in place)
                     this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
                 } else {
                     this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);

@@ -9,6 +9,7 @@ class Shots {
     fire() {
         let shot = new Shot(app.laserCannon.x,app.laserCannon.y);
         this.shots.push(shot);
+        if (app.sound) { app.sound.shoot(); }
     }
 
     show() {
@@ -36,9 +37,18 @@ class Shots {
             let y2 = y1 + 10;
             let bombDestroyed = false;
 
+            if (app.bunkers && app.bunkers.chipAt(x1, y1, x2, y2)) {
+                this.shots.splice(i, 1);
+                if (app.sound) { app.sound.bunkerHit(); }
+                continue;
+            }
+
             if (app.invaders.mystery.hit(x1,y1,x2,y2)) {
                 this.score(app.invaders.mystery.points);
                 this.explosions.push( new Explosion(app.invaders.mystery.x,app.invaders.mystery.y,app.invaders.mystery.points,1000,cleanOutExplosions,this));
+                if (app.sound) { app.sound.mysteryHit(); }
+                this.shots.splice(i, 1);
+                continue;
             }
 
             // console.log('shot: ' + [x1,y1,x2,y2]);
@@ -53,10 +63,10 @@ class Shots {
                 // Check for bomb collisions. Existing bombs still drop after
                 // squadron and/or individual invaders are killed.
                 //-------------------------------------------------------------
-                for (let k = squad.bombs.length - 1; k >= 0; k--) {
-                    if (shot.overlaps(squad.apps.bombs[k])) {
+                for (let k = squad.bombs.bombs.length - 1; k >= 0; k--) {
+                    if (shot.overlaps(squad.bombs.bombs[k])) {
                         this.shots.splice(i,1);     // remove this shot
-                        squad.bombs.splice(j,1);    // remove this bomb;
+                        squad.bombs.bombs.splice(k,1);
                         bombDestroyed = true;
                     }
                 }
@@ -96,6 +106,7 @@ class Shots {
         this.shots.splice(i,1);
         this.explosions.push( new Explosion(x,y,0,400,cleanOutExplosions,this));
         this.score(app.invaders.squadrons[j].ships[k].points);
+        if (app.sound) { app.sound.invaderHit(); }
     }
 
     score(pts) {

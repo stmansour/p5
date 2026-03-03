@@ -35,7 +35,14 @@ class Bombs {
 
     scanForHits() {
         for (let i = this.bombs.length - 1; i >= 0; i--) {
-            if (app.laserCannon.overlaps(this.bombs[i])) {
+            let b = this.bombs[i];
+            let bounds = b.bounds();
+            if (app.bunkers && app.bunkers.chipAt(bounds[0], bounds[1], bounds[2], bounds[3])) {
+                this.bombs.splice(i, 1);
+                if (app.sound) { app.sound.bunkerHit(); }
+                continue;
+            }
+            if (app.laserCannon.overlaps(b)) {
                 this.hitx = app.laserCannon.x;
                 this.hity = app.laserCannon.y;
                 app.laserCannon.destroyed = true;
@@ -44,6 +51,7 @@ class Bombs {
                 app.stopGame();
                 app.loseTasks();
                 this.explosions.push( new Explosion(this.hitx, this.hity,0,5000,concludeLostWave,this));
+                if (app.sound) { app.sound.playerExplosion(); }
                 return true;
             }
         }

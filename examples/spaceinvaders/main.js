@@ -8,9 +8,15 @@ function preload() {
 }
 
 function setup() {
-    scale(0.5);
     var canvas = createCanvas(640, 540);
     canvas.parent("theCanvas");
+    // Scale canvas display size on large screens (logical size stays 640x540)
+    var scale = min(windowWidth / 640, windowHeight / 540, 2);
+    scale = max(0.5, scale);
+    canvas.elt.style.width = (640 * scale) + "px";
+    canvas.elt.style.height = (540 * scale) + "px";
+    canvas.elt.style.imageRendering = "pixelated";
+    canvas.elt.style.imageRendering = "crisp-edges";
     app.loadAllPixels();
     app.setMaxShipWidth();
     textFont(app.font);
@@ -30,6 +36,7 @@ function draw() {
         case MODE_HOLD_SCREEN_MSG:
         case MODE_NEXT_WAVE:
             app.setSpeed();
+            if (app.bunkers) { app.bunkers.show(); }
             app.shots.show();
             app.shots.scanForHits();
             app.invaders.show();
