@@ -46,6 +46,7 @@ class SpaceInvadersApp {
         this.mode = MODE_SPLASH; // -1 = splash, 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
         this.screen = new SIScreen();
         this.msgTmr = null;
+        this.pendingPlayer = null;
         this.bottomLineHeight = 0;
         this.splashStartTime = 0;
         this.splashDuration = 4000;
@@ -124,13 +125,16 @@ class SpaceInvadersApp {
         this.bunkers.init();
         this.gameStatus = GAME_IN_PROGRESS;
         this.screen.insertCoinsShow = false;
+        this.players[this.currentPlayer].invaders = this.invaders;
     }
 
     // Resume same wave after player was hit (invaders stay where they are).
     resumeWave() {
+        this.invaders = this.players[this.currentPlayer].invaders;
         this.laserCannon = new LaserCannon();
         this.laserCannon.init();
         this.shots = new Shots();
+        this.bunkers = new Bunkers();
         this.bunkers.init();  // fresh bunkers each life
         for (let i = 0; i < this.invaders.squadrons.length; i++) {
             this.invaders.squadrons[i].bombs.bombs = [];
@@ -144,8 +148,37 @@ class SpaceInvadersApp {
     }
 
     newGame() {
-        // TODO: check for second player
+        this.currentPlayer = 0;
+        this.pendingPlayer = null;
+        this.resumeSameWave = false;
+        this.gameOver = false;
         this.nextWave();
+    }
+
+    continueCurrentPlayer() {
+        let player = this.players[this.currentPlayer];
+        if (player.invaders) {
+            this.resumeWave();
+        } else {
+            this.nextWave();
+        }
+    }
+
+    nextTurnPlayer() {
+        for (let i = 1; i < this.players.length; i++) {
+            let idx = (this.currentPlayer + i) % this.players.length;
+            if (this.players[idx].lives > 0) {
+                return idx;
+            }
+        }
+        if (this.players[this.currentPlayer].lives > 0) {
+            return this.currentPlayer;
+        }
+        return -1;
+    }
+
+    activePlayerName() {
+        return "PLAYER " + (this.currentPlayer + 1);
     }
 
     startSplash() {
@@ -216,22 +249,23 @@ class SpaceInvadersApp {
         this.invaders.mystery.cancel();  // cancel any mystery ship timeouts
     }
 
-    messageUserThenContinue(nowState,thenState) {
+    messageUserThenContinue(nowState,thenState,nextPlayer) {
         if (this.msgTmr != null) {
             console.log("*** ERR:  msgTimer was not null in app.js");
             clearTimeout(this.msgTmr);
             this.msgTmr = null;
         }
+        this.pendingPlayer = (typeof nextPlayer === 'undefined') ? null : nextPlayer;
         app.mode = nowState;
         this.msgTmr = setTimeout(() => {
             this.msgTmr = null;
+            if (this.pendingPlayer != null) {
+                this.currentPlayer = this.pendingPlayer;
+                this.pendingPlayer = null;
+            }
             app.mode = thenState;
             if (thenState === MODE_NEXT_WAVE) {
-                if (this.resumeSameWave) {
-                    this.resumeWave();
-                } else {
-                    this.nextWave();
-                }
+                this.continueCurrentPlayer();
             }
         }, 5000);
     }
@@ -254,17 +288,26 @@ class SpaceInvadersApp {
                 break;
             case GAME_PLAYER_DEFEATED_WAVE:
                 this.resumeSameWave = false;
+                player.invaders = null;
                 player.wavesCompleted++;
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_DEFEATED_WAVE;
                 this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
                 break;
             case GAME_PLAYER_LOST_WAVE:
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_LOST_WAVE;
+                player.lives--;
                 if (player.lives > 0) {
-                    player.lives--;
-                    this.resumeSameWave = true;  // resume same wave (invaders stay in place)
-                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
+                    player.invaders = this.invaders;  // resume same wave when this player returns
                 } else {
+                    player.invaders = null;
+                }
+
+                let nextPlayer = this.nextTurnPlayer();
+                if (nextPlayer >= 0) {
+                    this.resumeSameWave = true;
+                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE,nextPlayer);
+                } else {
+                    this.gameOver = true;
                     this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);
                 }
                 break;
@@ -279,13 +322,5 @@ class SpaceInvadersApp {
             default:
                 console.log("unknown wave status: " + status);
         }
-
-        // TODO: next player logic
-
-
-        if (player.lives == 0) {
-            this.gameOver = true;
-        }
-
     }
 }

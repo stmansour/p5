@@ -133,7 +133,7 @@ class SIScreen {
             case GAME_PLAYER_DEFEATED_WAVE:
                 this.statusMsg = "";
                 let n = app.players[app.currentPlayer].wavesCompleted;
-                s = "WAVES DEFEATED: " + n;
+                s = app.activePlayerName() + " WAVES DEFEATED: " + n;
                 fill(80, 255, 80);
                 text(s, (width - textWidth(s)) / 2, 180);
                 s = "WELL DONE";
@@ -143,13 +143,17 @@ class SIScreen {
             case GAME_PLAYER_LOST_WAVE:
                 this.statusMsg = "";
                 if (app.players[app.currentPlayer].lives > 0) {
-                    s = "PREPARE FOR NEXT WAVE";
+                    s = app.activePlayerName() + " LOST A LIFE";
                 } else {
-                    s = "YOU HAVE BEEN DEFEATED BY THE INVADERS -- SHAME ON YOU";
+                    s = app.activePlayerName() + " GAME OVER";
                 }
                 fill(255, 80, 80);
                 text(s, (width - textWidth(s)) / 2, 180);
-                s = "LIVES REMAINING: " + app.players[app.currentPlayer].lives;
+                if (app.pendingPlayer != null && app.pendingPlayer != app.currentPlayer) {
+                    s = "PLAYER " + (app.pendingPlayer + 1) + " GET READY";
+                } else {
+                    s = "LIVES REMAINING: " + app.players[app.currentPlayer].lives;
+                }
                 text(s, (width - textWidth(s)) / 2, 205);
                 this.gameOver = true;
                 break;
@@ -263,7 +267,7 @@ class SIScreen {
         let player = null;
         let name = "SCORE<1>";
         let score = 0;
-        if (app.mode != 0) {
+        if (app.players.length > 0) {
             player = app.players[0];
             name = "SCORE" + player.name;
             score = player.score;
@@ -277,12 +281,12 @@ class SIScreen {
     }
 
     score2() {
-        if (app.mode == 1) {
+        if (app.players.length == 1) {
             return;
         }
         let name = "SCORE<2>";
         let score = 0;
-        if (app.mode == 2) {
+        if (app.players.length > 1) {
             let player = app.players[1];
             name = "SCORE" + player.name;
             score = player.score;
@@ -315,6 +319,10 @@ class SIScreen {
         textSize(app.cSize);
         fill(97, 201, 59);
         let player = app.players[app.currentPlayer];
+        if (app.players.length > 1) {
+            let playerName = app.activePlayerName();
+            text(playerName, (width - textWidth(playerName)) / 2, height - 35);
+        }
         let y = height - 5;
         let livesRemaining = '' + player.lives;
         text('' + livesRemaining, 20, y);
