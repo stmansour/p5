@@ -1,6 +1,11 @@
 /*jshint esversion: 6 */
 
 let app = null;
+let gameCanvas = null;
+
+const GAME_WIDTH = 640;
+const GAME_HEIGHT = 540;
+const GAME_WINDOW_PADDING = 16;
 
 function preload() {
     app = new SpaceInvadersApp();
@@ -8,20 +13,35 @@ function preload() {
 }
 
 function setup() {
-    var canvas = createCanvas(640, 540);
-    canvas.parent("theCanvas");
-    // Scale canvas display size on large screens (logical size stays 640x540)
-    var scale = min(windowWidth / 640, windowHeight / 540, 2);
-    scale = max(0.5, scale);
-    canvas.elt.style.width = (640 * scale) + "px";
-    canvas.elt.style.height = (540 * scale) + "px";
-    canvas.elt.style.imageRendering = "pixelated";
-    canvas.elt.style.imageRendering = "crisp-edges";
+    gameCanvas = createCanvas(GAME_WIDTH, GAME_HEIGHT);
+    gameCanvas.parent("theCanvas");
+    gameCanvas.elt.style.imageRendering = "pixelated";
+    gameCanvas.elt.style.imageRendering = "crisp-edges";
+    fitCanvasToWindow();
     app.loadAllPixels();
     app.setMaxShipWidth();
     textFont(app.font);
     app.mode = MODE_NOT_PLAYING; // initialization; being very explicit
     app.screen.init();
+}
+
+function fitCanvasToWindow() {
+    if (!gameCanvas) {
+        return;
+    }
+
+    let canvasBounds = gameCanvas.elt.getBoundingClientRect();
+    let availableWidth = windowWidth - GAME_WINDOW_PADDING;
+    let availableHeight = windowHeight - canvasBounds.top - GAME_WINDOW_PADDING;
+    let canvasScale = min(availableWidth / GAME_WIDTH, availableHeight / GAME_HEIGHT);
+
+    canvasScale = max(0.1, canvasScale);
+    gameCanvas.elt.style.width = (GAME_WIDTH * canvasScale) + "px";
+    gameCanvas.elt.style.height = (GAME_HEIGHT * canvasScale) + "px";
+}
+
+function windowResized() {
+    fitCanvasToWindow();
 }
 
 function draw() {
