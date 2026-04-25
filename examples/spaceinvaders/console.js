@@ -4,6 +4,7 @@
 /*jshint esversion: 6 */
 
 function onePlayer() {
+    if (app.sound) { app.sound.ensureContext(); }
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
     }
@@ -23,6 +24,7 @@ function onePlayer() {
 }
 
 function twoPlayers() {
+    if (app.sound) { app.sound.ensureContext(); }
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
     }
@@ -44,6 +46,7 @@ function twoPlayers() {
 }
 
 function coinInserted() {
+    if (app.sound) { app.sound.ensureContext(); }
     app.credits++;
     app.screen.showCredits();
 }

@@ -26,6 +26,7 @@ class MysteryShip {
             }
             this.points = 100 * floor(random(1,6));
             this.moving = true;
+            if (app.sound) { app.sound.mysteryStart(); }
         } , random(5000,15000));  // between 10 and 30 sec
     }
 
@@ -33,6 +34,7 @@ class MysteryShip {
         if (this.timer != null) {
             clearTimeout(this.timer);
         }
+        if (app.sound) { app.sound.mysteryStop(); }
         this.moving = false;
         this.timer = null;
     }

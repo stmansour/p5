@@ -62,6 +62,12 @@ function draw() {
         case MODE_HOLD_SCREEN_MSG:
         case MODE_NEXT_WAVE:
             app.setSpeed();
+            if (app.sound && app.invaders.introduced && !app.gameHasStopped()) {
+                app.sound.updateInvaderMarch(
+                    app.invaders.activeInvaderCount(),
+                    app.invaders.shipsPerSquadron * app.invaders.squadrons.length
+                );
+            }
             if (app.bunkers) { app.bunkers.show(); }
             app.shots.show();
             app.shots.scanForHits();
