@@ -101,6 +101,11 @@ class SIScreen {
     }
 
     show() {
+        if (app.mode == MODE_SPLASH) {
+            this.showSplash();
+            return;
+        }
+
         this.scores();
         this.bottomLine();
         switch (app.mode) {
@@ -187,6 +192,47 @@ class SIScreen {
         text(s, (width - textWidth(s)) / 2, 100);
     }
 
+    showSplash() {
+        if (!app.splashLogo) {
+            return;
+        }
+
+        let bounds = this.splashImageBounds(app.splashLogo);
+        let elapsed = millis() - app.splashStartTime;
+        let progress = constrain(elapsed / app.splashRevealDuration, 0, 1);
+        let reveal = 1 - Math.pow(1 - progress, 3);
+
+        push();
+        imageMode(CORNER);
+        drawingContext.save();
+        this.clipSplashFromCenter(bounds, reveal);
+        image(app.splashLogo, bounds.x, bounds.y, bounds.w, bounds.h);
+        drawingContext.restore();
+        pop();
+    }
+
+    splashImageBounds(img) {
+        let scale = min(width / img.width, height / img.height);
+        let w = img.width * scale;
+        let h = img.height * scale;
+        return {
+            x: (width - w) / 2,
+            y: (height - h) / 2,
+            w: w,
+            h: h,
+        };
+    }
+
+    clipSplashFromCenter(bounds, amount) {
+        let revealWidth = bounds.w * amount;
+        let revealHeight = bounds.h * amount;
+        let x = bounds.x + (bounds.w - revealWidth) / 2;
+        let y = bounds.y + (bounds.h - revealHeight) / 2;
+
+        drawingContext.beginPath();
+        drawingContext.rect(x, y, revealWidth, revealHeight);
+        drawingContext.clip();
+    }
 
     showGameOver() {
         noStroke();

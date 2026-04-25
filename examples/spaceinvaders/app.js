@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 
+const MODE_SPLASH = -1;
 const MODE_NOT_PLAYING = 0;
 const MODE_NEW_GAME_1_PLAYER = 1;
 const MODE_NEW_GAME_2_PLAYERS = 2;
@@ -26,6 +27,7 @@ class SpaceInvadersApp {
         this.eplode = null;     // explosion graphic
         this.cannon = null;     // the laser cannon image
         this.cannonShot = null; // the laser cannon image
+        this.splashLogo = null; // nostalgic startup splash artwork
         this.invaders = null;
         this.laserCannon = null;
         this.shots = null;
@@ -41,10 +43,13 @@ class SpaceInvadersApp {
         this.credits = 0;
         this.cSize = 14; // size of large characters
         this.font = null;
-        this.mode = MODE_NOT_PLAYING; // 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
+        this.mode = MODE_SPLASH; // -1 = splash, 0 = not playing, 1 = 1 player, 2 = 2 players, 3 = freeze screen so user can see why they lost
         this.screen = new SIScreen();
         this.msgTmr = null;
         this.bottomLineHeight = 0;
+        this.splashStartTime = 0;
+        this.splashDuration = 4000;
+        this.splashRevealDuration = 500;
         this.testMode = (typeof t_testMode === 'undefined') ? false : t_testMode;
         this.testdata = (typeof testdata === 'undefined') ? null : testdata;
         this.resumeSameWave = false;  // when true, nextWave continuation resumes current wave
@@ -71,6 +76,7 @@ class SpaceInvadersApp {
         this.explode  = loadImage('assets/explode.png');
         this.cannon = loadImage('assets/lasercannon.png');
         this.cannonShot = loadImage('assets/cannonshot.png');
+        this.splashLogo = loadImage('assets/SpaceInvadersLogo.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
     }
@@ -140,6 +146,25 @@ class SpaceInvadersApp {
     newGame() {
         // TODO: check for second player
         this.nextWave();
+    }
+
+    startSplash() {
+        this.mode = MODE_SPLASH;
+        this.splashStartTime = millis();
+        this.screen.clearAds();
+    }
+
+    finishSplash() {
+        if (this.mode != MODE_SPLASH) {
+            return;
+        }
+        this.mode = MODE_NOT_PLAYING;
+        this.screen.clearAds();
+    }
+
+    splashExpired() {
+        return this.mode == MODE_SPLASH &&
+            millis() - this.splashStartTime >= this.splashDuration;
     }
 
     setSpeed() {

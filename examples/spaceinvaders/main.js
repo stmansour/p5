@@ -21,8 +21,8 @@ function setup() {
     app.loadAllPixels();
     app.setMaxShipWidth();
     textFont(app.font);
-    app.mode = MODE_NOT_PLAYING; // initialization; being very explicit
     app.screen.init();
+    app.startSplash();
 }
 
 function fitCanvasToWindow() {
@@ -47,7 +47,13 @@ function windowResized() {
 function draw() {
     background(0);
 
+    if (app.splashExpired()) {
+        app.finishSplash();
+    }
+
     switch (app.mode) {
+        case MODE_SPLASH:
+            break;
         case MODE_NOT_PLAYING:
             app.screen.showSelectPlayers();
             break;
@@ -75,6 +81,14 @@ function draw() {
 }
 
 function keyPressed() {
+    if (app.mode == MODE_SPLASH) {
+        app.finishSplash();
+        return;
+    }
+    if (!app.laserCannon) {
+        return;
+    }
+
     switch (keyCode) {
         case RIGHT_ARROW:
         case 190:
@@ -92,6 +106,10 @@ function keyPressed() {
 }
 
 function keyReleased() {
+    if (!app.laserCannon) {
+        return;
+    }
+
     switch (keyCode) {
         case RIGHT_ARROW:
         case 190:
@@ -104,5 +122,11 @@ function keyReleased() {
         default:
             // console.log('keyCode = ' + keyCode);
             break;
+    }
+}
+
+function mousePressed() {
+    if (app.mode == MODE_SPLASH) {
+        app.finishSplash();
     }
 }
