@@ -44,7 +44,7 @@ class MysteryShip {
             return;
         }
         // check to see if we made it safely across the screen
-        this.moving = (this.dir == 1 && this.x < width - app.border) || (this.dir == -1 & this.x > app.border);
+        this.moving = (this.dir == 1 && this.x < width - app.border) || (this.dir == -1 && this.x > app.border);
         if (this.moving) {
             image(this.img,this.x,this.y);
             this.x += this.dx;

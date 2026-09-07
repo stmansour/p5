@@ -16,11 +16,11 @@ class Shots {
         if (app.gameHasStopped()) {
             return;
         }
-        for (var i = 0; i < this.shots.length; i++) {
+        for (let i = this.shots.length - 1; i >= 0; i--) {
             this.shots[i].show();
             this.shots[i].move();
             if (this.shots[i].expired) {
-                this.shots.splice(i,1);
+                this.shots.splice(i, 1);
             }
         }
         for (let i = 0; i < this.explosions.length; i++) {
@@ -53,9 +53,7 @@ class Shots {
 
             // console.log('shot: ' + [x1,y1,x2,y2]);
 
-            //-------------------------
-            // for all squadrons...
-            //-------------------------
+            let shotConsumed = false;
             for (let j = app.invaders.squadrons.length - 1; j >= 0; j--) {
                 let squad = app.invaders.squadrons[j];
 
@@ -65,12 +63,16 @@ class Shots {
                 //-------------------------------------------------------------
                 for (let k = squad.bombs.bombs.length - 1; k >= 0; k--) {
                     if (shot.overlaps(squad.bombs.bombs[k])) {
-                        this.shots.splice(i,1);     // remove this shot
-                        squad.bombs.bombs.splice(k,1);
-                        bombDestroyed = true;
+                        this.shots.splice(i, 1);     // remove this shot
+                        squad.bombs.bombs.splice(k, 1);
+                        shotConsumed = true;
+                        break;
                     }
                 }
-                if (bombDestroyed || squad.destroyed) {
+                if (shotConsumed) {
+                    break;
+                }
+                if (squad.destroyed) {
                     continue;
                 }
 
@@ -88,11 +90,13 @@ class Shots {
                     let sy2 = sy1 + ship.ims[0].height;
                     // console.log('ship' + [sx1,sy1,sx2,sy2]);
                     if (sx2 >= x1 && sx1 < x2 && sy2 >= y1 && sy1 < y2) {
-                        this.hit(i,j,k,sx1,sy1);
+                        this.hit(i, j, k, sx1, sy1);
+                        shotConsumed = true;
+                        break;
                     }
                 }
-                if (bombDestroyed) {
-                    continue;
+                if (shotConsumed) {
+                    break;
                 }
             }
         }

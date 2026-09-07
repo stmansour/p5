@@ -55,6 +55,7 @@ class SpaceInvadersApp {
         this.testdata = (typeof testdata === 'undefined') ? null : testdata;
         this.resumeSameWave = false;  // when true, nextWave continuation resumes current wave
         this.sound = new SISound();
+        this.bgImages = [];
     }
 
     loadImages() {
@@ -63,7 +64,6 @@ class SpaceInvadersApp {
         this.b1 = loadImage('assets/b1.png');
         this.b2 = loadImage('assets/b2.png');
         this.c1 = loadImage('assets/c1.png');
-        this.c2 = loadImage('assets/c2.png');
         this.c2 = loadImage('assets/c2.png');
         this.d  = loadImage('assets/d.png');
         this.bmb1a = loadImage('assets/bmb1a.png');
@@ -80,6 +80,16 @@ class SpaceInvadersApp {
         this.splashLogo = loadImage('assets/SpaceInvadersLogo.png');
 
         this.font = loadFont("assets/PixelSplitter-Bold.ttf");
+
+        this.bgImages = [
+            loadImage('assets/bg_moon.jpg'),
+            loadImage('assets/bg_nebula.jpg'),
+            loadImage('assets/bg_ringed_planet.jpg'),
+            loadImage('assets/bg_mars.jpg'),
+            loadImage('assets/bg_galaxy.jpg'),
+            loadImage('assets/bg_pulsar.jpg'),
+            loadImage('assets/bg_eclipse.jpg')
+        ];
     }
 
     loadAllPixels() {
@@ -145,6 +155,10 @@ class SpaceInvadersApp {
         this.gameStatus = GAME_IN_PROGRESS;
         this.screen.insertCoinsShow = false;
         this.resumeSameWave = false;
+        if (this.invaders && this.invaders.mystery) {
+            this.invaders.mystery.cancel();
+            this.invaders.mystery.go();
+        }
     }
 
     newGame() {
@@ -179,6 +193,17 @@ class SpaceInvadersApp {
 
     activePlayerName() {
         return "PLAYER " + (this.currentPlayer + 1);
+    }
+
+    currentBackground() {
+        if (!this.bgImages || this.bgImages.length === 0) {
+            return null;
+        }
+        let wave = 0;
+        if (this.players && this.players.length > 0 && this.players[this.currentPlayer]) {
+            wave = this.players[this.currentPlayer].wavesCompleted || 0;
+        }
+        return this.bgImages[wave % this.bgImages.length];
     }
 
     startSplash() {
@@ -238,7 +263,6 @@ class SpaceInvadersApp {
         }
         if (stat == GAME_PLAYER_DEFEATED_WAVE ||
             stat == GAME_PLAYER_LOST_WAVE ||
-            stat == GAME_PLAYER_LOST ||
             stat == GAME_PLAYER_LOST) {
             return true;
         }
@@ -266,6 +290,9 @@ class SpaceInvadersApp {
             app.mode = thenState;
             if (thenState === MODE_NEXT_WAVE) {
                 this.continueCurrentPlayer();
+            } else if (thenState === MODE_NOT_PLAYING) {
+                this.gameOver = false;
+                this.screen.clearAds();
             }
         }, 5000);
     }
@@ -308,11 +335,12 @@ class SpaceInvadersApp {
                     this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE,nextPlayer);
                 } else {
                     this.gameOver = true;
-                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);
+                    this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NOT_PLAYING);
                 }
                 break;
             case GAME_PLAYER_LOST:
-                this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,GAME_PLAYER_LOST);
+                this.gameOver = true;
+                this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NOT_PLAYING);
                 break;
             case GAME_PLAYER_WON:
                 console.log("what do we do now?  I don't know what it means to win!");

@@ -20,8 +20,11 @@ class Revealer {
     }
 
     reset() {
+        if (this.tmr != null) {
+            clearInterval(this.tmr);
+            this.tmr = null;
+        }
         this.triggered = false;
-        this.tmr = null;
         this.amt = 0;
         this.str = "";
     }

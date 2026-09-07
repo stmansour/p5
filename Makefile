@@ -1,7 +1,7 @@
 DIST ?= dist
 PACKAGE_DIR := $(DIST)/code
 
-REL_USER_HOST ?= sman@stevemansour.com
+REL_USER_HOST ?= sman@sman
 REL_SSH := ssh -i ~/.ssh/id_sman -p 1291
 REL_RSYNC_SSH := ssh -i ~/.ssh/id_sman -p 1291
 REMOTE_DIR ?= ~/public_html/code
@@ -13,7 +13,7 @@ REMOTE_BAK := $(REMOTE_DIR).bak
 help:
 	@echo "Targets:"
 	@echo "  make package  Build release tree in $(PACKAGE_DIR)"
-	@echo "  make relsman  Deploy p5 examples to stevemansour.com"
+	@echo "  make relsman  Deploy p5 examples to sman"
 	@echo "  make clean    Remove local release artifacts"
 
 clean:

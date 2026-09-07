@@ -115,6 +115,8 @@ class Invaders {
         if (passComplete && !this.introduced) {
             this.introduced = true;
             this.mystery.go();
+        } else if (this.introduced && !this.mystery.moving && this.mystery.timer == null && !app.gameHasStopped() && app.mode != MODE_HOLD_SCREEN_MSG) {
+            this.mystery.go();
         }
 
         if (passComplete && this.introduced) {
@@ -128,13 +130,7 @@ class Invaders {
                     this.squadrons[i].directionChangeNeeded = false;
                 }
             } else {
-                for (let i = this.squadrons.length - 1; i >= 0; i--) {
-                    if (this.squadrons[i].destroyed) {
-                        continue;
-                    }
-                    this.moveVertical = this.squadrons[i].directionChangeNeeded;
-                    break; // no need to look further
-                }
+                this.moveVertical = this.squadrons.some(sq => !sq.destroyed && sq.directionChangeNeeded);
             }
         }
     }
