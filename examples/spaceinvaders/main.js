@@ -9,10 +9,12 @@ const GAME_WINDOW_PADDING = 16;
 
 function preload() {
     app = new SpaceInvadersApp();
+    window.app = app;
     app.loadImages();
 }
 
 function setup() {
+    window.app = app;
     gameCanvas = createCanvas(GAME_WIDTH, GAME_HEIGHT);
     gameCanvas.parent("theCanvas");
     gameCanvas.elt.style.imageRendering = "pixelated";
@@ -23,6 +25,9 @@ function setup() {
     textFont(app.font);
     app.screen.init();
     app.startSplash();
+    if (typeof updateArcadeConsoleUI === 'function') {
+        updateArcadeConsoleUI();
+    }
 }
 
 function fitCanvasToWindow() {
@@ -30,14 +35,37 @@ function fitCanvasToWindow() {
         return;
     }
 
-    let canvasBounds = gameCanvas.elt.getBoundingClientRect();
-    let availableWidth = windowWidth - GAME_WINDOW_PADDING;
-    let availableHeight = windowHeight - canvasBounds.top - GAME_WINDOW_PADDING;
-    let canvasScale = min(availableWidth / GAME_WIDTH, availableHeight / GAME_HEIGHT);
+    let sidePanel = document.querySelector('.arcade-side-panel');
+    let topNav = document.querySelector('.top-nav');
+    let topNavHeight = topNav ? topNav.offsetHeight : 26;
 
-    canvasScale = max(0.1, canvasScale);
-    gameCanvas.elt.style.width = (GAME_WIDTH * canvasScale) + "px";
-    gameCanvas.elt.style.height = (GAME_HEIGHT * canvasScale) + "px";
+    let availableWidth = windowWidth - 48;
+    let availableHeight = windowHeight - topNavHeight - 24;
+
+    const PANEL_ASPECT = 462 / 1348; // width / height of cabinet_side_art.jpg
+    const CANVAS_ASPECT = GAME_WIDTH / GAME_HEIGHT; // 640 / 540 = 1.185185
+    const GAP = 24;
+
+    let totalAspect = CANVAS_ASPECT + PANEL_ASPECT;
+
+    let maxH_by_width = (availableWidth - GAP) / totalAspect;
+    let maxH_by_height = availableHeight;
+
+    let targetHeight = Math.max(260, Math.min(maxH_by_width, maxH_by_height));
+    let targetCanvasWidth = Math.round(targetHeight * CANVAS_ASPECT);
+    let targetPanelWidth = Math.round(targetHeight * PANEL_ASPECT);
+
+    // Apply synchronized scale to game canvas
+    gameCanvas.elt.style.width = targetCanvasWidth + "px";
+    gameCanvas.elt.style.height = Math.round(targetHeight) + "px";
+
+    // Apply synchronized scale to left arcade side panel
+    if (sidePanel) {
+        sidePanel.style.height = Math.round(targetHeight) + "px";
+        sidePanel.style.width = targetPanelWidth + "px";
+        let panelScale = targetHeight / 540;
+        sidePanel.style.setProperty('--panel-scale', panelScale);
+    }
 }
 
 function windowResized() {
@@ -93,25 +121,47 @@ function draw() {
 function keyPressed() {
     if (app.mode == MODE_SPLASH) {
         app.finishSplash();
-        return;
+        return false;
     }
+
+    let k = (typeof key === 'string') ? key.toLowerCase() : '';
+
+    if (app.mode == MODE_NOT_PLAYING) {
+        if (k === '1') {
+            onePlayer();
+            return false;
+        } else if (k === '2') {
+            twoPlayers();
+            return false;
+        } else if (k === 'c') {
+            coinInserted();
+            return false;
+        }
+    }
+
     if (!app.laserCannon) {
         return;
     }
 
-    switch (keyCode) {
-        case RIGHT_ARROW:
-        case 190:
-            app.laserCannon.goRight(true);
-            break;
-        case LEFT_ARROW:
-        case 188:
-            app.laserCannon.goLeft(true);
-            break;
-        case 32:
-            /* SPACE */
-            app.shots.fire();
-            break;
+    // Left: Left Arrow, ',' (188), 'j' / 'J' (74)
+    if (keyCode === LEFT_ARROW || keyCode === 188 || keyCode === 74 || k === 'j') {
+        app.laserCannon.goLeft(true);
+        return false;
+    }
+
+    // Right: Right Arrow, '.' (190), 'k' / 'K' (75)
+    if (keyCode === RIGHT_ARROW || keyCode === 190 || keyCode === 75 || k === 'k') {
+        app.laserCannon.goRight(true);
+        return false;
+    }
+
+    // Shoot: Spacebar (32)
+    if (keyCode === 32 || k === ' ') {
+        if (document.activeElement && document.activeElement.blur) {
+            document.activeElement.blur();
+        }
+        app.shots.fire();
+        return false;
     }
 }
 
@@ -120,18 +170,18 @@ function keyReleased() {
         return;
     }
 
-    switch (keyCode) {
-        case RIGHT_ARROW:
-        case 190:
-            app.laserCannon.goRight(false);
-            break;
-        case LEFT_ARROW:
-        case 188:
-            app.laserCannon.goLeft(false);
-            break;
-        default:
-            // console.log('keyCode = ' + keyCode);
-            break;
+    let k = (typeof key === 'string') ? key.toLowerCase() : '';
+
+    // Left: Left Arrow, ',' (188), 'j' / 'J' (74)
+    if (keyCode === LEFT_ARROW || keyCode === 188 || keyCode === 74 || k === 'j') {
+        app.laserCannon.goLeft(false);
+        return false;
+    }
+
+    // Right: Right Arrow, '.' (190), 'k' / 'K' (75)
+    if (keyCode === RIGHT_ARROW || keyCode === 190 || keyCode === 75 || k === 'k') {
+        app.laserCannon.goRight(false);
+        return false;
     }
 }
 

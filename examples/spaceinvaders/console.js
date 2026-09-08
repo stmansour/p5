@@ -3,10 +3,56 @@
 //========================================================================
 /*jshint esversion: 6 */
 
+function updateArcadeConsoleUI() {
+    let btn1 = document.getElementById('btn-1p');
+    let btn2 = document.getElementById('btn-2p');
+    let btnCoin = document.getElementById('btn-coin');
+    let creditDisplay = document.getElementById('arcade-credit-count');
+
+    let credits = (typeof app !== 'undefined' && app && typeof app.credits === 'number') ? app.credits : 0;
+    if (creditDisplay) {
+        creditDisplay.textContent = (credits < 10 ? '0' : '') + credits;
+    }
+
+    // When 0 credits, pulse/throb the red glow on the 25¢ coin button
+    if (btnCoin) {
+        if (credits === 0) {
+            btnCoin.classList.add('throb');
+        } else {
+            btnCoin.classList.remove('throb');
+        }
+    }
+
+    if (btn1) {
+        if (credits >= 1) {
+            btn1.classList.add('ready');
+        } else {
+            btn1.classList.remove('ready');
+        }
+    }
+
+    if (btn2) {
+        if (credits >= 2) {
+            btn2.classList.add('ready');
+        } else {
+            btn2.classList.remove('ready');
+        }
+    }
+}
+
 function onePlayer() {
-    if (app.sound) { app.sound.ensureContext(); }
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+    if (app.sound) {
+        app.sound.ensureContext();
+        app.sound.buttonClick();
+    }
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
+    }
+    if (app.mode !== MODE_NOT_PLAYING) {
+        return; // Game already in progress, ignore start button
     }
     if (app.credits < 1) {
         app.screen.insertCoinsShow = true;
@@ -14,6 +60,7 @@ function onePlayer() {
         return;
     }
     app.credits -= 1;
+    updateArcadeConsoleUI();
     app.mode = MODE_NEW_GAME_1_PLAYER;
     app.players = [];
     let p = new Player(1, 1);
@@ -24,9 +71,18 @@ function onePlayer() {
 }
 
 function twoPlayers() {
-    if (app.sound) { app.sound.ensureContext(); }
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+    if (app.sound) {
+        app.sound.ensureContext();
+        app.sound.buttonClick();
+    }
     if (app.gameOverTimer != null) {
         return; // don't do anything to change the final screen until the timer completes
+    }
+    if (app.mode !== MODE_NOT_PLAYING) {
+        return; // Game already in progress, ignore start button
     }
     if (app.credits < 2) {
         app.screen.insertCoinsShow = true;
@@ -34,6 +90,7 @@ function twoPlayers() {
         return;
     }
     app.credits -= 2;
+    updateArcadeConsoleUI();
     app.mode = MODE_NEW_GAME_2_PLAYERS;
     app.players = [];
     let p1 = new Player(1, 1);
@@ -46,7 +103,21 @@ function twoPlayers() {
 }
 
 function coinInserted() {
-    if (app.sound) { app.sound.ensureContext(); }
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+    if (app.sound) {
+        app.sound.ensureContext();
+        app.sound.coinDrop();
+    }
     app.credits++;
+    updateArcadeConsoleUI();
     app.screen.showCredits();
+}
+
+// Ensure UI is initialized once page is loaded
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+        updateArcadeConsoleUI();
+    });
 }

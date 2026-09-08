@@ -197,4 +197,39 @@ class SISound {
         this.mysteryOsc = null;
         this.mysteryLfo = null;
     }
+
+    coinDrop() {
+        if (!this.ensureContext()) { return; }
+        let now = this.ctx.currentTime;
+        // Mechanical microswitch trip
+        this.noiseBurst(0.04, 0.12, "highpass", 2400);
+
+        // First coin chime
+        let osc1 = this.ctx.createOscillator();
+        let gain1 = this.ctx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(987.77, now + 0.02); // B5
+        osc1.connect(gain1);
+        gain1.connect(this.master);
+        this.envelope(gain1, now + 0.02, 0.08, 0.16);
+        osc1.start(now + 0.02);
+        osc1.stop(now + 0.12);
+
+        // Second resonant bell chime (coin drops into metal chute)
+        let osc2 = this.ctx.createOscillator();
+        let gain2 = this.ctx.createGain();
+        osc2.type = "triangle";
+        osc2.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+        osc2.connect(gain2);
+        gain2.connect(this.master);
+        this.envelope(gain2, now + 0.08, 0.18, 0.18);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.28);
+    }
+
+    buttonClick() {
+        if (!this.ensureContext()) { return; }
+        this.noiseBurst(0.025, 0.10, "highpass", 3200);
+        this.sweep(480, 120, 0.03, "square", 0.08);
+    }
 }

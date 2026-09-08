@@ -312,6 +312,9 @@ class SIScreen {
     showCredits() {
         let s = "CREDITS " + zeroFillNumber(app.credits, 2);
         text(s, (width - textWidth(s) - 25), height - 15);
+        if (typeof updateArcadeConsoleUI === 'function') {
+            updateArcadeConsoleUI();
+        }
     }
 
     lives() {

@@ -2,9 +2,9 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
-    <title>Space Invaders</title>
+    <title>Space Invaders Arcade</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="../../p5.js"></script>
     <script src="imgprimitive.js"></script>
     <script src="sound.js"></script>
@@ -30,29 +30,44 @@
 </head>
 
 <body>
-    <a href="../index.html">P5JS Projects</a>
-    <table align="center" border="0">
-        <tr>
-            <td align="center">
-                <a href="javascript:onePlayer();"><img width="40%" src="assets/oneplayer.png" alt="1 PLAYER"></a>
-                <br>
-                <br>
-                <a href="javascript:twoPlayers();"><img width="40%" src="assets/twoplayers.png" alt="2 players"></a>
-                <br>
-                <br>
-                <a href="javascript:coinInserted();"><img src="assets/insertCoin.png" alt="INSERT COIN TO PLAY"></a>
-                <br>
-                <br>
-                <div class="description">
-                    <a href="details.html">Details about this game</a>
+    <!-- Top Bar Navigation -->
+    <div class="top-nav">
+        <a href="../index.html">◀ P5JS Projects</a>
+        <span class="top-nav-tag">1978 SPACE INVADERS ARCADE</span>
+    </div>
+
+    <!-- Master Arcade Container: Left Cabinet Panel + Right Game Screen -->
+    <div class="arcade-container">
+        <!-- Left Side: Authentic Arcade Cabinet Graphic with Overlaid Controls -->
+        <div class="arcade-side-panel">
+            <img src="assets/cabinet_side_art.jpg" alt="Space Invaders Arcade Art" class="cabinet-side-bg">
+
+            <!-- Controls Overlaid on the Lower Section of the Graphic -->
+            <div class="arcade-overlay-controls">
+                <div class="player-buttons-group">
+                    <button id="btn-1p" class="arcade-btn-img" onclick="onePlayer()" title="1 Player Start">
+                        <img src="assets/oneplayer.png" alt="1 PLAYER" class="btn-icon-img">
+                    </button>
+                    <button id="btn-2p" class="arcade-btn-img" onclick="twoPlayers()" title="2 Players Start">
+                        <img src="assets/twoplayers.png" alt="2 PLAYERS" class="btn-icon-img">
+                    </button>
                 </div>
-            </td>
-            <td>
-                <!-- game  -->
-                <div id="theCanvas"></div>
-            </td>
-        </tr>
-    </table>
+
+                <!-- Coin Button and Credit Readout (Vertically Centered in One Row) -->
+                <div class="coin-credit-row">
+                    <button id="btn-coin" class="arcade-coin-img-btn throb" onclick="coinInserted()" title="Click to Insert 25¢ Quarter">
+                        <img src="assets/insertCoin.png" alt="INSERT COIN TO PLAY" class="coin-icon-img">
+                    </button>
+                    <div class="credit-counter">CREDITS <span id="arcade-credit-count">00</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: The Game Screen -->
+        <div class="arcade-game-panel">
+            <div id="theCanvas"></div>
+        </div>
+    </div>
 </body>
 
 </html>
