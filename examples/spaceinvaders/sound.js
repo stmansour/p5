@@ -232,4 +232,70 @@ class SISound {
         this.noiseBurst(0.025, 0.10, "highpass", 3200);
         this.sweep(480, 120, 0.03, "square", 0.08);
     }
+
+    hyperspaceWarp() {
+        if (!this.ensureContext()) { return; }
+        let now = this.ctx.currentTime;
+        let duration = 1.4;
+
+        // 1. Sub-bass rumble
+        let subOsc = this.ctx.createOscillator();
+        let subGain = this.ctx.createGain();
+        subOsc.type = "triangle";
+        subOsc.frequency.setValueAtTime(85, now);
+        subOsc.frequency.exponentialRampToValueAtTime(32, now + duration);
+        subGain.gain.setValueAtTime(0.001, now);
+        subGain.gain.exponentialRampToValueAtTime(0.24, now + 0.1);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        subOsc.connect(subGain);
+        subGain.connect(this.master);
+        subOsc.start(now);
+        subOsc.stop(now + duration);
+
+        // 2. Dual-stage resonant warp sweep
+        let warpOsc = this.ctx.createOscillator();
+        let warpFilter = this.ctx.createBiquadFilter();
+        let warpGain = this.ctx.createGain();
+
+        warpOsc.type = "sawtooth";
+        warpOsc.frequency.setValueAtTime(110, now);
+        warpOsc.frequency.exponentialRampToValueAtTime(880, now + duration * 0.7);
+        warpOsc.frequency.exponentialRampToValueAtTime(440, now + duration);
+
+        warpFilter.type = "bandpass";
+        warpFilter.Q.value = 4.5;
+        warpFilter.frequency.setValueAtTime(180, now);
+        warpFilter.frequency.exponentialRampToValueAtTime(2400, now + duration * 0.75);
+        warpFilter.frequency.exponentialRampToValueAtTime(600, now + duration);
+
+        warpGain.gain.setValueAtTime(0.001, now);
+        warpGain.gain.exponentialRampToValueAtTime(0.20, now + 0.15);
+        warpGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        warpOsc.connect(warpFilter);
+        warpFilter.connect(warpGain);
+        warpGain.connect(this.master);
+        warpOsc.start(now);
+        warpOsc.stop(now + duration);
+
+        // 3. Shimmering cosmic noise glide
+        if (this.noiseBuffer) {
+            let noise = this.ctx.createBufferSource();
+            noise.buffer = this.noiseBuffer;
+            noise.loop = true;
+            let noiseFilter = this.ctx.createBiquadFilter();
+            noiseFilter.type = "highpass";
+            noiseFilter.frequency.setValueAtTime(2200, now);
+            noiseFilter.frequency.exponentialRampToValueAtTime(800, now + duration);
+            let noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.001, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.12, now + 0.2);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(this.master);
+            noise.start(now);
+            noise.stop(now + duration);
+        }
+    }
 }

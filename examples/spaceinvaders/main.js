@@ -89,10 +89,7 @@ function draw() {
         case MODE_NEW_GAME_2_PLAYERS:
         case MODE_HOLD_SCREEN_MSG:
         case MODE_NEXT_WAVE:
-            let bg = app.currentBackground();
-            if (bg) {
-                image(bg, 0, 0, width, height);
-            }
+            app.renderBackground();
             app.setSpeed();
             if (app.sound && app.invaders.introduced && !app.gameHasStopped()) {
                 app.sound.updateInvaderMarch(

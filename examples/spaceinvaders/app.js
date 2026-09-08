@@ -56,6 +56,12 @@ class SpaceInvadersApp {
         this.resumeSameWave = false;  // when true, nextWave continuation resumes current wave
         this.sound = new SISound();
         this.bgImages = [];
+        this.transitionActive = false;
+        this.transitionStartTime = 0;
+        this.transitionDuration = 1400;
+        this.transitionType = 0;
+        this.prevBgImage = null;
+        this.currBgImage = null;
     }
 
     loadImages() {
@@ -136,6 +142,14 @@ class SpaceInvadersApp {
         this.gameStatus = GAME_IN_PROGRESS;
         this.screen.insertCoinsShow = false;
         this.players[this.currentPlayer].invaders = this.invaders;
+
+        let wave = (this.players && this.players[this.currentPlayer]) ? (this.players[this.currentPlayer].wavesCompleted || 0) : 0;
+        let prevBg = (wave > 0 && this.bgImages.length > 0) ? this.bgImages[(wave - 1) % this.bgImages.length] : null;
+        let currBg = (this.bgImages.length > 0) ? this.bgImages[wave % this.bgImages.length] : null;
+        this.startWaveTransition(prevBg, currBg, wave);
+        if (typeof updateArcadeConsoleUI === 'function') {
+            updateArcadeConsoleUI();
+        }
     }
 
     // Resume same wave after player was hit (invaders stay where they are).
@@ -203,7 +217,213 @@ class SpaceInvadersApp {
         if (this.players && this.players.length > 0 && this.players[this.currentPlayer]) {
             wave = this.players[this.currentPlayer].wavesCompleted || 0;
         }
+        // If holding a wave completed message, stay on the wave that was just won
+        if (this.mode === MODE_HOLD_SCREEN_MSG && wave > 0) {
+            wave = wave - 1;
+        }
         return this.bgImages[wave % this.bgImages.length];
+    }
+
+    startWaveTransition(prevBg, currBg, waveNumber) {
+        this.prevBgImage = prevBg;
+        this.currBgImage = currBg;
+        this.transitionActive = true;
+        this.transitionStartTime = millis();
+        this.transitionDuration = 1400;
+
+        // Rotate through 6 distinct dramatic transition effects:
+        // Wave 1: 0 (Cosmic Iris)
+        // Wave 2: 1 (Hyperspace Zoom)
+        // Wave 3: 2 (Horizontal Laser Wipe)
+        // Wave 4: 3 (Vertical Blast Gate)
+        // Wave 5: 4 (Radar Chrono Sweep)
+        // Wave 6: 5 (Supernova Flash)
+        let idx = (waveNumber > 0) ? (waveNumber - 1) : 0;
+        this.transitionType = idx % 6;
+
+        if (this.sound) {
+            this.sound.ensureContext();
+            this.sound.hyperspaceWarp();
+        }
+    }
+
+    renderBackground() {
+        if (!this.bgImages || this.bgImages.length === 0) {
+            return;
+        }
+
+        let currBg = this.currentBackground();
+
+        if (!this.transitionActive || !this.currBgImage) {
+            if (currBg) {
+                image(currBg, 0, 0, width, height);
+            }
+            return;
+        }
+
+        let elapsed = millis() - this.transitionStartTime;
+        let progress = constrain(elapsed / this.transitionDuration, 0, 1);
+        let prevBg = this.prevBgImage;
+        let targetBg = this.currBgImage;
+
+        if (progress >= 1) {
+            this.transitionActive = false;
+            image(targetBg, 0, 0, width, height);
+            return;
+        }
+
+        let easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        let easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+        let easeInOutQuad = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+        switch (this.transitionType) {
+            case 0: {
+                // Cosmic Iris / Stargate Portal
+                let t = easeInOutCubic(progress);
+                let maxR = Math.hypot(width / 2, height / 2);
+                let r = maxR * t;
+
+                if (prevBg) { image(prevBg, 0, 0, width, height); }
+                else { fill(0); rect(0, 0, width, height); }
+
+                push();
+                drawingContext.save();
+                drawingContext.beginPath();
+                drawingContext.arc(width / 2, height / 2, r, 0, Math.PI * 2);
+                drawingContext.clip();
+                image(targetBg, 0, 0, width, height);
+                drawingContext.restore();
+
+                noFill();
+                stroke(80, 220, 255, (1 - progress) * 255);
+                strokeWeight(4 * (1 - progress) + 1);
+                circle(width / 2, height / 2, r * 2);
+                pop();
+                break;
+            }
+            case 1: {
+                // Hyperspace Warp Zoom
+                let t = easeOutCubic(progress);
+                let scaleFactor = lerp(0.06, 1.0, t);
+                let alpha = constrain(progress * 1.5, 0, 1) * 255;
+
+                if (prevBg) { image(prevBg, 0, 0, width, height); }
+                else { fill(0); rect(0, 0, width, height); }
+
+                push();
+                imageMode(CENTER);
+                tint(255, alpha);
+                image(targetBg, width / 2, height / 2, width * scaleFactor, height * scaleFactor);
+
+                stroke(160, 210, 255, (1 - progress) * 190);
+                strokeWeight(2);
+                let numLines = 18;
+                for (let i = 0; i < numLines; i++) {
+                    let angle = (TWO_PI / numLines) * i + (progress * 0.4);
+                    let r1 = 20 * progress;
+                    let r2 = (Math.max(width, height) * 0.75) * progress;
+                    line(width / 2 + Math.cos(angle) * r1, height / 2 + Math.sin(angle) * r1,
+                         width / 2 + Math.cos(angle) * r2, height / 2 + Math.sin(angle) * r2);
+                }
+                pop();
+                break;
+            }
+            case 2: {
+                // Horizontal Laser Scan Wipe
+                let t = easeInOutQuad(progress);
+                let y = height * t;
+
+                if (prevBg) { image(prevBg, 0, 0, width, height); }
+                else { fill(0); rect(0, 0, width, height); }
+
+                push();
+                drawingContext.save();
+                drawingContext.beginPath();
+                drawingContext.rect(0, 0, width, y);
+                drawingContext.clip();
+                image(targetBg, 0, 0, width, height);
+                drawingContext.restore();
+
+                stroke(51, 255, 120, (1 - progress * 0.4) * 255);
+                strokeWeight(3);
+                line(0, y, width, y);
+
+                stroke(200, 255, 220, (1 - progress) * 140);
+                strokeWeight(7);
+                line(0, y, width, y);
+                pop();
+                break;
+            }
+            case 3: {
+                // Vertical Split / Blast Gate
+                let t = easeInOutCubic(progress);
+                let splitW = (width / 2) * t;
+
+                if (prevBg) { image(prevBg, 0, 0, width, height); }
+                else { fill(0); rect(0, 0, width, height); }
+
+                push();
+                drawingContext.save();
+                drawingContext.beginPath();
+                drawingContext.rect(width / 2 - splitW, 0, splitW * 2, height);
+                drawingContext.clip();
+                image(targetBg, 0, 0, width, height);
+                drawingContext.restore();
+
+                stroke(255, 140, 50, (1 - progress) * 255);
+                strokeWeight(3);
+                line(width / 2 - splitW, 0, width / 2 - splitW, height);
+                line(width / 2 + splitW, 0, width / 2 + splitW, height);
+                pop();
+                break;
+            }
+            case 4: {
+                // Radar / Chrono 360° Sweep
+                let t = easeInOutQuad(progress);
+                let angle = -HALF_PI + TWO_PI * t;
+
+                if (prevBg) { image(prevBg, 0, 0, width, height); }
+                else { fill(0); rect(0, 0, width, height); }
+
+                push();
+                drawingContext.save();
+                drawingContext.beginPath();
+                drawingContext.moveTo(width / 2, height / 2);
+                drawingContext.arc(width / 2, height / 2, Math.hypot(width, height), -HALF_PI, angle);
+                drawingContext.closePath();
+                drawingContext.clip();
+                image(targetBg, 0, 0, width, height);
+                drawingContext.restore();
+
+                let r = Math.hypot(width / 2, height / 2);
+                stroke(0, 240, 255, (1 - progress * 0.3) * 255);
+                strokeWeight(3);
+                line(width / 2, height / 2, width / 2 + Math.cos(angle) * r, height / 2 + Math.sin(angle) * r);
+                pop();
+                break;
+            }
+            case 5: {
+                // Supernova Solar Flare Flash
+                if (progress < 0.35) {
+                    let pIn = progress / 0.35;
+                    if (prevBg) { image(prevBg, 0, 0, width, height); }
+                    noStroke();
+                    fill(255, 245, 220, pIn * 240);
+                    rect(0, 0, width, height);
+                } else {
+                    let pOut = (progress - 0.35) / 0.65;
+                    image(targetBg, 0, 0, width, height);
+                    noStroke();
+                    fill(255, 245, 220, (1 - pOut) * 240);
+                    rect(0, 0, width, height);
+                }
+                break;
+            }
+            default: {
+                image(targetBg, 0, 0, width, height);
+                break;
+            }
+        }
     }
 
     startSplash() {
@@ -218,6 +438,9 @@ class SpaceInvadersApp {
         }
         this.mode = MODE_NOT_PLAYING;
         this.screen.clearAds();
+        if (typeof updateArcadeConsoleUI === 'function') {
+            updateArcadeConsoleUI();
+        }
     }
 
     splashExpired() {
@@ -293,6 +516,9 @@ class SpaceInvadersApp {
             } else if (thenState === MODE_NOT_PLAYING) {
                 this.gameOver = false;
                 this.screen.clearAds();
+                if (typeof updateArcadeConsoleUI === 'function') {
+                    updateArcadeConsoleUI();
+                }
             }
         }, 5000);
     }
@@ -317,6 +543,9 @@ class SpaceInvadersApp {
                 this.resumeSameWave = false;
                 player.invaders = null;
                 player.wavesCompleted++;
+                if (typeof updateArcadeConsoleUI === 'function') {
+                    updateArcadeConsoleUI();
+                }
                 app.gameStatus = GAME_HOLD_FOR_MESSAGE + GAME_PLAYER_DEFEATED_WAVE;
                 this.messageUserThenContinue(MODE_HOLD_SCREEN_MSG,MODE_NEXT_WAVE);
                 break;

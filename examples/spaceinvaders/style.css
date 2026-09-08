@@ -206,8 +206,9 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 calc(6px * var(--panel-scale, 1));
+  padding: 0 calc(8px * var(--panel-scale, 1));
   box-sizing: border-box;
+  gap: calc(14px * var(--panel-scale, 1));
 }
 
 .arcade-coin-img-btn {
@@ -222,11 +223,11 @@ body {
 }
 
 .arcade-coin-img-btn .coin-icon-img {
-  width: calc(45px * var(--panel-scale, 1));
+  width: calc(38px * var(--panel-scale, 1));
   height: auto;
   display: block;
   filter: drop-shadow(0 0 10px rgba(255, 50, 0, 0.75));
-  transition: filter 0.4s ease, transform 02s ease;
+  transition: filter 0.4s ease, transform 0.2s ease;
 }
 
 .arcade-coin-img-btn:hover .coin-icon-img {
@@ -238,19 +239,51 @@ body {
   transform: scale(0.95);
 }
 
-/* Info: Credits Display on the Right */
-.credit-counter {
+/* Info: Level / Ticker Display on the Right */
+.credit-counter,
+.level-counter {
   font-family: 'Courier New', Courier, monospace;
   font-size: calc(11px * var(--panel-scale, 1));
   font-weight: bold;
   color: #33ff33;
   text-shadow: 0 0 8px rgba(51, 255, 51, 0.85);
   letter-spacing: 1.5px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: calc(4px * var(--panel-scale, 1)) calc(10px * var(--panel-scale, 1));
+  background: rgba(0, 0, 0, 0.75);
   border-radius: 4px;
   border: 1px solid rgba(51, 255, 51, 0.3);
   white-space: nowrap;
+  width: calc(90px * var(--panel-scale, 1));
+  flex: 0 0 calc(90px * var(--panel-scale, 1));
+  height: calc(24px * var(--panel-scale, 1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 calc(6px * var(--panel-scale, 1));
+}
+
+.arcade-ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.arcade-ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: arcadeTicker 11s linear infinite;
+}
+
+@keyframes arcadeTicker {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
 }
 
 /* ==========================================================================

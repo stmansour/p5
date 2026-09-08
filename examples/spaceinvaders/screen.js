@@ -135,9 +135,9 @@ class SIScreen {
                 let n = app.players[app.currentPlayer].wavesCompleted;
                 s = app.activePlayerName() + " WAVES DEFEATED: " + n;
                 fill(80, 255, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 135);
                 s = "WELL DONE";
-                text(s, (width - textWidth(s)) / 2, 205);
+                text(s, (width - textWidth(s)) / 2, 158);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST_WAVE:
@@ -148,20 +148,20 @@ class SIScreen {
                     s = app.activePlayerName() + " GAME OVER";
                 }
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 135);
                 if (app.pendingPlayer != null && app.pendingPlayer != app.currentPlayer) {
                     s = "PLAYER " + (app.pendingPlayer + 1) + " GET READY";
                 } else {
                     s = "LIVES REMAINING: " + app.players[app.currentPlayer].lives;
                 }
-                text(s, (width - textWidth(s)) / 2, 205);
+                text(s, (width - textWidth(s)) / 2, 158);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_LOST:
                 this.statusMsg = "";
                 s = "YOU HAVE NO MORE LIVES";
                 fill(255, 80, 80);
-                text(s, (width - textWidth(s)) / 2, 180);
+                text(s, (width - textWidth(s)) / 2, 135);
                 this.gameOver = true;
                 break;
             case GAME_PLAYER_WON:
@@ -278,6 +278,14 @@ class SIScreen {
         text(name, 145, 25);
         let s = zeroFillNumber(score, 4);
         text(s, 145, app.topBar);
+
+        let isGameOver = (app.mode === MODE_NOT_PLAYING || app.gameOver);
+        if (player && isGameOver) {
+            let lvl = (player.wavesCompleted || 0) + 1;
+            let lvlStr = "LEVEL " + zeroFillNumber(lvl, 2);
+            fill(80, 255, 80);
+            text(lvlStr, 145, app.topBar + 20);
+        }
     }
 
     score2() {
@@ -286,8 +294,9 @@ class SIScreen {
         }
         let name = "SCORE<2>";
         let score = 0;
+        let player = null;
         if (app.players.length > 1) {
-            let player = app.players[1];
+            player = app.players[1];
             name = "SCORE" + player.name;
             score = player.score;
         }
@@ -297,6 +306,14 @@ class SIScreen {
         text(name, width - textWidth(name) - 145, 25);
         let s = zeroFillNumber(score, 4);
         text(s, width - textWidth(s) - 145, app.topBar);
+
+        let isGameOver = (app.mode === MODE_NOT_PLAYING || app.gameOver);
+        if (player && isGameOver) {
+            let lvl = (player.wavesCompleted || 0) + 1;
+            let lvlStr = "LEVEL " + zeroFillNumber(lvl, 2);
+            fill(80, 255, 80);
+            text(lvlStr, width - textWidth(lvlStr) - 145, app.topBar + 20);
+        }
     }
 
     hiScore() {
