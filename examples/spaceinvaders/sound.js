@@ -233,6 +233,75 @@ class SISound {
         this.sweep(480, 120, 0.03, "square", 0.08);
     }
 
+    extraLife() {
+        if (!this.ensureContext()) { return; }
+        let now = this.ctx.currentTime;
+        // Triumphant classic arcade 1-UP fanfare
+        // Rising arpeggio followed by a bright celebratory chime and shimmer
+        const notes = [
+            { f: 523.25, t: 0.00, d: 0.08 }, // C5
+            { f: 659.25, t: 0.07, d: 0.08 }, // E5
+            { f: 783.99, t: 0.14, d: 0.08 }, // G5
+            { f: 1046.50, t: 0.21, d: 0.08 }, // C6
+            { f: 1318.51, t: 0.28, d: 0.10 }, // E6
+            { f: 1567.98, t: 0.37, d: 0.12 }, // G6
+            { f: 2093.00, t: 0.48, d: 0.42 }, // High C7 (celebratory peak)
+        ];
+
+        // 1. Primary bright square-wave arcade lead
+        for (let i = 0; i < notes.length; i++) {
+            let n = notes[i];
+            let osc = this.ctx.createOscillator();
+            let gain = this.ctx.createGain();
+            osc.type = "square";
+            osc.frequency.setValueAtTime(n.f, now + n.t);
+            osc.connect(gain);
+            gain.connect(this.master);
+            this.envelope(gain, now + n.t, n.d, 0.36);
+            osc.start(now + n.t);
+            osc.stop(now + n.t + n.d + 0.04);
+        }
+
+        // 2. Harmonizing lower support voice for authentic arcade cabinet fullness
+        const harmonyNotes = [
+            { f: 261.63, t: 0.00, d: 0.08 }, // C4
+            { f: 329.63, t: 0.07, d: 0.08 }, // E4
+            { f: 392.00, t: 0.14, d: 0.08 }, // G4
+            { f: 523.25, t: 0.21, d: 0.08 }, // C5
+            { f: 659.25, t: 0.28, d: 0.10 }, // E5
+            { f: 783.99, t: 0.37, d: 0.12 }, // G5
+            { f: 1318.51, t: 0.48, d: 0.42 }, // E6 (harmonic major 3rd with C7)
+        ];
+
+        for (let i = 0; i < harmonyNotes.length; i++) {
+            let n = harmonyNotes[i];
+            let osc = this.ctx.createOscillator();
+            let gain = this.ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(n.f, now + n.t);
+            osc.connect(gain);
+            gain.connect(this.master);
+            this.envelope(gain, now + n.t, n.d, 0.30);
+            osc.start(now + n.t);
+            osc.stop(now + n.t + n.d + 0.04);
+        }
+
+        // 3. Sparkling resolution sparkle / chime
+        let chimeTimes = [0.50, 0.58, 0.66, 0.74];
+        let chimeFreqs = [2637.02, 3135.96, 3520.00, 4186.01]; // E7, G7, A7, C8
+        for (let i = 0; i < chimeTimes.length; i++) {
+            let osc = this.ctx.createOscillator();
+            let gain = this.ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(chimeFreqs[i], now + chimeTimes[i]);
+            osc.connect(gain);
+            gain.connect(this.master);
+            this.envelope(gain, now + chimeTimes[i], 0.16, 0.20);
+            osc.start(now + chimeTimes[i]);
+            osc.stop(now + chimeTimes[i] + 0.18);
+        }
+    }
+
     hyperspaceWarp() {
         if (!this.ensureContext()) { return; }
         let now = this.ctx.currentTime;

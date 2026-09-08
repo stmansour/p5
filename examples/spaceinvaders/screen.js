@@ -18,6 +18,7 @@ class SIScreen {
     }
 
     init() {
+        let bonusPts = (typeof BONUS_LIFE_SCORE !== 'undefined') ? BONUS_LIFE_SCORE : 5000;
         let ads1 = [
             [   null, " PLAY SPACE INVADERS"],
             [   null, "*SCORE ADVANCE TABLE*"],
@@ -25,6 +26,7 @@ class SIScreen {
             [ app.c1, "= 30 POINTS"],
             [ app.a1, "= 20 POINTS"],
             [ app.b1, "= 10 POINTS"],
+            [   null, `EXTRA LIFE AT ${bonusPts} POINTS`],
         ];
         let ads2 = [
             [   null, "INSERT COIN"],
@@ -79,6 +81,14 @@ class SIScreen {
     }
 
     clearAds() {
+        let bonusPts = (typeof BONUS_LIFE_SCORE !== 'undefined') ? BONUS_LIFE_SCORE : 5000;
+        if (this.campaigns && this.campaigns[0] && this.campaigns[0][6]) {
+            let rev = this.campaigns[0][6];
+            let newStr = `EXTRA LIFE AT ${bonusPts} POINTS`;
+            if (rev.s !== newStr) {
+                rev.s = newStr;
+            }
+        }
         for (let i = 0; i < this.campaigns.length; i++) {
             let ads = this.campaigns[i];
             for (let j = 0; j < ads.length; j++) {
@@ -343,12 +353,85 @@ class SIScreen {
             let playerName = app.activePlayerName();
             text(playerName, (width - textWidth(playerName)) / 2, height - 35);
         }
+
+        // Check if player earned an extra bonus life within the last 8 seconds
+        let bonusActive = player.bonusLifeTime > 0 && (millis() - player.bonusLifeTime < 8000);
+        let bonusElapsed = bonusActive ? (millis() - player.bonusLifeTime) : 0;
+        let bonusPulse = bonusActive ? (0.5 + 0.5 * Math.sin(bonusElapsed * 0.007)) : 0;
+        let bonusFade = 1.0;
+        if (bonusActive) {
+            if (bonusElapsed < 300) {
+                bonusFade = bonusElapsed / 300;
+            } else if (bonusElapsed > 6500) {
+                bonusFade = (8000 - bonusElapsed) / 1500;
+            }
+        }
+        let glowIntensity = bonusPulse * bonusFade;
+
         let y = height - 5;
         let livesRemaining = '' + player.lives;
-        text('' + livesRemaining, 20, y);
+        if (bonusActive) {
+            push();
+            drawingContext.save();
+            drawingContext.shadowColor = '#00ff66';
+            drawingContext.shadowBlur = 10 * glowIntensity;
+            fill(120 + 135 * bonusPulse, 255, 120 + 100 * bonusPulse);
+            text('' + livesRemaining, 20, y);
+            drawingContext.restore();
+            pop();
+        } else {
+            text('' + livesRemaining, 20, y);
+        }
+
         let x = 50;
         y = height - app.cannon.height - 5;
         for (let i = 0; i < livesRemaining - 1; i++) {
+            // If this cannon is the newly awarded extra life, draw the throbbing background glow
+            if (bonusActive && i === player.bonusLifeSlot) {
+                push();
+                drawingContext.save();
+                let cx = x + app.cannon.width / 2;
+                let cy = y + app.cannon.height / 2;
+                let glowRadius = (app.cannon.width / 2 + 10) + bonusPulse * 8;
+
+                // 1. Radial ambient background glow
+                let grad = drawingContext.createRadialGradient(cx, cy, 2, cx, cy, glowRadius);
+                grad.addColorStop(0, `rgba(120, 255, 120, ${0.90 * glowIntensity})`);
+                grad.addColorStop(0.35, `rgba(60, 240, 90, ${0.60 * glowIntensity})`);
+                grad.addColorStop(0.70, `rgba(20, 180, 50, ${0.25 * glowIntensity})`);
+                grad.addColorStop(1, 'rgba(0, 255, 0, 0)');
+
+                drawingContext.fillStyle = grad;
+                drawingContext.beginPath();
+                drawingContext.arc(cx, cy, glowRadius, 0, Math.PI * 2);
+                drawingContext.fill();
+
+                // 2. Pulsing neon rounded background aura pill behind the ship
+                let pad = 3 + bonusPulse * 3;
+                let rx = x - pad;
+                let ry = y - pad;
+                let rw = app.cannon.width + pad * 2;
+                let rh = app.cannon.height + pad * 2;
+
+                drawingContext.fillStyle = `rgba(30, 140, 50, ${0.45 * glowIntensity})`;
+                drawingContext.strokeStyle = `rgba(160, 255, 160, ${0.85 * glowIntensity})`;
+                drawingContext.lineWidth = 1.5;
+                drawingContext.shadowColor = '#00ff66';
+                drawingContext.shadowBlur = 12 * glowIntensity;
+
+                drawingContext.beginPath();
+                if (typeof drawingContext.roundRect === 'function') {
+                    drawingContext.roundRect(rx, ry, rw, rh, 4);
+                } else {
+                    drawingContext.rect(rx, ry, rw, rh);
+                }
+                drawingContext.fill();
+                drawingContext.stroke();
+
+                drawingContext.restore();
+                pop();
+            }
+
             image(app.cannon, x, y);
             x += app.cannon.width + 5;
         }

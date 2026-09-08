@@ -6,6 +6,7 @@ let gameCanvas = null;
 const GAME_WIDTH = 640;
 const GAME_HEIGHT = 540;
 const GAME_WINDOW_PADDING = 16;
+const BONUS_LIFE_SCORE = 4000; // Points needed to earn an extra bonus life (change for testing)
 
 function preload() {
     app = new SpaceInvadersApp();

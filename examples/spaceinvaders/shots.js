@@ -114,7 +114,21 @@ class Shots {
     }
 
     score(pts) {
-        app.players[app.currentPlayer].score += pts;
+        let player = app.players[app.currentPlayer];
+        player.score += pts;
+
+        // One-time bonus life awarded at BONUS_LIFE_SCORE points
+        let bonusThreshold = (typeof BONUS_LIFE_SCORE !== 'undefined') ? BONUS_LIFE_SCORE : 5000;
+        if (!player.bonusAwarded && player.score >= bonusThreshold) {
+            player.bonusAwarded = true;
+            player.lives++;
+            player.bonusLifeTime = millis();
+            player.bonusLifeSlot = player.lives - 2;
+            if (app.sound) {
+                app.sound.extraLife();
+            }
+        }
+
         if (app.currentPlayer == 0) {
             app.screen.score1();
         } else {

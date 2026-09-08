@@ -10,6 +10,9 @@ class Player {
         this.waveTop = 100;  // gets bigger every time the player wins a wave
         this.bombDropOdds = 4000;
         this.invaders = null;
+        this.bonusAwarded = false;
+        this.bonusLifeTime = 0;
+        this.bonusLifeSlot = -1;
     }
 
     newGame() {
@@ -19,5 +22,8 @@ class Player {
         this.waveTop = 100;
         this.bombDropOdds = 4000;
         this.invaders = null;
+        this.bonusAwarded = false;
+        this.bonusLifeTime = 0;
+        this.bonusLifeSlot = -1;
     }
 }
